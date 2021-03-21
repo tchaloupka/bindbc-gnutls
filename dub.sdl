@@ -1,0 +1,15 @@
+name "bindbc-gnutls"
+description "Dynamic and static bindings to GnuTLS, compatible with -betterC, @nogc, and nothrow."
+authors "Tomáš Chaloupka"
+license "BSL-1.0"
+
+targetType "staticLibrary"
+
+configuration "static" {
+    versions "BindGnuTLS_Static"
+}
+
+configuration "staticBC" {
+    versions "BindGnuTLS_Static"
+    dflags "-betterC"
+}
