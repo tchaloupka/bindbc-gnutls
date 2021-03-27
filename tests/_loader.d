@@ -11,11 +11,28 @@ else:
 
 void loadLib()
 {
+    import loader = bindbc.loader.sharedlib;
     auto res = loadGnuTLS();
     if (res != LoadRes.loaded)
     {
         printf("Error loading GnuTLS: %d\n", res);
+        foreach(info; loader.errors)
+        {
+            printf("\t%s: %s\n", info.error, info.message);
+        }
         assert(0);
     }
     // else printf("GnuTLS sucesfully loaded\n");
+
+    res = loadGnuTLS_Dane();
+    if (res != LoadRes.loaded)
+    {
+        printf("Error loading GnuTLS-Dane: %d\n", res);
+        foreach(info; loader.errors)
+        {
+            printf("\t%s: %s\n", info.error, info.message);
+        }
+        assert(0);
+    }
+    // else printf("GnuTLS-Dane sucesfully loaded\n");
 }
