@@ -15,10 +15,10 @@ void loadLib()
     auto res = loadGnuTLS();
     if (res != LoadRes.loaded)
     {
-        printf("Error loading GnuTLS: %d\n", res);
+        fprintf(stderr, "Error loading GnuTLS: %d\n", res);
         foreach(info; loader.errors)
         {
-            printf("\t%s: %s\n", info.error, info.message);
+            fprintf(stderr, "\t%s: %s\n", info.error, info.message);
         }
         assert(0);
     }
@@ -27,10 +27,10 @@ void loadLib()
     res = loadGnuTLS_Dane();
     if (res != LoadRes.loaded)
     {
-        printf("Error loading GnuTLS-Dane: %d\n", res);
+        fprintf(stderr, "Error loading GnuTLS-Dane: %d\n", res);
         foreach(info; loader.errors)
         {
-            printf("\t%s: %s\n", info.error, info.message);
+            fprintf(stderr, "\t%s: %s\n", info.error, info.message);
         }
         assert(0);
     }

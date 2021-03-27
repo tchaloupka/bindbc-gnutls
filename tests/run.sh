@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e -o pipefail
+set -e
 
 BBC=0.3.2
 

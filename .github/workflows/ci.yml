@@ -25,7 +25,9 @@ jobs:
       uses: dlang-community/setup-dlang@v1
       with:
           compiler: ${{ matrix.dc }}
+    - name: Install gnutls
+      run: sudo apt-get install -y libgnutls30 libgnutls28-dev
     - name: Run tests
-      run:
+      run: |
         cd tests
         ./run.sh
