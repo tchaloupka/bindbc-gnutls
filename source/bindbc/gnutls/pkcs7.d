@@ -1,5 +1,6 @@
 module bindbc.gnutls.pkcs7;
 
+import bindbc.gnutls.config;
 import bindbc.gnutls.gnutls;
 import bindbc.gnutls.x509;
 import core.sys.posix.sys.select;
@@ -46,7 +47,10 @@ version (BindGnuTLS_Static)
     int gnutls_pkcs7_export2 (gnutls_pkcs7_t pkcs7, gnutls_x509_crt_fmt_t format, gnutls_datum_t* out_);
     int gnutls_pkcs7_get_signature_count (gnutls_pkcs7_t pkcs7);
     int gnutls_pkcs7_get_embedded_data (gnutls_pkcs7_t pkcs7, uint flags, gnutls_datum_t* data);
-    const(char)* gnutls_pkcs7_get_embedded_data_oid (gnutls_pkcs7_t pkcs7);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+        const(char)* gnutls_pkcs7_get_embedded_data_oid (gnutls_pkcs7_t pkcs7);
+
     int gnutls_pkcs7_get_crt_count (gnutls_pkcs7_t pkcs7);
     int gnutls_pkcs7_get_crt_raw (gnutls_pkcs7_t pkcs7, uint indx, void* certificate, size_t* certificate_size);
     int gnutls_pkcs7_set_crt_raw (gnutls_pkcs7_t pkcs7, const(gnutls_datum_t)* crt);
@@ -81,7 +85,10 @@ else
         alias pgnutls_pkcs7_export2 = int function (gnutls_pkcs7_t pkcs7, gnutls_x509_crt_fmt_t format, gnutls_datum_t* out_);
         alias pgnutls_pkcs7_get_signature_count = int function (gnutls_pkcs7_t pkcs7);
         alias pgnutls_pkcs7_get_embedded_data = int function (gnutls_pkcs7_t pkcs7, uint flags, gnutls_datum_t* data);
-        alias pgnutls_pkcs7_get_embedded_data_oid = const(char)* function (gnutls_pkcs7_t pkcs7);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+            alias pgnutls_pkcs7_get_embedded_data_oid = const(char)* function (gnutls_pkcs7_t pkcs7);
+
         alias pgnutls_pkcs7_get_crt_count = int function (gnutls_pkcs7_t pkcs7);
         alias pgnutls_pkcs7_get_crt_raw = int function (gnutls_pkcs7_t pkcs7, uint indx, void* certificate, size_t* certificate_size);
         alias pgnutls_pkcs7_set_crt_raw = int function (gnutls_pkcs7_t pkcs7, const(gnutls_datum_t)* crt);
@@ -115,7 +122,10 @@ else
         pgnutls_pkcs7_export2 gnutls_pkcs7_export2;
         pgnutls_pkcs7_get_signature_count gnutls_pkcs7_get_signature_count;
         pgnutls_pkcs7_get_embedded_data gnutls_pkcs7_get_embedded_data;
-        pgnutls_pkcs7_get_embedded_data_oid gnutls_pkcs7_get_embedded_data_oid;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+            pgnutls_pkcs7_get_embedded_data_oid gnutls_pkcs7_get_embedded_data_oid;
+
         pgnutls_pkcs7_get_crt_count gnutls_pkcs7_get_crt_count;
         pgnutls_pkcs7_get_crt_raw gnutls_pkcs7_get_crt_raw;
         pgnutls_pkcs7_set_crt_raw gnutls_pkcs7_set_crt_raw;
@@ -150,7 +160,10 @@ else
         lib.bindSymbol_stdcall(gnutls_pkcs7_export2, "gnutls_pkcs7_export2");
         lib.bindSymbol_stdcall(gnutls_pkcs7_get_signature_count, "gnutls_pkcs7_get_signature_count");
         lib.bindSymbol_stdcall(gnutls_pkcs7_get_embedded_data, "gnutls_pkcs7_get_embedded_data");
-        lib.bindSymbol_stdcall(gnutls_pkcs7_get_embedded_data_oid, "gnutls_pkcs7_get_embedded_data_oid");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+            lib.bindSymbol_stdcall(gnutls_pkcs7_get_embedded_data_oid, "gnutls_pkcs7_get_embedded_data_oid");
+
         lib.bindSymbol_stdcall(gnutls_pkcs7_get_crt_count, "gnutls_pkcs7_get_crt_count");
         lib.bindSymbol_stdcall(gnutls_pkcs7_get_crt_raw, "gnutls_pkcs7_get_crt_raw");
         lib.bindSymbol_stdcall(gnutls_pkcs7_set_crt_raw, "gnutls_pkcs7_set_crt_raw");

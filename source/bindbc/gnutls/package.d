@@ -1,6 +1,7 @@
 module bindbc.gnutls;
 
 public import bindbc.gnutls.abstract_;
+public import bindbc.gnutls.config;
 public import bindbc.gnutls.crypto;
 public import bindbc.gnutls.dane;
 public import bindbc.gnutls.dtls;
@@ -23,9 +24,8 @@ else {
     import bindbc.loader;
 
     private SharedLib lib, libDane;
-    enum LoadRes { noLibrary, badLibrary, loaded }
 
-    LoadRes loadGnuTLS()
+    GnuTLSSupport loadGnuTLS()
     {
         version(Windows) {
             const(char)[][2] libNames = [
@@ -41,15 +41,15 @@ else {
         }
         else static assert(0, "bindbc-gnutls is not yet supported on this platform.");
 
-        LoadRes ret;
+        GnuTLSSupport ret;
         foreach (name; libNames) {
             ret = loadGnuTLS(name.ptr);
-            if (ret != LoadRes.noLibrary) break;
+            if (ret != GnuTLSSupport.noLibrary) break;
         }
         return ret;
     }
 
-    LoadRes loadGnuTLS_Dane()
+    GnuTLSSupport loadGnuTLS_Dane()
     {
         version(Posix) {
             const(char)[][2] libNames = [
@@ -59,21 +59,21 @@ else {
         }
         else static assert(0, "bindbc-gnutls-dane is not yet supported on this platform.");
 
-        LoadRes ret;
+        GnuTLSSupport ret;
         foreach (name; libNames) {
             ret = loadGnuTLS_Dane(name.ptr);
-            if (ret != LoadRes.noLibrary) break;
+            if (ret != GnuTLSSupport.noLibrary) break;
         }
         return ret;
     }
 
-    LoadRes loadGnuTLS(const(char)* libName)
+    GnuTLSSupport loadGnuTLS(const(char)* libName)
     {
         // If the library isn't yet loaded, load it now.
         if (lib == invalidHandle)
         {
             lib = load(libName);
-            if (lib == invalidHandle) return LoadRes.noLibrary;
+            if (lib == invalidHandle) return GnuTLSSupport.noLibrary;
         }
 
         immutable errCount = errorCount();
@@ -89,31 +89,34 @@ else {
         lib.bindPkcs11();
         lib.bindPkcs12();
         lib.bindSelfTest();
-        lib.bindSocket();
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+            lib.bindSocket();
+
         lib.bindSystemKeys();
         lib.bindTpm();
         lib.bindUrls();
         lib.bindX509Ext();
         lib.bindX509();
 
-        if (errorCount() != errCount) return LoadRes.badLibrary;
-        return LoadRes.loaded;
+        if (errorCount() != errCount) return GnuTLSSupport.badLibrary;
+        return gnuTLSSupport;
     }
 
-    LoadRes loadGnuTLS_Dane(const(char)* libName)
+    GnuTLSSupport loadGnuTLS_Dane(const(char)* libName)
     {
         // If the library isn't yet loaded, load it now.
         if (libDane == invalidHandle)
         {
             libDane = load(libName);
-            if (libDane == invalidHandle) return LoadRes.noLibrary;
+            if (libDane == invalidHandle) return GnuTLSSupport.noLibrary;
         }
 
         immutable errCount = errorCount();
 
         libDane.bindDane();
 
-        if (errorCount() != errCount) return LoadRes.badLibrary;
-        return LoadRes.loaded;
+        if (errorCount() != errCount) return GnuTLSSupport.badLibrary;
+        return gnuTLSSupport;
     }
 }

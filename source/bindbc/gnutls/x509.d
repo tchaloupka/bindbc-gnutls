@@ -1,5 +1,6 @@
 module bindbc.gnutls.x509;
 
+import bindbc.gnutls.config;
 import bindbc.gnutls.gnutls;
 
 import core.stdc.config;
@@ -79,9 +80,12 @@ enum gnutls_certificate_import_flags
     GNUTLS_X509_CRT_LIST_SORT = 1 << 2
 }
 
-enum gnutls_x509_crt_flags
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
 {
-    GNUTLS_X509_CRT_FLAG_IGNORE_SANITY = 1
+    enum gnutls_x509_crt_flags
+    {
+        GNUTLS_X509_CRT_FLAG_IGNORE_SANITY = 1
+    }
 }
 
 enum gnutls_keyid_flags_t
@@ -177,7 +181,7 @@ alias gnutls_x509_crl_iter_t = gnutls_x509_crl_iter*;
 enum gnutls_certificate_verify_flags
 {
     GNUTLS_VERIFY_DISABLE_CA_SIGN = 1 << 0,
-    GNUTLS_VERIFY_DO_NOT_ALLOW_IP_MATCHES = 1 << 1,
+    GNUTLS_VERIFY_DO_NOT_ALLOW_IP_MATCHES = 1 << 1, /// Available from GnuTLS 3.6.0
     GNUTLS_VERIFY_DO_NOT_ALLOW_SAME = 1 << 2,
     GNUTLS_VERIFY_ALLOW_ANY_X509_V1_CA_CRT = 1 << 3,
     GNUTLS_VERIFY_ALLOW_SIGN_RSA_MD2 = 1 << 4,
@@ -190,8 +194,8 @@ enum gnutls_certificate_verify_flags
     GNUTLS_VERIFY_DO_NOT_ALLOW_UNSORTED_CHAIN = 1 << 11,
     GNUTLS_VERIFY_DO_NOT_ALLOW_WILDCARDS = 1 << 12,
     GNUTLS_VERIFY_USE_TLS1_RSA = 1 << 13,
-    GNUTLS_VERIFY_IGNORE_UNKNOWN_CRIT_EXTENSIONS = 1 << 14,
-    GNUTLS_VERIFY_ALLOW_SIGN_WITH_SHA1 = 1 << 15
+    GNUTLS_VERIFY_IGNORE_UNKNOWN_CRIT_EXTENSIONS = 1 << 14, /// Available from GnuTLS 3.6.0
+    GNUTLS_VERIFY_ALLOW_SIGN_WITH_SHA1 = 1 << 15 /// Available from GnuTLS 3.6.0
 }
 
 enum GNUTLS_VERIFY_ALLOW_BROKEN = gnutls_certificate_verify_flags.GNUTLS_VERIFY_ALLOW_SIGN_RSA_MD2 | gnutls_certificate_verify_flags.GNUTLS_VERIFY_ALLOW_SIGN_RSA_MD5;
@@ -331,7 +335,10 @@ version (BindGnuTLS_Static)
 
     int gnutls_x509_crt_init (gnutls_x509_crt_t* cert);
     void gnutls_x509_crt_deinit (gnutls_x509_crt_t cert);
-    void gnutls_x509_crt_set_flags (gnutls_x509_crt_t cert, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        void gnutls_x509_crt_set_flags (gnutls_x509_crt_t cert, uint flags);
+
     uint gnutls_x509_crt_equals (gnutls_x509_crt_t cert1, gnutls_x509_crt_t cert2);
     uint gnutls_x509_crt_equals2 (gnutls_x509_crt_t cert1, const(gnutls_datum_t)* der);
     int gnutls_x509_crt_import (gnutls_x509_crt_t cert, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t format);
@@ -344,18 +351,27 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crt_get_private_key_usage_period (gnutls_x509_crt_t cert, time_t* activation, time_t* expiration, uint* critical);
     int gnutls_x509_crt_get_issuer_dn (gnutls_x509_crt_t cert, char* buf, size_t* buf_size);
     int gnutls_x509_crt_get_issuer_dn2 (gnutls_x509_crt_t cert, gnutls_datum_t* dn);
-    int gnutls_x509_crt_get_issuer_dn3 (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+        int gnutls_x509_crt_get_issuer_dn3 (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
     int gnutls_x509_crt_get_issuer_dn_oid (gnutls_x509_crt_t cert, uint indx, void* oid, size_t* oid_size);
     int gnutls_x509_crt_get_issuer_dn_by_oid (gnutls_x509_crt_t cert, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* buf_size);
     int gnutls_x509_crt_get_dn (gnutls_x509_crt_t cert, char* buf, size_t* buf_size);
     int gnutls_x509_crt_get_dn2 (gnutls_x509_crt_t cert, gnutls_datum_t* dn);
-    int gnutls_x509_crt_get_dn3 (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+        int gnutls_x509_crt_get_dn3 (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
     int gnutls_x509_crt_get_dn_oid (gnutls_x509_crt_t cert, uint indx, void* oid, size_t* oid_size);
     int gnutls_x509_crt_get_dn_by_oid (gnutls_x509_crt_t cert, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* buf_size);
     uint gnutls_x509_crt_check_hostname (gnutls_x509_crt_t cert, const(char)* hostname);
     uint gnutls_x509_crt_check_hostname2 (gnutls_x509_crt_t cert, const(char)* hostname, uint flags);
     uint gnutls_x509_crt_check_email (gnutls_x509_crt_t cert, const(char)* email, uint flags);
-    uint gnutls_x509_crt_check_ip (gnutls_x509_crt_t cert, const(ubyte)* ip, uint ip_size, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        uint gnutls_x509_crt_check_ip (gnutls_x509_crt_t cert, const(ubyte)* ip, uint ip_size, uint flags);
+
     int gnutls_x509_crt_get_signature_algorithm (gnutls_x509_crt_t cert);
     int gnutls_x509_crt_get_signature (gnutls_x509_crt_t cert, char* sig, size_t* sizeof_sig);
     int gnutls_x509_crt_get_version (gnutls_x509_crt_t cert);
@@ -381,7 +397,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crt_set_name_constraints (gnutls_x509_crt_t crt, gnutls_x509_name_constraints_t nc, uint critical);
     int gnutls_x509_name_constraints_get_permitted (gnutls_x509_name_constraints_t nc, uint idx, uint* type, gnutls_datum_t* name);
     int gnutls_x509_name_constraints_get_excluded (gnutls_x509_name_constraints_t nc, uint idx, uint* type, gnutls_datum_t* name);
-    int gnutls_x509_cidr_to_rfc5280 (const(char)* cidr, gnutls_datum_t* cidr_rfc5280);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_4)
+        int gnutls_x509_cidr_to_rfc5280 (const(char)* cidr, gnutls_datum_t* cidr_rfc5280);
+
     int gnutls_x509_crt_get_crl_dist_points (gnutls_x509_crt_t cert, uint seq, void* ret, size_t* ret_size, uint* reason_flags, uint* critical);
     int gnutls_x509_crt_set_crl_dist_points2 (gnutls_x509_crt_t crt, gnutls_x509_subject_alt_name_t type, const(void)* data, uint data_size, uint reason_flags);
     int gnutls_x509_crt_set_crl_dist_points (gnutls_x509_crt_t crt, gnutls_x509_subject_alt_name_t type, const(void)* data_string, uint reason_flags);
@@ -391,13 +410,23 @@ version (BindGnuTLS_Static)
     time_t gnutls_x509_crt_get_activation_time (gnutls_x509_crt_t cert);
     time_t gnutls_x509_crt_get_expiration_time (gnutls_x509_crt_t cert);
     int gnutls_x509_crt_get_serial (gnutls_x509_crt_t cert, void* result, size_t* result_size);
-    int gnutls_x509_spki_init (gnutls_x509_spki_t* spki);
-    void gnutls_x509_spki_deinit (gnutls_x509_spki_t spki);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_x509_spki_init (gnutls_x509_spki_t* spki);
+        void gnutls_x509_spki_deinit (gnutls_x509_spki_t spki);
+    }
+
     int gnutls_x509_spki_get_rsa_pss_params (gnutls_x509_spki_t spki, gnutls_digest_algorithm_t* dig, uint* salt_size);
     void gnutls_x509_spki_set_rsa_pss_params (gnutls_x509_spki_t spki, gnutls_digest_algorithm_t dig, uint salt_size);
     int gnutls_x509_crt_get_pk_algorithm (gnutls_x509_crt_t cert, uint* bits);
-    int gnutls_x509_crt_set_spki (gnutls_x509_crt_t crt, const gnutls_x509_spki_t spki, uint flags);
-    int gnutls_x509_crt_get_spki (gnutls_x509_crt_t cert, gnutls_x509_spki_t spki, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_x509_crt_set_spki (gnutls_x509_crt_t crt, const gnutls_x509_spki_t spki, uint flags);
+        int gnutls_x509_crt_get_spki (gnutls_x509_crt_t cert, gnutls_x509_spki_t spki, uint flags);
+    }
+
     int gnutls_x509_crt_get_pk_rsa_raw (gnutls_x509_crt_t crt, gnutls_datum_t* m, gnutls_datum_t* e);
     int gnutls_x509_crt_get_pk_dsa_raw (gnutls_x509_crt_t crt, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y);
     int gnutls_x509_crt_get_pk_ecc_raw (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y);
@@ -413,14 +442,24 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crt_get_key_usage (gnutls_x509_crt_t cert, uint* key_usage, uint* critical);
     int gnutls_x509_crt_set_key_usage (gnutls_x509_crt_t crt, uint usage);
     int gnutls_x509_crt_set_authority_info_access (gnutls_x509_crt_t crt, int what, gnutls_datum_t* data);
-    int gnutls_x509_crt_get_inhibit_anypolicy (gnutls_x509_crt_t cert, uint* skipcerts, uint* critical);
-    int gnutls_x509_crt_set_inhibit_anypolicy (gnutls_x509_crt_t crt, uint skipcerts);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_x509_crt_get_inhibit_anypolicy (gnutls_x509_crt_t cert, uint* skipcerts, uint* critical);
+        int gnutls_x509_crt_set_inhibit_anypolicy (gnutls_x509_crt_t crt, uint skipcerts);
+    }
+
     int gnutls_x509_crt_get_proxy (gnutls_x509_crt_t cert, uint* critical, int* pathlen, char** policyLanguage, char** policy, size_t* sizeof_policy);
-    int gnutls_x509_tlsfeatures_init (gnutls_x509_tlsfeatures_t* features);
-    void gnutls_x509_tlsfeatures_deinit (gnutls_x509_tlsfeatures_t);
-    int gnutls_x509_tlsfeatures_get (gnutls_x509_tlsfeatures_t f, uint idx, uint* feature);
-    int gnutls_x509_crt_set_tlsfeatures (gnutls_x509_crt_t crt, gnutls_x509_tlsfeatures_t features);
-    int gnutls_x509_crt_get_tlsfeatures (gnutls_x509_crt_t cert, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+    {
+        int gnutls_x509_tlsfeatures_init (gnutls_x509_tlsfeatures_t* features);
+        void gnutls_x509_tlsfeatures_deinit (gnutls_x509_tlsfeatures_t);
+        int gnutls_x509_tlsfeatures_get (gnutls_x509_tlsfeatures_t f, uint idx, uint* feature);
+        int gnutls_x509_crt_set_tlsfeatures (gnutls_x509_crt_t crt, gnutls_x509_tlsfeatures_t features);
+        int gnutls_x509_crt_get_tlsfeatures (gnutls_x509_crt_t cert, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
+    }
+
     uint gnutls_x509_tlsfeatures_check_crt (gnutls_x509_tlsfeatures_t feat, gnutls_x509_crt_t crt);
     void gnutls_x509_policy_release (gnutls_x509_policy_st* policy);
     int gnutls_x509_crt_get_policy (gnutls_x509_crt_t crt, uint indx, gnutls_x509_policy_st* policy, uint* critical);
@@ -463,15 +502,23 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crt_get_raw_issuer_dn (gnutls_x509_crt_t cert, gnutls_datum_t* start);
     int gnutls_x509_crt_get_raw_dn (gnutls_x509_crt_t cert, gnutls_datum_t* start);
     int gnutls_x509_rdn_get (const(gnutls_datum_t)* idn, char* buf, size_t* sizeof_buf);
-    int gnutls_x509_rdn_get2 (const(gnutls_datum_t)* idn, gnutls_datum_t* str, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+        int gnutls_x509_rdn_get2 (const(gnutls_datum_t)* idn, gnutls_datum_t* str, uint flags);
+
     int gnutls_x509_rdn_get_oid (const(gnutls_datum_t)* idn, uint indx, void* buf, size_t* sizeof_buf);
     int gnutls_x509_rdn_get_by_oid (const(gnutls_datum_t)* idn, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* sizeof_buf);
     int gnutls_x509_crt_get_subject (gnutls_x509_crt_t cert, gnutls_x509_dn_t* dn);
     int gnutls_x509_crt_get_issuer (gnutls_x509_crt_t cert, gnutls_x509_dn_t* dn);
     int gnutls_x509_dn_get_rdn_ava (gnutls_x509_dn_t dn, int irdn, int iava, gnutls_x509_ava_st* ava);
     int gnutls_x509_dn_get_str (gnutls_x509_dn_t dn, gnutls_datum_t* str);
-    int gnutls_x509_dn_get_str2 (gnutls_x509_dn_t dn, gnutls_datum_t* str, uint flags);
-    int gnutls_x509_dn_set_str (gnutls_x509_dn_t dn, const(char)* str, const(char*)* err);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+        int gnutls_x509_dn_get_str2 (gnutls_x509_dn_t dn, gnutls_datum_t* str, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+        int gnutls_x509_dn_set_str (gnutls_x509_dn_t dn, const(char)* str, const(char*)* err);
+
     int gnutls_x509_dn_init (gnutls_x509_dn_t* dn);
     int gnutls_x509_dn_import (gnutls_x509_dn_t dn, const(gnutls_datum_t)* data);
     int gnutls_x509_dn_export (gnutls_x509_dn_t dn, gnutls_x509_crt_fmt_t format, void* output_data, size_t* output_data_size);
@@ -485,7 +532,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crl_get_raw_issuer_dn (gnutls_x509_crl_t crl, gnutls_datum_t* dn);
     int gnutls_x509_crl_get_issuer_dn (gnutls_x509_crl_t crl, char* buf, size_t* sizeof_buf);
     int gnutls_x509_crl_get_issuer_dn2 (gnutls_x509_crl_t crl, gnutls_datum_t* dn);
-    int gnutls_x509_crl_get_issuer_dn3 (gnutls_x509_crl_t crl, gnutls_datum_t* dn, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+        int gnutls_x509_crl_get_issuer_dn3 (gnutls_x509_crl_t crl, gnutls_datum_t* dn, uint flags);
+
     int gnutls_x509_crl_get_issuer_dn_by_oid (gnutls_x509_crl_t crl, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* sizeof_buf);
     int gnutls_x509_crl_get_dn_oid (gnutls_x509_crl_t crl, uint indx, void* oid, size_t* sizeof_oid);
     int gnutls_x509_crl_get_signature_algorithm (gnutls_x509_crl_t crl);
@@ -526,7 +576,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crt_get_fingerprint (gnutls_x509_crt_t cert, gnutls_digest_algorithm_t algo, void* buf, size_t* buf_size);
     int gnutls_x509_crt_get_key_purpose_oid (gnutls_x509_crt_t cert, uint indx, void* oid, size_t* oid_size, uint* critical);
     int gnutls_x509_crt_set_key_purpose_oid (gnutls_x509_crt_t cert, const(void)* oid, uint critical);
-    uint gnutls_x509_crt_check_key_purpose (gnutls_x509_crt_t cert, const(char)* purpose, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+        uint gnutls_x509_crt_check_key_purpose (gnutls_x509_crt_t cert, const(char)* purpose, uint flags);
+
     const(char)* gnutls_pkcs_schema_get_name (uint schema);
     const(char)* gnutls_pkcs_schema_get_oid (uint schema);
     int gnutls_x509_privkey_init (gnutls_x509_privkey_t* key);
@@ -548,8 +601,13 @@ version (BindGnuTLS_Static)
     int gnutls_x509_privkey_import_dsa_raw (gnutls_x509_privkey_t key, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* g, const(gnutls_datum_t)* y, const(gnutls_datum_t)* x);
     int gnutls_x509_privkey_get_pk_algorithm (gnutls_x509_privkey_t key);
     int gnutls_x509_privkey_get_pk_algorithm2 (gnutls_x509_privkey_t key, uint* bits);
-    int gnutls_x509_privkey_get_spki (gnutls_x509_privkey_t key, gnutls_x509_spki_t spki, uint flags);
-    int gnutls_x509_privkey_set_spki (gnutls_x509_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_x509_privkey_get_spki (gnutls_x509_privkey_t key, gnutls_x509_spki_t spki, uint flags);
+        int gnutls_x509_privkey_set_spki (gnutls_x509_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+    }
+
     int gnutls_x509_privkey_get_key_id (gnutls_x509_privkey_t key, uint flags, ubyte* output_data, size_t* output_data_size);
     int gnutls_x509_privkey_generate (gnutls_x509_privkey_t key, gnutls_pk_algorithm_t algo, uint bits, uint flags);
     void gnutls_x509_privkey_set_flags (gnutls_x509_privkey_t key, uint flags);
@@ -576,7 +634,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crq_get_private_key_usage_period (gnutls_x509_crq_t cert, time_t* activation, time_t* expiration, uint* critical);
     int gnutls_x509_crq_get_dn (gnutls_x509_crq_t crq, char* buf, size_t* sizeof_buf);
     int gnutls_x509_crq_get_dn2 (gnutls_x509_crq_t crq, gnutls_datum_t* dn);
-    int gnutls_x509_crq_get_dn3 (gnutls_x509_crq_t crq, gnutls_datum_t* dn, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+        int gnutls_x509_crq_get_dn3 (gnutls_x509_crq_t crq, gnutls_datum_t* dn, uint flags);
+
     int gnutls_x509_crq_get_dn_oid (gnutls_x509_crq_t crq, uint indx, void* oid, size_t* sizeof_oid);
     int gnutls_x509_crq_get_dn_by_oid (gnutls_x509_crq_t crq, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* sizeof_buf);
     int gnutls_x509_crq_set_dn (gnutls_x509_crq_t crq, const(char)* dn, const(char*)* err);
@@ -584,7 +645,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crq_set_version (gnutls_x509_crq_t crq, uint version_);
     int gnutls_x509_crq_get_version (gnutls_x509_crq_t crq);
     int gnutls_x509_crq_set_key (gnutls_x509_crq_t crq, gnutls_x509_privkey_t key);
-    int gnutls_x509_crq_set_extension_by_oid (gnutls_x509_crq_t crq, const(char)* oid, const(void)* buf, size_t sizeof_buf, uint critical);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+        int gnutls_x509_crq_set_extension_by_oid (gnutls_x509_crq_t crq, const(char)* oid, const(void)* buf, size_t sizeof_buf, uint critical);
+
     int gnutls_x509_crq_set_challenge_password (gnutls_x509_crq_t crq, const(char)* pass);
     int gnutls_x509_crq_get_challenge_password (gnutls_x509_crq_t crq, char* pass, size_t* sizeof_pass);
     int gnutls_x509_crq_set_attribute_by_oid (gnutls_x509_crq_t crq, const(char)* oid, void* buf, size_t sizeof_buf);
@@ -593,7 +657,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crq_export2 (gnutls_x509_crq_t crq, gnutls_x509_crt_fmt_t format, gnutls_datum_t* out_);
     int gnutls_x509_crt_set_crq (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq);
     int gnutls_x509_crt_set_crq_extensions (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq);
-    int gnutls_x509_crt_set_crq_extension_by_oid (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq, const(char)* oid, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        int gnutls_x509_crt_set_crq_extension_by_oid (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq, const(char)* oid, uint flags);
+
     int gnutls_x509_crq_set_private_key_usage_period (gnutls_x509_crq_t crq, time_t activation, time_t expiration);
     int gnutls_x509_crq_set_key_rsa_raw (gnutls_x509_crq_t crq, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e);
     int gnutls_x509_crq_set_subject_alt_name (gnutls_x509_crq_t crq, gnutls_x509_subject_alt_name_t nt, const(void)* data, uint data_size, uint flags);
@@ -608,8 +675,13 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crq_get_attribute_data (gnutls_x509_crq_t crq, uint indx, void* data, size_t* sizeof_data);
     int gnutls_x509_crq_get_attribute_info (gnutls_x509_crq_t crq, uint indx, void* oid, size_t* sizeof_oid);
     int gnutls_x509_crq_get_pk_algorithm (gnutls_x509_crq_t crq, uint* bits);
-    int gnutls_x509_crq_get_spki (gnutls_x509_crq_t crq, gnutls_x509_spki_t spki, uint flags);
-    int gnutls_x509_crq_set_spki (gnutls_x509_crq_t crq, const gnutls_x509_spki_t spki, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_x509_crq_get_spki (gnutls_x509_crq_t crq, gnutls_x509_spki_t spki, uint flags);
+        int gnutls_x509_crq_set_spki (gnutls_x509_crq_t crq, const gnutls_x509_spki_t spki, uint flags);
+    }
+
     int gnutls_x509_crq_get_signature_oid (gnutls_x509_crq_t crq, char* oid, size_t* oid_size);
     int gnutls_x509_crq_get_pk_oid (gnutls_x509_crq_t crq, char* oid, size_t* oid_size);
     int gnutls_x509_crq_get_key_id (gnutls_x509_crq_t crq, uint flags, ubyte* output_data, size_t* output_data_size);
@@ -619,8 +691,13 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crq_get_subject_alt_name (gnutls_x509_crq_t crq, uint seq, void* ret, size_t* ret_size, uint* ret_type, uint* critical);
     int gnutls_x509_crq_get_subject_alt_othername_oid (gnutls_x509_crq_t crq, uint seq, void* ret, size_t* ret_size);
     int gnutls_x509_crq_get_extension_by_oid (gnutls_x509_crq_t crq, const(char)* oid, uint indx, void* buf, size_t* sizeof_buf, uint* critical);
-    int gnutls_x509_crq_get_tlsfeatures (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
-    int gnutls_x509_crq_set_tlsfeatures (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+    {
+        int gnutls_x509_crq_get_tlsfeatures (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
+        int gnutls_x509_crq_set_tlsfeatures (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features);
+    }
+
     int gnutls_x509_crt_get_extension_by_oid2 (gnutls_x509_crt_t cert, const(char)* oid, uint indx, gnutls_datum_t* output, uint* critical);
     int gnutls_x509_trust_list_init (gnutls_x509_trust_list_t* list, uint size);
     void gnutls_x509_trust_list_deinit (gnutls_x509_trust_list_t list, uint all);
@@ -653,7 +730,10 @@ else
     {
         alias pgnutls_x509_crt_init = int function (gnutls_x509_crt_t* cert);
         alias pgnutls_x509_crt_deinit = void function (gnutls_x509_crt_t cert);
-        alias pgnutls_x509_crt_set_flags = void function (gnutls_x509_crt_t cert, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            alias pgnutls_x509_crt_set_flags = void function (gnutls_x509_crt_t cert, uint flags);
+
         alias pgnutls_x509_crt_equals = uint function (gnutls_x509_crt_t cert1, gnutls_x509_crt_t cert2);
         alias pgnutls_x509_crt_equals2 = uint function (gnutls_x509_crt_t cert1, const(gnutls_datum_t)* der);
         alias pgnutls_x509_crt_import = int function (gnutls_x509_crt_t cert, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t format);
@@ -666,18 +746,27 @@ else
         alias pgnutls_x509_crt_get_private_key_usage_period = int function (gnutls_x509_crt_t cert, time_t* activation, time_t* expiration, uint* critical);
         alias pgnutls_x509_crt_get_issuer_dn = int function (gnutls_x509_crt_t cert, char* buf, size_t* buf_size);
         alias pgnutls_x509_crt_get_issuer_dn2 = int function (gnutls_x509_crt_t cert, gnutls_datum_t* dn);
-        alias pgnutls_x509_crt_get_issuer_dn3 = int function (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            alias pgnutls_x509_crt_get_issuer_dn3 = int function (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
         alias pgnutls_x509_crt_get_issuer_dn_oid = int function (gnutls_x509_crt_t cert, uint indx, void* oid, size_t* oid_size);
         alias pgnutls_x509_crt_get_issuer_dn_by_oid = int function (gnutls_x509_crt_t cert, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* buf_size);
         alias pgnutls_x509_crt_get_dn = int function (gnutls_x509_crt_t cert, char* buf, size_t* buf_size);
         alias pgnutls_x509_crt_get_dn2 = int function (gnutls_x509_crt_t cert, gnutls_datum_t* dn);
-        alias pgnutls_x509_crt_get_dn3 = int function (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            alias pgnutls_x509_crt_get_dn3 = int function (gnutls_x509_crt_t cert, gnutls_datum_t* dn, uint flags);
+
         alias pgnutls_x509_crt_get_dn_oid = int function (gnutls_x509_crt_t cert, uint indx, void* oid, size_t* oid_size);
         alias pgnutls_x509_crt_get_dn_by_oid = int function (gnutls_x509_crt_t cert, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* buf_size);
         alias pgnutls_x509_crt_check_hostname = uint function (gnutls_x509_crt_t cert, const(char)* hostname);
         alias pgnutls_x509_crt_check_hostname2 = uint function (gnutls_x509_crt_t cert, const(char)* hostname, uint flags);
         alias pgnutls_x509_crt_check_email = uint function (gnutls_x509_crt_t cert, const(char)* email, uint flags);
-        alias pgnutls_x509_crt_check_ip = uint function (gnutls_x509_crt_t cert, const(ubyte)* ip, uint ip_size, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            alias pgnutls_x509_crt_check_ip = uint function (gnutls_x509_crt_t cert, const(ubyte)* ip, uint ip_size, uint flags);
+
         alias pgnutls_x509_crt_get_signature_algorithm = int function (gnutls_x509_crt_t cert);
         alias pgnutls_x509_crt_get_signature = int function (gnutls_x509_crt_t cert, char* sig, size_t* sizeof_sig);
         alias pgnutls_x509_crt_get_version = int function (gnutls_x509_crt_t cert);
@@ -703,7 +792,10 @@ else
         alias pgnutls_x509_crt_set_name_constraints = int function (gnutls_x509_crt_t crt, gnutls_x509_name_constraints_t nc, uint critical);
         alias pgnutls_x509_name_constraints_get_permitted = int function (gnutls_x509_name_constraints_t nc, uint idx, uint* type, gnutls_datum_t* name);
         alias pgnutls_x509_name_constraints_get_excluded = int function (gnutls_x509_name_constraints_t nc, uint idx, uint* type, gnutls_datum_t* name);
-        alias pgnutls_x509_cidr_to_rfc5280 = int function (const(char)* cidr, gnutls_datum_t* cidr_rfc5280);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_4)
+            alias pgnutls_x509_cidr_to_rfc5280 = int function (const(char)* cidr, gnutls_datum_t* cidr_rfc5280);
+
         alias pgnutls_x509_crt_get_crl_dist_points = int function (gnutls_x509_crt_t cert, uint seq, void* ret, size_t* ret_size, uint* reason_flags, uint* critical);
         alias pgnutls_x509_crt_set_crl_dist_points2 = int function (gnutls_x509_crt_t crt, gnutls_x509_subject_alt_name_t type, const(void)* data, uint data_size, uint reason_flags);
         alias pgnutls_x509_crt_set_crl_dist_points = int function (gnutls_x509_crt_t crt, gnutls_x509_subject_alt_name_t type, const(void)* data_string, uint reason_flags);
@@ -713,13 +805,23 @@ else
         alias pgnutls_x509_crt_get_activation_time = time_t function (gnutls_x509_crt_t cert);
         alias pgnutls_x509_crt_get_expiration_time = time_t function (gnutls_x509_crt_t cert);
         alias pgnutls_x509_crt_get_serial = int function (gnutls_x509_crt_t cert, void* result, size_t* result_size);
-        alias pgnutls_x509_spki_init = int function (gnutls_x509_spki_t* spki);
-        alias pgnutls_x509_spki_deinit = void function (gnutls_x509_spki_t spki);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_x509_spki_init = int function (gnutls_x509_spki_t* spki);
+            alias pgnutls_x509_spki_deinit = void function (gnutls_x509_spki_t spki);
+        }
+
         alias pgnutls_x509_spki_get_rsa_pss_params = int function (gnutls_x509_spki_t spki, gnutls_digest_algorithm_t* dig, uint* salt_size);
         alias pgnutls_x509_spki_set_rsa_pss_params = void function (gnutls_x509_spki_t spki, gnutls_digest_algorithm_t dig, uint salt_size);
         alias pgnutls_x509_crt_get_pk_algorithm = int function (gnutls_x509_crt_t cert, uint* bits);
-        alias pgnutls_x509_crt_set_spki = int function (gnutls_x509_crt_t crt, const gnutls_x509_spki_t spki, uint flags);
-        alias pgnutls_x509_crt_get_spki = int function (gnutls_x509_crt_t cert, gnutls_x509_spki_t spki, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_x509_crt_set_spki = int function (gnutls_x509_crt_t crt, const gnutls_x509_spki_t spki, uint flags);
+            alias pgnutls_x509_crt_get_spki = int function (gnutls_x509_crt_t cert, gnutls_x509_spki_t spki, uint flags);
+        }
+
         alias pgnutls_x509_crt_get_pk_rsa_raw = int function (gnutls_x509_crt_t crt, gnutls_datum_t* m, gnutls_datum_t* e);
         alias pgnutls_x509_crt_get_pk_dsa_raw = int function (gnutls_x509_crt_t crt, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y);
         alias pgnutls_x509_crt_get_pk_ecc_raw = int function (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y);
@@ -735,14 +837,24 @@ else
         alias pgnutls_x509_crt_get_key_usage = int function (gnutls_x509_crt_t cert, uint* key_usage, uint* critical);
         alias pgnutls_x509_crt_set_key_usage = int function (gnutls_x509_crt_t crt, uint usage);
         alias pgnutls_x509_crt_set_authority_info_access = int function (gnutls_x509_crt_t crt, int what, gnutls_datum_t* data);
-        alias pgnutls_x509_crt_get_inhibit_anypolicy = int function (gnutls_x509_crt_t cert, uint* skipcerts, uint* critical);
-        alias pgnutls_x509_crt_set_inhibit_anypolicy = int function (gnutls_x509_crt_t crt, uint skipcerts);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_x509_crt_get_inhibit_anypolicy = int function (gnutls_x509_crt_t cert, uint* skipcerts, uint* critical);
+            alias pgnutls_x509_crt_set_inhibit_anypolicy = int function (gnutls_x509_crt_t crt, uint skipcerts);
+        }
+
         alias pgnutls_x509_crt_get_proxy = int function (gnutls_x509_crt_t cert, uint* critical, int* pathlen, char** policyLanguage, char** policy, size_t* sizeof_policy);
-        alias pgnutls_x509_tlsfeatures_init = int function (gnutls_x509_tlsfeatures_t* features);
-        alias pgnutls_x509_tlsfeatures_deinit = void function (gnutls_x509_tlsfeatures_t);
-        alias pgnutls_x509_tlsfeatures_get = int function (gnutls_x509_tlsfeatures_t f, uint idx, uint* feature);
-        alias pgnutls_x509_crt_set_tlsfeatures = int function (gnutls_x509_crt_t crt, gnutls_x509_tlsfeatures_t features);
-        alias pgnutls_x509_crt_get_tlsfeatures = int function (gnutls_x509_crt_t cert, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            alias pgnutls_x509_tlsfeatures_init = int function (gnutls_x509_tlsfeatures_t* features);
+            alias pgnutls_x509_tlsfeatures_deinit = void function (gnutls_x509_tlsfeatures_t);
+            alias pgnutls_x509_tlsfeatures_get = int function (gnutls_x509_tlsfeatures_t f, uint idx, uint* feature);
+            alias pgnutls_x509_crt_set_tlsfeatures = int function (gnutls_x509_crt_t crt, gnutls_x509_tlsfeatures_t features);
+            alias pgnutls_x509_crt_get_tlsfeatures = int function (gnutls_x509_crt_t cert, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
+        }
+
         alias pgnutls_x509_tlsfeatures_check_crt = uint function (gnutls_x509_tlsfeatures_t feat, gnutls_x509_crt_t crt);
         alias pgnutls_x509_policy_release = void function (gnutls_x509_policy_st* policy);
         alias pgnutls_x509_crt_get_policy = int function (gnutls_x509_crt_t crt, uint indx, gnutls_x509_policy_st* policy, uint* critical);
@@ -785,15 +897,23 @@ else
         alias pgnutls_x509_crt_get_raw_issuer_dn = int function (gnutls_x509_crt_t cert, gnutls_datum_t* start);
         alias pgnutls_x509_crt_get_raw_dn = int function (gnutls_x509_crt_t cert, gnutls_datum_t* start);
         alias pgnutls_x509_rdn_get = int function (const(gnutls_datum_t)* idn, char* buf, size_t* sizeof_buf);
-        alias pgnutls_x509_rdn_get2 = int function (const(gnutls_datum_t)* idn, gnutls_datum_t* str, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            alias pgnutls_x509_rdn_get2 = int function (const(gnutls_datum_t)* idn, gnutls_datum_t* str, uint flags);
+
         alias pgnutls_x509_rdn_get_oid = int function (const(gnutls_datum_t)* idn, uint indx, void* buf, size_t* sizeof_buf);
         alias pgnutls_x509_rdn_get_by_oid = int function (const(gnutls_datum_t)* idn, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* sizeof_buf);
         alias pgnutls_x509_crt_get_subject = int function (gnutls_x509_crt_t cert, gnutls_x509_dn_t* dn);
         alias pgnutls_x509_crt_get_issuer = int function (gnutls_x509_crt_t cert, gnutls_x509_dn_t* dn);
         alias pgnutls_x509_dn_get_rdn_ava = int function (gnutls_x509_dn_t dn, int irdn, int iava, gnutls_x509_ava_st* ava);
         alias pgnutls_x509_dn_get_str = int function (gnutls_x509_dn_t dn, gnutls_datum_t* str);
-        alias pgnutls_x509_dn_get_str2 = int function (gnutls_x509_dn_t dn, gnutls_datum_t* str, uint flags);
-        alias pgnutls_x509_dn_set_str = int function (gnutls_x509_dn_t dn, const(char)* str, const(char*)* err);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            alias pgnutls_x509_dn_get_str2 = int function (gnutls_x509_dn_t dn, gnutls_datum_t* str, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+            alias pgnutls_x509_dn_set_str = int function (gnutls_x509_dn_t dn, const(char)* str, const(char*)* err);
+
         alias pgnutls_x509_dn_init = int function (gnutls_x509_dn_t* dn);
         alias pgnutls_x509_dn_import = int function (gnutls_x509_dn_t dn, const(gnutls_datum_t)* data);
         alias pgnutls_x509_dn_export = int function (gnutls_x509_dn_t dn, gnutls_x509_crt_fmt_t format, void* output_data, size_t* output_data_size);
@@ -807,7 +927,10 @@ else
         alias pgnutls_x509_crl_get_raw_issuer_dn = int function (gnutls_x509_crl_t crl, gnutls_datum_t* dn);
         alias pgnutls_x509_crl_get_issuer_dn = int function (gnutls_x509_crl_t crl, char* buf, size_t* sizeof_buf);
         alias pgnutls_x509_crl_get_issuer_dn2 = int function (gnutls_x509_crl_t crl, gnutls_datum_t* dn);
-        alias pgnutls_x509_crl_get_issuer_dn3 = int function (gnutls_x509_crl_t crl, gnutls_datum_t* dn, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            alias pgnutls_x509_crl_get_issuer_dn3 = int function (gnutls_x509_crl_t crl, gnutls_datum_t* dn, uint flags);
+
         alias pgnutls_x509_crl_get_issuer_dn_by_oid = int function (gnutls_x509_crl_t crl, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* sizeof_buf);
         alias pgnutls_x509_crl_get_dn_oid = int function (gnutls_x509_crl_t crl, uint indx, void* oid, size_t* sizeof_oid);
         alias pgnutls_x509_crl_get_signature_algorithm = int function (gnutls_x509_crl_t crl);
@@ -848,7 +971,10 @@ else
         alias pgnutls_x509_crt_get_fingerprint = int function (gnutls_x509_crt_t cert, gnutls_digest_algorithm_t algo, void* buf, size_t* buf_size);
         alias pgnutls_x509_crt_get_key_purpose_oid = int function (gnutls_x509_crt_t cert, uint indx, void* oid, size_t* oid_size, uint* critical);
         alias pgnutls_x509_crt_set_key_purpose_oid = int function (gnutls_x509_crt_t cert, const(void)* oid, uint critical);
-        alias pgnutls_x509_crt_check_key_purpose = uint function (gnutls_x509_crt_t cert, const(char)* purpose, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+            alias pgnutls_x509_crt_check_key_purpose = uint function (gnutls_x509_crt_t cert, const(char)* purpose, uint flags);
+
         alias pgnutls_pkcs_schema_get_name = const(char)* function (uint schema);
         alias pgnutls_pkcs_schema_get_oid = const(char)* function (uint schema);
         alias pgnutls_x509_privkey_init = int function (gnutls_x509_privkey_t* key);
@@ -870,8 +996,13 @@ else
         alias pgnutls_x509_privkey_import_dsa_raw = int function (gnutls_x509_privkey_t key, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* g, const(gnutls_datum_t)* y, const(gnutls_datum_t)* x);
         alias pgnutls_x509_privkey_get_pk_algorithm = int function (gnutls_x509_privkey_t key);
         alias pgnutls_x509_privkey_get_pk_algorithm2 = int function (gnutls_x509_privkey_t key, uint* bits);
-        alias pgnutls_x509_privkey_get_spki = int function (gnutls_x509_privkey_t key, gnutls_x509_spki_t spki, uint flags);
-        alias pgnutls_x509_privkey_set_spki = int function (gnutls_x509_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_x509_privkey_get_spki = int function (gnutls_x509_privkey_t key, gnutls_x509_spki_t spki, uint flags);
+            alias pgnutls_x509_privkey_set_spki = int function (gnutls_x509_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+        }
+
         alias pgnutls_x509_privkey_get_key_id = int function (gnutls_x509_privkey_t key, uint flags, ubyte* output_data, size_t* output_data_size);
         alias pgnutls_x509_privkey_generate = int function (gnutls_x509_privkey_t key, gnutls_pk_algorithm_t algo, uint bits, uint flags);
         alias pgnutls_x509_privkey_set_flags = void function (gnutls_x509_privkey_t key, uint flags);
@@ -898,7 +1029,10 @@ else
         alias pgnutls_x509_crq_get_private_key_usage_period = int function (gnutls_x509_crq_t cert, time_t* activation, time_t* expiration, uint* critical);
         alias pgnutls_x509_crq_get_dn = int function (gnutls_x509_crq_t crq, char* buf, size_t* sizeof_buf);
         alias pgnutls_x509_crq_get_dn2 = int function (gnutls_x509_crq_t crq, gnutls_datum_t* dn);
-        alias pgnutls_x509_crq_get_dn3 = int function (gnutls_x509_crq_t crq, gnutls_datum_t* dn, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            alias pgnutls_x509_crq_get_dn3 = int function (gnutls_x509_crq_t crq, gnutls_datum_t* dn, uint flags);
+
         alias pgnutls_x509_crq_get_dn_oid = int function (gnutls_x509_crq_t crq, uint indx, void* oid, size_t* sizeof_oid);
         alias pgnutls_x509_crq_get_dn_by_oid = int function (gnutls_x509_crq_t crq, const(char)* oid, uint indx, uint raw_flag, void* buf, size_t* sizeof_buf);
         alias pgnutls_x509_crq_set_dn = int function (gnutls_x509_crq_t crq, const(char)* dn, const(char*)* err);
@@ -906,7 +1040,10 @@ else
         alias pgnutls_x509_crq_set_version = int function (gnutls_x509_crq_t crq, uint version_);
         alias pgnutls_x509_crq_get_version = int function (gnutls_x509_crq_t crq);
         alias pgnutls_x509_crq_set_key = int function (gnutls_x509_crq_t crq, gnutls_x509_privkey_t key);
-        alias pgnutls_x509_crq_set_extension_by_oid = int function (gnutls_x509_crq_t crq, const(char)* oid, const(void)* buf, size_t sizeof_buf, uint critical);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+            alias pgnutls_x509_crq_set_extension_by_oid = int function (gnutls_x509_crq_t crq, const(char)* oid, const(void)* buf, size_t sizeof_buf, uint critical);
+
         alias pgnutls_x509_crq_set_challenge_password = int function (gnutls_x509_crq_t crq, const(char)* pass);
         alias pgnutls_x509_crq_get_challenge_password = int function (gnutls_x509_crq_t crq, char* pass, size_t* sizeof_pass);
         alias pgnutls_x509_crq_set_attribute_by_oid = int function (gnutls_x509_crq_t crq, const(char)* oid, void* buf, size_t sizeof_buf);
@@ -915,7 +1052,10 @@ else
         alias pgnutls_x509_crq_export2 = int function (gnutls_x509_crq_t crq, gnutls_x509_crt_fmt_t format, gnutls_datum_t* out_);
         alias pgnutls_x509_crt_set_crq = int function (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq);
         alias pgnutls_x509_crt_set_crq_extensions = int function (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq);
-        alias pgnutls_x509_crt_set_crq_extension_by_oid = int function (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq, const(char)* oid, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+            alias pgnutls_x509_crt_set_crq_extension_by_oid = int function (gnutls_x509_crt_t crt, gnutls_x509_crq_t crq, const(char)* oid, uint flags);
+
         alias pgnutls_x509_crq_set_private_key_usage_period = int function (gnutls_x509_crq_t crq, time_t activation, time_t expiration);
         alias pgnutls_x509_crq_set_key_rsa_raw = int function (gnutls_x509_crq_t crq, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e);
         alias pgnutls_x509_crq_set_subject_alt_name = int function (gnutls_x509_crq_t crq, gnutls_x509_subject_alt_name_t nt, const(void)* data, uint data_size, uint flags);
@@ -930,8 +1070,13 @@ else
         alias pgnutls_x509_crq_get_attribute_data = int function (gnutls_x509_crq_t crq, uint indx, void* data, size_t* sizeof_data);
         alias pgnutls_x509_crq_get_attribute_info = int function (gnutls_x509_crq_t crq, uint indx, void* oid, size_t* sizeof_oid);
         alias pgnutls_x509_crq_get_pk_algorithm = int function (gnutls_x509_crq_t crq, uint* bits);
-        alias pgnutls_x509_crq_get_spki = int function (gnutls_x509_crq_t crq, gnutls_x509_spki_t spki, uint flags);
-        alias pgnutls_x509_crq_set_spki = int function (gnutls_x509_crq_t crq, const gnutls_x509_spki_t spki, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_x509_crq_get_spki = int function (gnutls_x509_crq_t crq, gnutls_x509_spki_t spki, uint flags);
+            alias pgnutls_x509_crq_set_spki = int function (gnutls_x509_crq_t crq, const gnutls_x509_spki_t spki, uint flags);
+        }
+
         alias pgnutls_x509_crq_get_signature_oid = int function (gnutls_x509_crq_t crq, char* oid, size_t* oid_size);
         alias pgnutls_x509_crq_get_pk_oid = int function (gnutls_x509_crq_t crq, char* oid, size_t* oid_size);
         alias pgnutls_x509_crq_get_key_id = int function (gnutls_x509_crq_t crq, uint flags, ubyte* output_data, size_t* output_data_size);
@@ -941,8 +1086,13 @@ else
         alias pgnutls_x509_crq_get_subject_alt_name = int function (gnutls_x509_crq_t crq, uint seq, void* ret, size_t* ret_size, uint* ret_type, uint* critical);
         alias pgnutls_x509_crq_get_subject_alt_othername_oid = int function (gnutls_x509_crq_t crq, uint seq, void* ret, size_t* ret_size);
         alias pgnutls_x509_crq_get_extension_by_oid = int function (gnutls_x509_crq_t crq, const(char)* oid, uint indx, void* buf, size_t* sizeof_buf, uint* critical);
-        alias pgnutls_x509_crq_get_tlsfeatures = int function (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
-        alias pgnutls_x509_crq_set_tlsfeatures = int function (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            alias pgnutls_x509_crq_get_tlsfeatures = int function (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features, uint flags, uint* critical);
+            alias pgnutls_x509_crq_set_tlsfeatures = int function (gnutls_x509_crq_t crq, gnutls_x509_tlsfeatures_t features);
+        }
+
         alias pgnutls_x509_crt_get_extension_by_oid2 = int function (gnutls_x509_crt_t cert, const(char)* oid, uint indx, gnutls_datum_t* output, uint* critical);
         alias pgnutls_x509_trust_list_init = int function (gnutls_x509_trust_list_t* list, uint size);
         alias pgnutls_x509_trust_list_deinit = void function (gnutls_x509_trust_list_t list, uint all);
@@ -974,7 +1124,10 @@ else
     {
         pgnutls_x509_crt_init gnutls_x509_crt_init;
         pgnutls_x509_crt_deinit gnutls_x509_crt_deinit;
-        pgnutls_x509_crt_set_flags gnutls_x509_crt_set_flags;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            pgnutls_x509_crt_set_flags gnutls_x509_crt_set_flags;
+
         pgnutls_x509_crt_equals gnutls_x509_crt_equals;
         pgnutls_x509_crt_equals2 gnutls_x509_crt_equals2;
         pgnutls_x509_crt_import gnutls_x509_crt_import;
@@ -987,18 +1140,27 @@ else
         pgnutls_x509_crt_get_private_key_usage_period gnutls_x509_crt_get_private_key_usage_period;
         pgnutls_x509_crt_get_issuer_dn gnutls_x509_crt_get_issuer_dn;
         pgnutls_x509_crt_get_issuer_dn2 gnutls_x509_crt_get_issuer_dn2;
-        pgnutls_x509_crt_get_issuer_dn3 gnutls_x509_crt_get_issuer_dn3;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            pgnutls_x509_crt_get_issuer_dn3 gnutls_x509_crt_get_issuer_dn3;
+
         pgnutls_x509_crt_get_issuer_dn_oid gnutls_x509_crt_get_issuer_dn_oid;
         pgnutls_x509_crt_get_issuer_dn_by_oid gnutls_x509_crt_get_issuer_dn_by_oid;
         pgnutls_x509_crt_get_dn gnutls_x509_crt_get_dn;
         pgnutls_x509_crt_get_dn2 gnutls_x509_crt_get_dn2;
-        pgnutls_x509_crt_get_dn3 gnutls_x509_crt_get_dn3;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            pgnutls_x509_crt_get_dn3 gnutls_x509_crt_get_dn3;
+
         pgnutls_x509_crt_get_dn_oid gnutls_x509_crt_get_dn_oid;
         pgnutls_x509_crt_get_dn_by_oid gnutls_x509_crt_get_dn_by_oid;
         pgnutls_x509_crt_check_hostname gnutls_x509_crt_check_hostname;
         pgnutls_x509_crt_check_hostname2 gnutls_x509_crt_check_hostname2;
         pgnutls_x509_crt_check_email gnutls_x509_crt_check_email;
-        pgnutls_x509_crt_check_ip gnutls_x509_crt_check_ip;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            pgnutls_x509_crt_check_ip gnutls_x509_crt_check_ip;
+
         pgnutls_x509_crt_get_signature_algorithm gnutls_x509_crt_get_signature_algorithm;
         pgnutls_x509_crt_get_signature gnutls_x509_crt_get_signature;
         pgnutls_x509_crt_get_version gnutls_x509_crt_get_version;
@@ -1024,7 +1186,10 @@ else
         pgnutls_x509_crt_set_name_constraints gnutls_x509_crt_set_name_constraints;
         pgnutls_x509_name_constraints_get_permitted gnutls_x509_name_constraints_get_permitted;
         pgnutls_x509_name_constraints_get_excluded gnutls_x509_name_constraints_get_excluded;
-        pgnutls_x509_cidr_to_rfc5280 gnutls_x509_cidr_to_rfc5280;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_4)
+            pgnutls_x509_cidr_to_rfc5280 gnutls_x509_cidr_to_rfc5280;
+
         pgnutls_x509_crt_get_crl_dist_points gnutls_x509_crt_get_crl_dist_points;
         pgnutls_x509_crt_set_crl_dist_points2 gnutls_x509_crt_set_crl_dist_points2;
         pgnutls_x509_crt_set_crl_dist_points gnutls_x509_crt_set_crl_dist_points;
@@ -1034,13 +1199,23 @@ else
         pgnutls_x509_crt_get_activation_time gnutls_x509_crt_get_activation_time;
         pgnutls_x509_crt_get_expiration_time gnutls_x509_crt_get_expiration_time;
         pgnutls_x509_crt_get_serial gnutls_x509_crt_get_serial;
-        pgnutls_x509_spki_init gnutls_x509_spki_init;
-        pgnutls_x509_spki_deinit gnutls_x509_spki_deinit;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_x509_spki_init gnutls_x509_spki_init;
+            pgnutls_x509_spki_deinit gnutls_x509_spki_deinit;
+        }
+
         pgnutls_x509_spki_get_rsa_pss_params gnutls_x509_spki_get_rsa_pss_params;
         pgnutls_x509_spki_set_rsa_pss_params gnutls_x509_spki_set_rsa_pss_params;
         pgnutls_x509_crt_get_pk_algorithm gnutls_x509_crt_get_pk_algorithm;
-        pgnutls_x509_crt_set_spki gnutls_x509_crt_set_spki;
-        pgnutls_x509_crt_get_spki gnutls_x509_crt_get_spki;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_x509_crt_set_spki gnutls_x509_crt_set_spki;
+            pgnutls_x509_crt_get_spki gnutls_x509_crt_get_spki;
+        }
+
         pgnutls_x509_crt_get_pk_rsa_raw gnutls_x509_crt_get_pk_rsa_raw;
         pgnutls_x509_crt_get_pk_dsa_raw gnutls_x509_crt_get_pk_dsa_raw;
         pgnutls_x509_crt_get_pk_ecc_raw gnutls_x509_crt_get_pk_ecc_raw;
@@ -1056,14 +1231,24 @@ else
         pgnutls_x509_crt_get_key_usage gnutls_x509_crt_get_key_usage;
         pgnutls_x509_crt_set_key_usage gnutls_x509_crt_set_key_usage;
         pgnutls_x509_crt_set_authority_info_access gnutls_x509_crt_set_authority_info_access;
-        pgnutls_x509_crt_get_inhibit_anypolicy gnutls_x509_crt_get_inhibit_anypolicy;
-        pgnutls_x509_crt_set_inhibit_anypolicy gnutls_x509_crt_set_inhibit_anypolicy;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_x509_crt_get_inhibit_anypolicy gnutls_x509_crt_get_inhibit_anypolicy;
+            pgnutls_x509_crt_set_inhibit_anypolicy gnutls_x509_crt_set_inhibit_anypolicy;
+        }
+
         pgnutls_x509_crt_get_proxy gnutls_x509_crt_get_proxy;
-        pgnutls_x509_tlsfeatures_init gnutls_x509_tlsfeatures_init;
-        pgnutls_x509_tlsfeatures_deinit gnutls_x509_tlsfeatures_deinit;
-        pgnutls_x509_tlsfeatures_get gnutls_x509_tlsfeatures_get;
-        pgnutls_x509_crt_set_tlsfeatures gnutls_x509_crt_set_tlsfeatures;
-        pgnutls_x509_crt_get_tlsfeatures gnutls_x509_crt_get_tlsfeatures;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            pgnutls_x509_tlsfeatures_init gnutls_x509_tlsfeatures_init;
+            pgnutls_x509_tlsfeatures_deinit gnutls_x509_tlsfeatures_deinit;
+            pgnutls_x509_tlsfeatures_get gnutls_x509_tlsfeatures_get;
+            pgnutls_x509_crt_set_tlsfeatures gnutls_x509_crt_set_tlsfeatures;
+            pgnutls_x509_crt_get_tlsfeatures gnutls_x509_crt_get_tlsfeatures;
+        }
+
         pgnutls_x509_tlsfeatures_check_crt gnutls_x509_tlsfeatures_check_crt;
         pgnutls_x509_policy_release gnutls_x509_policy_release;
         pgnutls_x509_crt_get_policy gnutls_x509_crt_get_policy;
@@ -1106,15 +1291,23 @@ else
         pgnutls_x509_crt_get_raw_issuer_dn gnutls_x509_crt_get_raw_issuer_dn;
         pgnutls_x509_crt_get_raw_dn gnutls_x509_crt_get_raw_dn;
         pgnutls_x509_rdn_get gnutls_x509_rdn_get;
-        pgnutls_x509_rdn_get2 gnutls_x509_rdn_get2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            pgnutls_x509_rdn_get2 gnutls_x509_rdn_get2;
+
         pgnutls_x509_rdn_get_oid gnutls_x509_rdn_get_oid;
         pgnutls_x509_rdn_get_by_oid gnutls_x509_rdn_get_by_oid;
         pgnutls_x509_crt_get_subject gnutls_x509_crt_get_subject;
         pgnutls_x509_crt_get_issuer gnutls_x509_crt_get_issuer;
         pgnutls_x509_dn_get_rdn_ava gnutls_x509_dn_get_rdn_ava;
         pgnutls_x509_dn_get_str gnutls_x509_dn_get_str;
-        pgnutls_x509_dn_get_str2 gnutls_x509_dn_get_str2;
-        pgnutls_x509_dn_set_str gnutls_x509_dn_set_str;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            pgnutls_x509_dn_get_str2 gnutls_x509_dn_get_str2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+            pgnutls_x509_dn_set_str gnutls_x509_dn_set_str;
+
         pgnutls_x509_dn_init gnutls_x509_dn_init;
         pgnutls_x509_dn_import gnutls_x509_dn_import;
         pgnutls_x509_dn_export gnutls_x509_dn_export;
@@ -1128,7 +1321,10 @@ else
         pgnutls_x509_crl_get_raw_issuer_dn gnutls_x509_crl_get_raw_issuer_dn;
         pgnutls_x509_crl_get_issuer_dn gnutls_x509_crl_get_issuer_dn;
         pgnutls_x509_crl_get_issuer_dn2 gnutls_x509_crl_get_issuer_dn2;
-        pgnutls_x509_crl_get_issuer_dn3 gnutls_x509_crl_get_issuer_dn3;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            pgnutls_x509_crl_get_issuer_dn3 gnutls_x509_crl_get_issuer_dn3;
+
         pgnutls_x509_crl_get_issuer_dn_by_oid gnutls_x509_crl_get_issuer_dn_by_oid;
         pgnutls_x509_crl_get_dn_oid gnutls_x509_crl_get_dn_oid;
         pgnutls_x509_crl_get_signature_algorithm gnutls_x509_crl_get_signature_algorithm;
@@ -1169,7 +1365,10 @@ else
         pgnutls_x509_crt_get_fingerprint gnutls_x509_crt_get_fingerprint;
         pgnutls_x509_crt_get_key_purpose_oid gnutls_x509_crt_get_key_purpose_oid;
         pgnutls_x509_crt_set_key_purpose_oid gnutls_x509_crt_set_key_purpose_oid;
-        pgnutls_x509_crt_check_key_purpose gnutls_x509_crt_check_key_purpose;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+            pgnutls_x509_crt_check_key_purpose gnutls_x509_crt_check_key_purpose;
+
         pgnutls_pkcs_schema_get_name gnutls_pkcs_schema_get_name;
         pgnutls_pkcs_schema_get_oid gnutls_pkcs_schema_get_oid;
         pgnutls_x509_privkey_init gnutls_x509_privkey_init;
@@ -1191,8 +1390,13 @@ else
         pgnutls_x509_privkey_import_dsa_raw gnutls_x509_privkey_import_dsa_raw;
         pgnutls_x509_privkey_get_pk_algorithm gnutls_x509_privkey_get_pk_algorithm;
         pgnutls_x509_privkey_get_pk_algorithm2 gnutls_x509_privkey_get_pk_algorithm2;
-        pgnutls_x509_privkey_get_spki gnutls_x509_privkey_get_spki;
-        pgnutls_x509_privkey_set_spki gnutls_x509_privkey_set_spki;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_x509_privkey_get_spki gnutls_x509_privkey_get_spki;
+            pgnutls_x509_privkey_set_spki gnutls_x509_privkey_set_spki;
+        }
+
         pgnutls_x509_privkey_get_key_id gnutls_x509_privkey_get_key_id;
         pgnutls_x509_privkey_generate gnutls_x509_privkey_generate;
         pgnutls_x509_privkey_set_flags gnutls_x509_privkey_set_flags;
@@ -1219,7 +1423,10 @@ else
         pgnutls_x509_crq_get_private_key_usage_period gnutls_x509_crq_get_private_key_usage_period;
         pgnutls_x509_crq_get_dn gnutls_x509_crq_get_dn;
         pgnutls_x509_crq_get_dn2 gnutls_x509_crq_get_dn2;
-        pgnutls_x509_crq_get_dn3 gnutls_x509_crq_get_dn3;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            pgnutls_x509_crq_get_dn3 gnutls_x509_crq_get_dn3;
+
         pgnutls_x509_crq_get_dn_oid gnutls_x509_crq_get_dn_oid;
         pgnutls_x509_crq_get_dn_by_oid gnutls_x509_crq_get_dn_by_oid;
         pgnutls_x509_crq_set_dn gnutls_x509_crq_set_dn;
@@ -1227,7 +1434,10 @@ else
         pgnutls_x509_crq_set_version gnutls_x509_crq_set_version;
         pgnutls_x509_crq_get_version gnutls_x509_crq_get_version;
         pgnutls_x509_crq_set_key gnutls_x509_crq_set_key;
-        pgnutls_x509_crq_set_extension_by_oid gnutls_x509_crq_set_extension_by_oid;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+            pgnutls_x509_crq_set_extension_by_oid gnutls_x509_crq_set_extension_by_oid;
+
         pgnutls_x509_crq_set_challenge_password gnutls_x509_crq_set_challenge_password;
         pgnutls_x509_crq_get_challenge_password gnutls_x509_crq_get_challenge_password;
         pgnutls_x509_crq_set_attribute_by_oid gnutls_x509_crq_set_attribute_by_oid;
@@ -1236,7 +1446,10 @@ else
         pgnutls_x509_crq_export2 gnutls_x509_crq_export2;
         pgnutls_x509_crt_set_crq gnutls_x509_crt_set_crq;
         pgnutls_x509_crt_set_crq_extensions gnutls_x509_crt_set_crq_extensions;
-        pgnutls_x509_crt_set_crq_extension_by_oid gnutls_x509_crt_set_crq_extension_by_oid;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+            pgnutls_x509_crt_set_crq_extension_by_oid gnutls_x509_crt_set_crq_extension_by_oid;
+
         pgnutls_x509_crq_set_private_key_usage_period gnutls_x509_crq_set_private_key_usage_period;
         pgnutls_x509_crq_set_key_rsa_raw gnutls_x509_crq_set_key_rsa_raw;
         pgnutls_x509_crq_set_subject_alt_name gnutls_x509_crq_set_subject_alt_name;
@@ -1251,8 +1464,13 @@ else
         pgnutls_x509_crq_get_attribute_data gnutls_x509_crq_get_attribute_data;
         pgnutls_x509_crq_get_attribute_info gnutls_x509_crq_get_attribute_info;
         pgnutls_x509_crq_get_pk_algorithm gnutls_x509_crq_get_pk_algorithm;
-        pgnutls_x509_crq_get_spki gnutls_x509_crq_get_spki;
-        pgnutls_x509_crq_set_spki gnutls_x509_crq_set_spki;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_x509_crq_get_spki gnutls_x509_crq_get_spki;
+            pgnutls_x509_crq_set_spki gnutls_x509_crq_set_spki;
+        }
+
         pgnutls_x509_crq_get_signature_oid gnutls_x509_crq_get_signature_oid;
         pgnutls_x509_crq_get_pk_oid gnutls_x509_crq_get_pk_oid;
         pgnutls_x509_crq_get_key_id gnutls_x509_crq_get_key_id;
@@ -1262,8 +1480,13 @@ else
         pgnutls_x509_crq_get_subject_alt_name gnutls_x509_crq_get_subject_alt_name;
         pgnutls_x509_crq_get_subject_alt_othername_oid gnutls_x509_crq_get_subject_alt_othername_oid;
         pgnutls_x509_crq_get_extension_by_oid gnutls_x509_crq_get_extension_by_oid;
-        pgnutls_x509_crq_get_tlsfeatures gnutls_x509_crq_get_tlsfeatures;
-        pgnutls_x509_crq_set_tlsfeatures gnutls_x509_crq_set_tlsfeatures;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            pgnutls_x509_crq_get_tlsfeatures gnutls_x509_crq_get_tlsfeatures;
+            pgnutls_x509_crq_set_tlsfeatures gnutls_x509_crq_set_tlsfeatures;
+        }
+
         pgnutls_x509_crt_get_extension_by_oid2 gnutls_x509_crt_get_extension_by_oid2;
         pgnutls_x509_trust_list_init gnutls_x509_trust_list_init;
         pgnutls_x509_trust_list_deinit gnutls_x509_trust_list_deinit;
@@ -1296,7 +1519,10 @@ else
     {
         lib.bindSymbol_stdcall(gnutls_x509_crt_init, "gnutls_x509_crt_init");
         lib.bindSymbol_stdcall(gnutls_x509_crt_deinit, "gnutls_x509_crt_deinit");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_set_flags, "gnutls_x509_crt_set_flags");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_set_flags, "gnutls_x509_crt_set_flags");
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_equals, "gnutls_x509_crt_equals");
         lib.bindSymbol_stdcall(gnutls_x509_crt_equals2, "gnutls_x509_crt_equals2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_import, "gnutls_x509_crt_import");
@@ -1309,18 +1535,27 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_private_key_usage_period, "gnutls_x509_crt_get_private_key_usage_period");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_issuer_dn, "gnutls_x509_crt_get_issuer_dn");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_issuer_dn2, "gnutls_x509_crt_get_issuer_dn2");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_get_issuer_dn3, "gnutls_x509_crt_get_issuer_dn3");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_get_issuer_dn3, "gnutls_x509_crt_get_issuer_dn3");
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_issuer_dn_oid, "gnutls_x509_crt_get_issuer_dn_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_issuer_dn_by_oid, "gnutls_x509_crt_get_issuer_dn_by_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_dn, "gnutls_x509_crt_get_dn");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_dn2, "gnutls_x509_crt_get_dn2");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_get_dn3, "gnutls_x509_crt_get_dn3");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_get_dn3, "gnutls_x509_crt_get_dn3");
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_dn_oid, "gnutls_x509_crt_get_dn_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_dn_by_oid, "gnutls_x509_crt_get_dn_by_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crt_check_hostname, "gnutls_x509_crt_check_hostname");
         lib.bindSymbol_stdcall(gnutls_x509_crt_check_hostname2, "gnutls_x509_crt_check_hostname2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_check_email, "gnutls_x509_crt_check_email");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_check_ip, "gnutls_x509_crt_check_ip");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_check_ip, "gnutls_x509_crt_check_ip");
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_signature_algorithm, "gnutls_x509_crt_get_signature_algorithm");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_signature, "gnutls_x509_crt_get_signature");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_version, "gnutls_x509_crt_get_version");
@@ -1346,7 +1581,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_name_constraints, "gnutls_x509_crt_set_name_constraints");
         lib.bindSymbol_stdcall(gnutls_x509_name_constraints_get_permitted, "gnutls_x509_name_constraints_get_permitted");
         lib.bindSymbol_stdcall(gnutls_x509_name_constraints_get_excluded, "gnutls_x509_name_constraints_get_excluded");
-        lib.bindSymbol_stdcall(gnutls_x509_cidr_to_rfc5280, "gnutls_x509_cidr_to_rfc5280");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_4)
+            lib.bindSymbol_stdcall(gnutls_x509_cidr_to_rfc5280, "gnutls_x509_cidr_to_rfc5280");
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_crl_dist_points, "gnutls_x509_crt_get_crl_dist_points");
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_crl_dist_points2, "gnutls_x509_crt_set_crl_dist_points2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_crl_dist_points, "gnutls_x509_crt_set_crl_dist_points");
@@ -1356,13 +1594,23 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_activation_time, "gnutls_x509_crt_get_activation_time");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_expiration_time, "gnutls_x509_crt_get_expiration_time");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_serial, "gnutls_x509_crt_get_serial");
-        lib.bindSymbol_stdcall(gnutls_x509_spki_init, "gnutls_x509_spki_init");
-        lib.bindSymbol_stdcall(gnutls_x509_spki_deinit, "gnutls_x509_spki_deinit");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_spki_init, "gnutls_x509_spki_init");
+            lib.bindSymbol_stdcall(gnutls_x509_spki_deinit, "gnutls_x509_spki_deinit");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_spki_get_rsa_pss_params, "gnutls_x509_spki_get_rsa_pss_params");
         lib.bindSymbol_stdcall(gnutls_x509_spki_set_rsa_pss_params, "gnutls_x509_spki_set_rsa_pss_params");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_algorithm, "gnutls_x509_crt_get_pk_algorithm");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_set_spki, "gnutls_x509_crt_set_spki");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_get_spki, "gnutls_x509_crt_get_spki");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_crt_set_spki, "gnutls_x509_crt_set_spki");
+            lib.bindSymbol_stdcall(gnutls_x509_crt_get_spki, "gnutls_x509_crt_get_spki");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_rsa_raw, "gnutls_x509_crt_get_pk_rsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_dsa_raw, "gnutls_x509_crt_get_pk_dsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_ecc_raw, "gnutls_x509_crt_get_pk_ecc_raw");
@@ -1378,14 +1626,24 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_key_usage, "gnutls_x509_crt_get_key_usage");
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_key_usage, "gnutls_x509_crt_set_key_usage");
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_authority_info_access, "gnutls_x509_crt_set_authority_info_access");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_get_inhibit_anypolicy, "gnutls_x509_crt_get_inhibit_anypolicy");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_set_inhibit_anypolicy, "gnutls_x509_crt_set_inhibit_anypolicy");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_crt_get_inhibit_anypolicy, "gnutls_x509_crt_get_inhibit_anypolicy");
+            lib.bindSymbol_stdcall(gnutls_x509_crt_set_inhibit_anypolicy, "gnutls_x509_crt_set_inhibit_anypolicy");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_proxy, "gnutls_x509_crt_get_proxy");
-        lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_init, "gnutls_x509_tlsfeatures_init");
-        lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_deinit, "gnutls_x509_tlsfeatures_deinit");
-        lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_get, "gnutls_x509_tlsfeatures_get");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_set_tlsfeatures, "gnutls_x509_crt_set_tlsfeatures");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_get_tlsfeatures, "gnutls_x509_crt_get_tlsfeatures");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_init, "gnutls_x509_tlsfeatures_init");
+            lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_deinit, "gnutls_x509_tlsfeatures_deinit");
+            lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_get, "gnutls_x509_tlsfeatures_get");
+            lib.bindSymbol_stdcall(gnutls_x509_crt_set_tlsfeatures, "gnutls_x509_crt_set_tlsfeatures");
+            lib.bindSymbol_stdcall(gnutls_x509_crt_get_tlsfeatures, "gnutls_x509_crt_get_tlsfeatures");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_check_crt, "gnutls_x509_tlsfeatures_check_crt");
         lib.bindSymbol_stdcall(gnutls_x509_policy_release, "gnutls_x509_policy_release");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_policy, "gnutls_x509_crt_get_policy");
@@ -1428,15 +1686,23 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_raw_issuer_dn, "gnutls_x509_crt_get_raw_issuer_dn");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_raw_dn, "gnutls_x509_crt_get_raw_dn");
         lib.bindSymbol_stdcall(gnutls_x509_rdn_get, "gnutls_x509_rdn_get");
-        lib.bindSymbol_stdcall(gnutls_x509_rdn_get2, "gnutls_x509_rdn_get2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            lib.bindSymbol_stdcall(gnutls_x509_rdn_get2, "gnutls_x509_rdn_get2");
+
         lib.bindSymbol_stdcall(gnutls_x509_rdn_get_oid, "gnutls_x509_rdn_get_oid");
         lib.bindSymbol_stdcall(gnutls_x509_rdn_get_by_oid, "gnutls_x509_rdn_get_by_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_subject, "gnutls_x509_crt_get_subject");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_issuer, "gnutls_x509_crt_get_issuer");
         lib.bindSymbol_stdcall(gnutls_x509_dn_get_rdn_ava, "gnutls_x509_dn_get_rdn_ava");
         lib.bindSymbol_stdcall(gnutls_x509_dn_get_str, "gnutls_x509_dn_get_str");
-        lib.bindSymbol_stdcall(gnutls_x509_dn_get_str2, "gnutls_x509_dn_get_str2");
-        lib.bindSymbol_stdcall(gnutls_x509_dn_set_str, "gnutls_x509_dn_set_str");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            lib.bindSymbol_stdcall(gnutls_x509_dn_get_str2, "gnutls_x509_dn_get_str2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+            lib.bindSymbol_stdcall(gnutls_x509_dn_set_str, "gnutls_x509_dn_set_str");
+
         lib.bindSymbol_stdcall(gnutls_x509_dn_init, "gnutls_x509_dn_init");
         lib.bindSymbol_stdcall(gnutls_x509_dn_import, "gnutls_x509_dn_import");
         lib.bindSymbol_stdcall(gnutls_x509_dn_export, "gnutls_x509_dn_export");
@@ -1450,7 +1716,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crl_get_raw_issuer_dn, "gnutls_x509_crl_get_raw_issuer_dn");
         lib.bindSymbol_stdcall(gnutls_x509_crl_get_issuer_dn, "gnutls_x509_crl_get_issuer_dn");
         lib.bindSymbol_stdcall(gnutls_x509_crl_get_issuer_dn2, "gnutls_x509_crl_get_issuer_dn2");
-        lib.bindSymbol_stdcall(gnutls_x509_crl_get_issuer_dn3, "gnutls_x509_crl_get_issuer_dn3");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            lib.bindSymbol_stdcall(gnutls_x509_crl_get_issuer_dn3, "gnutls_x509_crl_get_issuer_dn3");
+
         lib.bindSymbol_stdcall(gnutls_x509_crl_get_issuer_dn_by_oid, "gnutls_x509_crl_get_issuer_dn_by_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crl_get_dn_oid, "gnutls_x509_crl_get_dn_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crl_get_signature_algorithm, "gnutls_x509_crl_get_signature_algorithm");
@@ -1491,7 +1760,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_fingerprint, "gnutls_x509_crt_get_fingerprint");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_key_purpose_oid, "gnutls_x509_crt_get_key_purpose_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_key_purpose_oid, "gnutls_x509_crt_set_key_purpose_oid");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_check_key_purpose, "gnutls_x509_crt_check_key_purpose");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_check_key_purpose, "gnutls_x509_crt_check_key_purpose");
+
         lib.bindSymbol_stdcall(gnutls_pkcs_schema_get_name, "gnutls_pkcs_schema_get_name");
         lib.bindSymbol_stdcall(gnutls_pkcs_schema_get_oid, "gnutls_pkcs_schema_get_oid");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_init, "gnutls_x509_privkey_init");
@@ -1513,8 +1785,13 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_privkey_import_dsa_raw, "gnutls_x509_privkey_import_dsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_get_pk_algorithm, "gnutls_x509_privkey_get_pk_algorithm");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_get_pk_algorithm2, "gnutls_x509_privkey_get_pk_algorithm2");
-        lib.bindSymbol_stdcall(gnutls_x509_privkey_get_spki, "gnutls_x509_privkey_get_spki");
-        lib.bindSymbol_stdcall(gnutls_x509_privkey_set_spki, "gnutls_x509_privkey_set_spki");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_privkey_get_spki, "gnutls_x509_privkey_get_spki");
+            lib.bindSymbol_stdcall(gnutls_x509_privkey_set_spki, "gnutls_x509_privkey_set_spki");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_privkey_get_key_id, "gnutls_x509_privkey_get_key_id");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_generate, "gnutls_x509_privkey_generate");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_set_flags, "gnutls_x509_privkey_set_flags");
@@ -1541,7 +1818,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_private_key_usage_period, "gnutls_x509_crq_get_private_key_usage_period");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_dn, "gnutls_x509_crq_get_dn");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_dn2, "gnutls_x509_crq_get_dn2");
-        lib.bindSymbol_stdcall(gnutls_x509_crq_get_dn3, "gnutls_x509_crq_get_dn3");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            lib.bindSymbol_stdcall(gnutls_x509_crq_get_dn3, "gnutls_x509_crq_get_dn3");
+
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_dn_oid, "gnutls_x509_crq_get_dn_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_dn_by_oid, "gnutls_x509_crq_get_dn_by_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_dn, "gnutls_x509_crq_set_dn");
@@ -1549,7 +1829,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_version, "gnutls_x509_crq_set_version");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_version, "gnutls_x509_crq_get_version");
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_key, "gnutls_x509_crq_set_key");
-        lib.bindSymbol_stdcall(gnutls_x509_crq_set_extension_by_oid, "gnutls_x509_crq_set_extension_by_oid");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_3)
+            lib.bindSymbol_stdcall(gnutls_x509_crq_set_extension_by_oid, "gnutls_x509_crq_set_extension_by_oid");
+
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_challenge_password, "gnutls_x509_crq_set_challenge_password");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_challenge_password, "gnutls_x509_crq_get_challenge_password");
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_attribute_by_oid, "gnutls_x509_crq_set_attribute_by_oid");
@@ -1558,7 +1841,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crq_export2, "gnutls_x509_crq_export2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_crq, "gnutls_x509_crt_set_crq");
         lib.bindSymbol_stdcall(gnutls_x509_crt_set_crq_extensions, "gnutls_x509_crt_set_crq_extensions");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_set_crq_extension_by_oid, "gnutls_x509_crt_set_crq_extension_by_oid");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_set_crq_extension_by_oid, "gnutls_x509_crt_set_crq_extension_by_oid");
+
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_private_key_usage_period, "gnutls_x509_crq_set_private_key_usage_period");
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_key_rsa_raw, "gnutls_x509_crq_set_key_rsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_crq_set_subject_alt_name, "gnutls_x509_crq_set_subject_alt_name");
@@ -1573,8 +1859,13 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_attribute_data, "gnutls_x509_crq_get_attribute_data");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_attribute_info, "gnutls_x509_crq_get_attribute_info");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_pk_algorithm, "gnutls_x509_crq_get_pk_algorithm");
-        lib.bindSymbol_stdcall(gnutls_x509_crq_get_spki, "gnutls_x509_crq_get_spki");
-        lib.bindSymbol_stdcall(gnutls_x509_crq_set_spki, "gnutls_x509_crq_set_spki");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_crq_get_spki, "gnutls_x509_crq_get_spki");
+            lib.bindSymbol_stdcall(gnutls_x509_crq_set_spki, "gnutls_x509_crq_set_spki");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_signature_oid, "gnutls_x509_crq_get_signature_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_pk_oid, "gnutls_x509_crq_get_pk_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_key_id, "gnutls_x509_crq_get_key_id");
@@ -1584,8 +1875,13 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_subject_alt_name, "gnutls_x509_crq_get_subject_alt_name");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_subject_alt_othername_oid, "gnutls_x509_crq_get_subject_alt_othername_oid");
         lib.bindSymbol_stdcall(gnutls_x509_crq_get_extension_by_oid, "gnutls_x509_crq_get_extension_by_oid");
-        lib.bindSymbol_stdcall(gnutls_x509_crq_get_tlsfeatures, "gnutls_x509_crq_get_tlsfeatures");
-        lib.bindSymbol_stdcall(gnutls_x509_crq_set_tlsfeatures, "gnutls_x509_crq_set_tlsfeatures");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_crq_get_tlsfeatures, "gnutls_x509_crq_get_tlsfeatures");
+            lib.bindSymbol_stdcall(gnutls_x509_crq_set_tlsfeatures, "gnutls_x509_crq_set_tlsfeatures");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_extension_by_oid2, "gnutls_x509_crt_get_extension_by_oid2");
         lib.bindSymbol_stdcall(gnutls_x509_trust_list_init, "gnutls_x509_trust_list_init");
         lib.bindSymbol_stdcall(gnutls_x509_trust_list_deinit, "gnutls_x509_trust_list_deinit");

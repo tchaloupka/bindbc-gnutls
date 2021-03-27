@@ -43,3 +43,9 @@ for f in [^_]*.d; do
         -I.dub/packages/bindbc-loader-$BBC/bindbc-loader/source \
         _loader.d $f -I../source/ -of=${f%.*} && ./${f%.*}
 done
+
+# compilation test with various versions
+for v in GNUTLS_3_5_1 GNUTLS_3_5_3 GNUTLS_3_5_4 GNUTLS_3_5_5 GNUTLS_3_5_6 GNUTLS_3_5_7 GNUTLS_3_5_9 GNUTLS_3_6_0 GNUTLS_3_6_2 \
+    GNUTLS_3_6_3 GNUTLS_3_6_4 GNUTLS_3_6_5 GNUTLS_3_6_8 GNUTLS_3_6_9 GNUTLS_3_6_10 GNUTLS_3_6_12 GNUTLS_3_6_13 GNUTLS_3_6_14; do
+    DFLAGS="-version=$v" dub build --root ../ -c dynamic
+done

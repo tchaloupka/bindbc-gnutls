@@ -39,15 +39,61 @@ dependencies {
 dependency "bindbc-gnutls" version="~>1.0.0"
 ```
 
+### Minimal GnuTLS library version selection
+
+By default, binding is compiled with symbols defined in GnuTLS `v3.5.0`.
+If symbols from higher versions are required, binding user must specify this with `version` directive (through compiler switch or dub file).
+
+You can check what version the binding was compiled for using `gnuTLSSupport` constant.
+
+Supported versions:
+
+| GnuTLS version |    version    |
+| -------------- | ------------- |
+|     v3.5.0     | GNUTLS_3_5_0  |
+|     v3.5.1     | GNUTLS_3_5_1  |
+|     v3.5.2     | GNUTLS_3_5_1  |
+|     v3.5.3     | GNUTLS_3_5_3  |
+|     v3.5.4     | GNUTLS_3_5_4  |
+|     v3.5.5     | GNUTLS_3_5_5  |
+|     v3.5.6     | GNUTLS_3_5_6  |
+|     v3.5.7     | GNUTLS_3_5_7  |
+|     v3.5.8     | GNUTLS_3_5_7  |
+|     v3.5.9     | GNUTLS_3_5_9  |
+|     v3.5.10    | GNUTLS_3_5_9  |
+|     v3.5.11    | GNUTLS_3_5_9  |
+|     v3.5.12    | GNUTLS_3_5_9  |
+|     v3.5.13    | GNUTLS_3_5_9  |
+|     v3.5.14    | GNUTLS_3_5_9  |
+|     v3.5.15    | GNUTLS_3_5_9  |
+|     v3.5.16    | GNUTLS_3_5_9  |
+|     v3.5.17    | GNUTLS_3_5_9  |
+|     v3.5.18    | GNUTLS_3_5_9  |
+|     v3.6.0     | GNUTLS_3_6_0  |
+|     v3.6.2     | GNUTLS_3_6_2  |
+|     v3.6.3     | GNUTLS_3_6_3  |
+|     v3.6.4     | GNUTLS_3_6_4  |
+|     v3.6.5     | GNUTLS_3_6_5  |
+|     v3.6.8     | GNUTLS_3_6_8  |
+|     v3.6.9     | GNUTLS_3_6_9  |
+|     v3.6.10    | GNUTLS_3_6_10 |
+|     v3.6.12    | GNUTLS_3_6_12 |
+|     v3.6.13    | GNUTLS_3_6_13 |
+|     v3.6.14    | GNUTLS_3_6_14 |
+
+Note that some GnuTLS versions doesn't come with their own compiler version constant. It's because that library version haven't introduced API change and is compatible with previous version binding.
+
+Use minimal required version to compile the library so newer ones can still be loaded although without the new API additions.
+
 ### The dynamic binding
 
 The dynamic binding requires no special configuration when using DUB to manage your project. There is no link-time dependency. At runtime, the GnuTLS shared library is required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributing the GnuTLS DLL with your program. On other systems, it usually means the user must install the GnuTLS runtime library through a package manager.
 
-To load the shared library, you need to call the `loadGnuTLS` function. This returns a member of the `LoadRes` enumeration (See [the README for `bindbc.loader`](https://github.com/BindBC/bindbc-loader/blob/master/README.md) for the error handling API):
+To load the shared library, you need to call the `loadGnuTLS` function. This returns a member of the `GnuTLSSupport` enumeration (See [the README for `bindbc.loader`](https://github.com/BindBC/bindbc-loader/blob/master/README.md) for the error handling API):
 
-* `LoadRes.noLibrary` indicating that the library failed to load (it couldn't be found)
-* `LoadRes.badLibrary` indicating that one or more symbols in the library failed to load
-* `LoadRes.loaded` indicating that GnuTLS has been successfully loaded and methods bound.
+* `GnuTLSSupport.noLibrary` indicating that the library failed to load (it couldn't be found)
+* `GnuTLSSupport.badLibrary` indicating that one or more symbols in the library failed to load
+* `GnuTLSSupport.xxx` indicating that GnuTLS has been successfully loaded in with a minimal required version.
 
 Same applies to GnuTLS Dane, just use `loadGnuTLS_Dane` for that.
 

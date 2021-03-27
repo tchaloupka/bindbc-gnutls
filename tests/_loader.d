@@ -13,7 +13,7 @@ void loadLib()
 {
     import loader = bindbc.loader.sharedlib;
     auto res = loadGnuTLS();
-    if (res != LoadRes.loaded)
+    if (res < GnuTLSSupport.gnutls_3_5_0)
     {
         fprintf(stderr, "Error loading GnuTLS: %d\n", res);
         foreach(info; loader.errors)
@@ -25,7 +25,7 @@ void loadLib()
     // else printf("GnuTLS sucesfully loaded\n");
 
     res = loadGnuTLS_Dane();
-    if (res != LoadRes.loaded)
+    if (res < GnuTLSSupport.gnutls_3_5_0)
     {
         fprintf(stderr, "Error loading GnuTLS-Dane: %d\n", res);
         foreach(info; loader.errors)

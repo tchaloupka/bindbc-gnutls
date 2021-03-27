@@ -1,5 +1,10 @@
 module bindbc.gnutls.socket;
 
+import bindbc.gnutls.config;
+
+static if (gnuTLSSupport < GnuTLSSupport.gnutls_3_5_3) {}
+else:
+
 import bindbc.gnutls.gnutls;
 import core.sys.posix.sys.socket;
 

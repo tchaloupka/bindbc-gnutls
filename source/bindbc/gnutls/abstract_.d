@@ -1,5 +1,6 @@
 module bindbc.gnutls.abstract_;
 
+import bindbc.gnutls.config;
 import bindbc.gnutls.gnutls;
 import bindbc.gnutls.openpgp;
 import bindbc.gnutls.pkcs11;
@@ -16,12 +17,14 @@ enum gnutls_pubkey_flags
 
 alias gnutls_pubkey_flags_t = gnutls_pubkey_flags;
 
-enum gnutls_abstract_export_flags
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
 {
-    GNUTLS_EXPORT_FLAG_NO_LZ = 1
+    enum gnutls_abstract_export_flags
+    {
+        GNUTLS_EXPORT_FLAG_NO_LZ = 1
+    }
+    alias gnutls_abstract_export_flags_t = gnutls_abstract_export_flags;
 }
-
-alias gnutls_abstract_export_flags_t = gnutls_abstract_export_flags;
 
 enum GNUTLS_PUBKEY_VERIFY_FLAG_TLS1_RSA = gnutls_certificate_verify_flags.GNUTLS_VERIFY_USE_TLS1_RSA;
 
@@ -139,8 +142,13 @@ version (BindGnuTLS_Static)
     int gnutls_pubkey_verify_params (gnutls_pubkey_t key);
     void gnutls_pubkey_set_pin_function (gnutls_pubkey_t key, gnutls_pin_callback_t fn, void* userdata);
     int gnutls_pubkey_get_pk_algorithm (gnutls_pubkey_t key, uint* bits);
-    int gnutls_pubkey_set_spki (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
-    int gnutls_pubkey_get_spki (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_pubkey_set_spki (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
+        int gnutls_pubkey_get_spki (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
+    }
+
     int gnutls_pubkey_import_x509 (gnutls_pubkey_t key, gnutls_x509_crt_t crt, uint flags);
     int gnutls_pubkey_import_x509_crq (gnutls_pubkey_t key, gnutls_x509_crq_t crq, uint flags);
     int gnutls_pubkey_import_pkcs11 (gnutls_pubkey_t key, gnutls_pkcs11_obj_t obj, uint flags);
@@ -153,10 +161,15 @@ version (BindGnuTLS_Static)
     int gnutls_pubkey_import_tpm_raw (gnutls_pubkey_t pkey, const(gnutls_datum_t)* fdata, gnutls_tpmkey_fmt_t format, const(char)* srk_password, uint flags);
     int gnutls_pubkey_get_preferred_hash_algorithm (gnutls_pubkey_t key, gnutls_digest_algorithm_t* hash, uint* mand);
     int gnutls_pubkey_export_rsa_raw (gnutls_pubkey_t key, gnutls_datum_t* m, gnutls_datum_t* e);
-    int gnutls_pubkey_export_rsa_raw2 (gnutls_pubkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, uint flags);
     int gnutls_pubkey_export_dsa_raw (gnutls_pubkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y);
-    int gnutls_pubkey_export_dsa_raw2 (gnutls_pubkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, uint flags);
-    int gnutls_pubkey_export_ecc_raw2 (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_pubkey_export_rsa_raw2 (gnutls_pubkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, uint flags);
+        int gnutls_pubkey_export_dsa_raw2 (gnutls_pubkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, uint flags);
+        int gnutls_pubkey_export_ecc_raw2 (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, uint flags);
+    }
+
     int gnutls_pubkey_export_gost_raw2 (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, uint flags);
     int gnutls_pubkey_export_ecc_raw (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y);
     int gnutls_pubkey_export_ecc_x962 (gnutls_pubkey_t key, gnutls_datum_t* parameters, gnutls_datum_t* ecpoint);
@@ -181,8 +194,13 @@ version (BindGnuTLS_Static)
     void gnutls_privkey_deinit (gnutls_privkey_t key);
     int gnutls_privkey_generate (gnutls_privkey_t key, gnutls_pk_algorithm_t algo, uint bits, uint flags);
     int gnutls_privkey_generate2 (gnutls_privkey_t pkey, gnutls_pk_algorithm_t algo, uint bits, uint flags, const(gnutls_keygen_data_st)* data, uint data_size);
-    int gnutls_privkey_set_spki (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
-    int gnutls_privkey_get_spki (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_privkey_set_spki (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+        int gnutls_privkey_get_spki (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+    }
+
     int gnutls_privkey_verify_seed (gnutls_privkey_t key, gnutls_digest_algorithm_t, const(void)* seed, size_t seed_size);
     int gnutls_privkey_get_seed (gnutls_privkey_t key, gnutls_digest_algorithm_t*, void* seed, size_t* seed_size);
     int gnutls_privkey_verify_params (gnutls_privkey_t key);
@@ -205,7 +223,10 @@ version (BindGnuTLS_Static)
     int gnutls_privkey_import_ext (gnutls_privkey_t pkey, gnutls_pk_algorithm_t pk, void* userdata, gnutls_privkey_sign_func sign_func, gnutls_privkey_decrypt_func decrypt_func, uint flags);
     int gnutls_privkey_import_ext2 (gnutls_privkey_t pkey, gnutls_pk_algorithm_t pk, void* userdata, gnutls_privkey_sign_func sign_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, uint flags);
     int gnutls_privkey_import_ext3 (gnutls_privkey_t pkey, void* userdata, gnutls_privkey_sign_func sign_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, gnutls_privkey_info_func info_func, uint flags);
-    int gnutls_privkey_import_ext4 (gnutls_privkey_t pkey, void* userdata, gnutls_privkey_sign_data_func sign_data_func, gnutls_privkey_sign_hash_func sign_hash_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, gnutls_privkey_info_func info_func, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        int gnutls_privkey_import_ext4 (gnutls_privkey_t pkey, void* userdata, gnutls_privkey_sign_data_func sign_data_func, gnutls_privkey_sign_hash_func sign_hash_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, gnutls_privkey_info_func info_func, uint flags);
+
     int gnutls_privkey_import_dsa_raw (gnutls_privkey_t key, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* g, const(gnutls_datum_t)* y, const(gnutls_datum_t)* x);
     int gnutls_privkey_import_rsa_raw (gnutls_privkey_t key, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e, const(gnutls_datum_t)* d, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* u, const(gnutls_datum_t)* e1, const(gnutls_datum_t)* e2);
     int gnutls_privkey_import_ecc_raw (gnutls_privkey_t key, gnutls_ecc_curve_t curve, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
@@ -217,11 +238,16 @@ version (BindGnuTLS_Static)
     int gnutls_privkey_decrypt_data (gnutls_privkey_t key, uint flags, const(gnutls_datum_t)* ciphertext, gnutls_datum_t* plaintext);
     int gnutls_privkey_decrypt_data2 (gnutls_privkey_t key, uint flags, const(gnutls_datum_t)* ciphertext, ubyte* plaintext, size_t plaintext_size);
     int gnutls_privkey_export_rsa_raw (gnutls_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2);
-    int gnutls_privkey_export_rsa_raw2 (gnutls_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2, uint flags);
     int gnutls_privkey_export_dsa_raw (gnutls_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x);
-    int gnutls_privkey_export_dsa_raw2 (gnutls_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x, uint flags);
     int gnutls_privkey_export_ecc_raw (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
-    int gnutls_privkey_export_ecc_raw2 (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_privkey_export_rsa_raw2 (gnutls_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2, uint flags);
+        int gnutls_privkey_export_dsa_raw2 (gnutls_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x, uint flags);
+        int gnutls_privkey_export_ecc_raw2 (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k, uint flags);
+    }
+
     int gnutls_privkey_export_gost_raw2 (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k, uint flags);
     int gnutls_x509_crt_privkey_sign (gnutls_x509_crt_t crt, gnutls_x509_crt_t issuer, gnutls_privkey_t issuer_key, gnutls_digest_algorithm_t dig, uint flags);
     int gnutls_x509_crl_privkey_sign (gnutls_x509_crl_t crl, gnutls_x509_crt_t issuer, gnutls_privkey_t issuer_key, gnutls_digest_algorithm_t dig, uint flags);
@@ -252,8 +278,13 @@ else
         alias pgnutls_pubkey_verify_params = int function (gnutls_pubkey_t key);
         alias pgnutls_pubkey_set_pin_function = void function (gnutls_pubkey_t key, gnutls_pin_callback_t fn, void* userdata);
         alias pgnutls_pubkey_get_pk_algorithm = int function (gnutls_pubkey_t key, uint* bits);
-        alias pgnutls_pubkey_set_spki = int function (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
-        alias pgnutls_pubkey_get_spki = int function (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_pubkey_set_spki = int function (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
+            alias pgnutls_pubkey_get_spki = int function (gnutls_pubkey_t key, const gnutls_x509_spki_t spki, uint flags);
+        }
+
         alias pgnutls_pubkey_import_x509 = int function (gnutls_pubkey_t key, gnutls_x509_crt_t crt, uint flags);
         alias pgnutls_pubkey_import_x509_crq = int function (gnutls_pubkey_t key, gnutls_x509_crq_t crq, uint flags);
         alias pgnutls_pubkey_import_pkcs11 = int function (gnutls_pubkey_t key, gnutls_pkcs11_obj_t obj, uint flags);
@@ -266,10 +297,15 @@ else
         alias pgnutls_pubkey_import_tpm_raw = int function (gnutls_pubkey_t pkey, const(gnutls_datum_t)* fdata, gnutls_tpmkey_fmt_t format, const(char)* srk_password, uint flags);
         alias pgnutls_pubkey_get_preferred_hash_algorithm = int function (gnutls_pubkey_t key, gnutls_digest_algorithm_t* hash, uint* mand);
         alias pgnutls_pubkey_export_rsa_raw = int function (gnutls_pubkey_t key, gnutls_datum_t* m, gnutls_datum_t* e);
-        alias pgnutls_pubkey_export_rsa_raw2 = int function (gnutls_pubkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, uint flags);
         alias pgnutls_pubkey_export_dsa_raw = int function (gnutls_pubkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y);
-        alias pgnutls_pubkey_export_dsa_raw2 = int function (gnutls_pubkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, uint flags);
-        alias pgnutls_pubkey_export_ecc_raw2 = int function (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_pubkey_export_rsa_raw2 = int function (gnutls_pubkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, uint flags);
+            alias pgnutls_pubkey_export_dsa_raw2 = int function (gnutls_pubkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, uint flags);
+            alias pgnutls_pubkey_export_ecc_raw2 = int function (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, uint flags);
+        }
+
         alias pgnutls_pubkey_export_gost_raw2 = int function (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, uint flags);
         alias pgnutls_pubkey_export_ecc_raw = int function (gnutls_pubkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y);
         alias pgnutls_pubkey_export_ecc_x962 = int function (gnutls_pubkey_t key, gnutls_datum_t* parameters, gnutls_datum_t* ecpoint);
@@ -294,8 +330,13 @@ else
         alias pgnutls_privkey_deinit = void function (gnutls_privkey_t key);
         alias pgnutls_privkey_generate = int function (gnutls_privkey_t key, gnutls_pk_algorithm_t algo, uint bits, uint flags);
         alias pgnutls_privkey_generate2 = int function (gnutls_privkey_t pkey, gnutls_pk_algorithm_t algo, uint bits, uint flags, const(gnutls_keygen_data_st)* data, uint data_size);
-        alias pgnutls_privkey_set_spki = int function (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
-        alias pgnutls_privkey_get_spki = int function (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_privkey_set_spki = int function (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+            alias pgnutls_privkey_get_spki = int function (gnutls_privkey_t key, const gnutls_x509_spki_t spki, uint flags);
+        }
+
         alias pgnutls_privkey_verify_seed = int function (gnutls_privkey_t key, gnutls_digest_algorithm_t, const(void)* seed, size_t seed_size);
         alias pgnutls_privkey_get_seed = int function (gnutls_privkey_t key, gnutls_digest_algorithm_t*, void* seed, size_t* seed_size);
         alias pgnutls_privkey_verify_params = int function (gnutls_privkey_t key);
@@ -318,7 +359,10 @@ else
         alias pgnutls_privkey_import_ext = int function (gnutls_privkey_t pkey, gnutls_pk_algorithm_t pk, void* userdata, gnutls_privkey_sign_func sign_func, gnutls_privkey_decrypt_func decrypt_func, uint flags);
         alias pgnutls_privkey_import_ext2 = int function (gnutls_privkey_t pkey, gnutls_pk_algorithm_t pk, void* userdata, gnutls_privkey_sign_func sign_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, uint flags);
         alias pgnutls_privkey_import_ext3 = int function (gnutls_privkey_t pkey, void* userdata, gnutls_privkey_sign_func sign_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, gnutls_privkey_info_func info_func, uint flags);
-        alias pgnutls_privkey_import_ext4 = int function (gnutls_privkey_t pkey, void* userdata, gnutls_privkey_sign_data_func sign_data_func, gnutls_privkey_sign_hash_func sign_hash_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, gnutls_privkey_info_func info_func, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            alias pgnutls_privkey_import_ext4 = int function (gnutls_privkey_t pkey, void* userdata, gnutls_privkey_sign_data_func sign_data_func, gnutls_privkey_sign_hash_func sign_hash_func, gnutls_privkey_decrypt_func decrypt_func, gnutls_privkey_deinit_func deinit_func, gnutls_privkey_info_func info_func, uint flags);
+
         alias pgnutls_privkey_import_dsa_raw = int function (gnutls_privkey_t key, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* g, const(gnutls_datum_t)* y, const(gnutls_datum_t)* x);
         alias pgnutls_privkey_import_rsa_raw = int function (gnutls_privkey_t key, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e, const(gnutls_datum_t)* d, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* u, const(gnutls_datum_t)* e1, const(gnutls_datum_t)* e2);
         alias pgnutls_privkey_import_ecc_raw = int function (gnutls_privkey_t key, gnutls_ecc_curve_t curve, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
@@ -330,11 +374,16 @@ else
         alias pgnutls_privkey_decrypt_data = int function (gnutls_privkey_t key, uint flags, const(gnutls_datum_t)* ciphertext, gnutls_datum_t* plaintext);
         alias pgnutls_privkey_decrypt_data2 = int function (gnutls_privkey_t key, uint flags, const(gnutls_datum_t)* ciphertext, ubyte* plaintext, size_t plaintext_size);
         alias pgnutls_privkey_export_rsa_raw = int function (gnutls_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2);
-        alias pgnutls_privkey_export_rsa_raw2 = int function (gnutls_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2, uint flags);
         alias pgnutls_privkey_export_dsa_raw = int function (gnutls_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x);
-        alias pgnutls_privkey_export_dsa_raw2 = int function (gnutls_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x, uint flags);
         alias pgnutls_privkey_export_ecc_raw = int function (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
-        alias pgnutls_privkey_export_ecc_raw2 = int function (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_privkey_export_rsa_raw2 = int function (gnutls_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2, uint flags);
+            alias pgnutls_privkey_export_dsa_raw2 = int function (gnutls_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x, uint flags);
+            alias pgnutls_privkey_export_ecc_raw2 = int function (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k, uint flags);
+        }
+
         alias pgnutls_privkey_export_gost_raw2 = int function (gnutls_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k, uint flags);
         alias pgnutls_x509_crt_privkey_sign = int function (gnutls_x509_crt_t crt, gnutls_x509_crt_t issuer, gnutls_privkey_t issuer_key, gnutls_digest_algorithm_t dig, uint flags);
         alias pgnutls_x509_crl_privkey_sign = int function (gnutls_x509_crl_t crl, gnutls_x509_crt_t issuer, gnutls_privkey_t issuer_key, gnutls_digest_algorithm_t dig, uint flags);
@@ -364,8 +413,13 @@ else
         pgnutls_pubkey_verify_params gnutls_pubkey_verify_params;
         pgnutls_pubkey_set_pin_function gnutls_pubkey_set_pin_function;
         pgnutls_pubkey_get_pk_algorithm gnutls_pubkey_get_pk_algorithm;
-        pgnutls_pubkey_set_spki gnutls_pubkey_set_spki;
-        pgnutls_pubkey_get_spki gnutls_pubkey_get_spki;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_pubkey_set_spki gnutls_pubkey_set_spki;
+            pgnutls_pubkey_get_spki gnutls_pubkey_get_spki;
+        }
+
         pgnutls_pubkey_import_x509 gnutls_pubkey_import_x509;
         pgnutls_pubkey_import_x509_crq gnutls_pubkey_import_x509_crq;
         pgnutls_pubkey_import_pkcs11 gnutls_pubkey_import_pkcs11;
@@ -378,10 +432,15 @@ else
         pgnutls_pubkey_import_tpm_raw gnutls_pubkey_import_tpm_raw;
         pgnutls_pubkey_get_preferred_hash_algorithm gnutls_pubkey_get_preferred_hash_algorithm;
         pgnutls_pubkey_export_rsa_raw gnutls_pubkey_export_rsa_raw;
-        pgnutls_pubkey_export_rsa_raw2 gnutls_pubkey_export_rsa_raw2;
         pgnutls_pubkey_export_dsa_raw gnutls_pubkey_export_dsa_raw;
-        pgnutls_pubkey_export_dsa_raw2 gnutls_pubkey_export_dsa_raw2;
-        pgnutls_pubkey_export_ecc_raw2 gnutls_pubkey_export_ecc_raw2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_pubkey_export_rsa_raw2 gnutls_pubkey_export_rsa_raw2;
+            pgnutls_pubkey_export_dsa_raw2 gnutls_pubkey_export_dsa_raw2;
+            pgnutls_pubkey_export_ecc_raw2 gnutls_pubkey_export_ecc_raw2;
+        }
+
         pgnutls_pubkey_export_gost_raw2 gnutls_pubkey_export_gost_raw2;
         pgnutls_pubkey_export_ecc_raw gnutls_pubkey_export_ecc_raw;
         pgnutls_pubkey_export_ecc_x962 gnutls_pubkey_export_ecc_x962;
@@ -406,8 +465,13 @@ else
         pgnutls_privkey_deinit gnutls_privkey_deinit;
         pgnutls_privkey_generate gnutls_privkey_generate;
         pgnutls_privkey_generate2 gnutls_privkey_generate2;
-        pgnutls_privkey_set_spki gnutls_privkey_set_spki;
-        pgnutls_privkey_get_spki gnutls_privkey_get_spki;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_privkey_set_spki gnutls_privkey_set_spki;
+            pgnutls_privkey_get_spki gnutls_privkey_get_spki;
+        }
+
         pgnutls_privkey_verify_seed gnutls_privkey_verify_seed;
         pgnutls_privkey_get_seed gnutls_privkey_get_seed;
         pgnutls_privkey_verify_params gnutls_privkey_verify_params;
@@ -430,7 +494,10 @@ else
         pgnutls_privkey_import_ext gnutls_privkey_import_ext;
         pgnutls_privkey_import_ext2 gnutls_privkey_import_ext2;
         pgnutls_privkey_import_ext3 gnutls_privkey_import_ext3;
-        pgnutls_privkey_import_ext4 gnutls_privkey_import_ext4;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            pgnutls_privkey_import_ext4 gnutls_privkey_import_ext4;
+
         pgnutls_privkey_import_dsa_raw gnutls_privkey_import_dsa_raw;
         pgnutls_privkey_import_rsa_raw gnutls_privkey_import_rsa_raw;
         pgnutls_privkey_import_ecc_raw gnutls_privkey_import_ecc_raw;
@@ -442,11 +509,16 @@ else
         pgnutls_privkey_decrypt_data gnutls_privkey_decrypt_data;
         pgnutls_privkey_decrypt_data2 gnutls_privkey_decrypt_data2;
         pgnutls_privkey_export_rsa_raw gnutls_privkey_export_rsa_raw;
-        pgnutls_privkey_export_rsa_raw2 gnutls_privkey_export_rsa_raw2;
         pgnutls_privkey_export_dsa_raw gnutls_privkey_export_dsa_raw;
-        pgnutls_privkey_export_dsa_raw2 gnutls_privkey_export_dsa_raw2;
         pgnutls_privkey_export_ecc_raw gnutls_privkey_export_ecc_raw;
-        pgnutls_privkey_export_ecc_raw2 gnutls_privkey_export_ecc_raw2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_privkey_export_rsa_raw2 gnutls_privkey_export_rsa_raw2;
+            pgnutls_privkey_export_dsa_raw2 gnutls_privkey_export_dsa_raw2;
+            pgnutls_privkey_export_ecc_raw2 gnutls_privkey_export_ecc_raw2;
+        }
+
         pgnutls_privkey_export_gost_raw2 gnutls_privkey_export_gost_raw2;
         pgnutls_x509_crt_privkey_sign gnutls_x509_crt_privkey_sign;
         pgnutls_x509_crl_privkey_sign gnutls_x509_crl_privkey_sign;
@@ -477,8 +549,13 @@ else
         lib.bindSymbol_stdcall(gnutls_pubkey_verify_params, "gnutls_pubkey_verify_params");
         lib.bindSymbol_stdcall(gnutls_pubkey_set_pin_function, "gnutls_pubkey_set_pin_function");
         lib.bindSymbol_stdcall(gnutls_pubkey_get_pk_algorithm, "gnutls_pubkey_get_pk_algorithm");
-        lib.bindSymbol_stdcall(gnutls_pubkey_set_spki, "gnutls_pubkey_set_spki");
-        lib.bindSymbol_stdcall(gnutls_pubkey_get_spki, "gnutls_pubkey_get_spki");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_pubkey_set_spki, "gnutls_pubkey_set_spki");
+            lib.bindSymbol_stdcall(gnutls_pubkey_get_spki, "gnutls_pubkey_get_spki");
+        }
+
         lib.bindSymbol_stdcall(gnutls_pubkey_import_x509, "gnutls_pubkey_import_x509");
         lib.bindSymbol_stdcall(gnutls_pubkey_import_x509_crq, "gnutls_pubkey_import_x509_crq");
         lib.bindSymbol_stdcall(gnutls_pubkey_import_pkcs11, "gnutls_pubkey_import_pkcs11");
@@ -491,10 +568,15 @@ else
         lib.bindSymbol_stdcall(gnutls_pubkey_import_tpm_raw, "gnutls_pubkey_import_tpm_raw");
         lib.bindSymbol_stdcall(gnutls_pubkey_get_preferred_hash_algorithm, "gnutls_pubkey_get_preferred_hash_algorithm");
         lib.bindSymbol_stdcall(gnutls_pubkey_export_rsa_raw, "gnutls_pubkey_export_rsa_raw");
-        lib.bindSymbol_stdcall(gnutls_pubkey_export_rsa_raw2, "gnutls_pubkey_export_rsa_raw2");
         lib.bindSymbol_stdcall(gnutls_pubkey_export_dsa_raw, "gnutls_pubkey_export_dsa_raw");
-        lib.bindSymbol_stdcall(gnutls_pubkey_export_dsa_raw2, "gnutls_pubkey_export_dsa_raw2");
-        lib.bindSymbol_stdcall(gnutls_pubkey_export_ecc_raw2, "gnutls_pubkey_export_ecc_raw2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_pubkey_export_rsa_raw2, "gnutls_pubkey_export_rsa_raw2");
+            lib.bindSymbol_stdcall(gnutls_pubkey_export_dsa_raw2, "gnutls_pubkey_export_dsa_raw2");
+            lib.bindSymbol_stdcall(gnutls_pubkey_export_ecc_raw2, "gnutls_pubkey_export_ecc_raw2");
+        }
+
         lib.bindSymbol_stdcall(gnutls_pubkey_export_gost_raw2, "gnutls_pubkey_export_gost_raw2");
         lib.bindSymbol_stdcall(gnutls_pubkey_export_ecc_raw, "gnutls_pubkey_export_ecc_raw");
         lib.bindSymbol_stdcall(gnutls_pubkey_export_ecc_x962, "gnutls_pubkey_export_ecc_x962");
@@ -519,8 +601,13 @@ else
         lib.bindSymbol_stdcall(gnutls_privkey_deinit, "gnutls_privkey_deinit");
         lib.bindSymbol_stdcall(gnutls_privkey_generate, "gnutls_privkey_generate");
         lib.bindSymbol_stdcall(gnutls_privkey_generate2, "gnutls_privkey_generate2");
-        lib.bindSymbol_stdcall(gnutls_privkey_set_spki, "gnutls_privkey_set_spki");
-        lib.bindSymbol_stdcall(gnutls_privkey_get_spki, "gnutls_privkey_get_spki");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_privkey_set_spki, "gnutls_privkey_set_spki");
+            lib.bindSymbol_stdcall(gnutls_privkey_get_spki, "gnutls_privkey_get_spki");
+        }
+
         lib.bindSymbol_stdcall(gnutls_privkey_verify_seed, "gnutls_privkey_verify_seed");
         lib.bindSymbol_stdcall(gnutls_privkey_get_seed, "gnutls_privkey_get_seed");
         lib.bindSymbol_stdcall(gnutls_privkey_verify_params, "gnutls_privkey_verify_params");
@@ -543,7 +630,10 @@ else
         lib.bindSymbol_stdcall(gnutls_privkey_import_ext, "gnutls_privkey_import_ext");
         lib.bindSymbol_stdcall(gnutls_privkey_import_ext2, "gnutls_privkey_import_ext2");
         lib.bindSymbol_stdcall(gnutls_privkey_import_ext3, "gnutls_privkey_import_ext3");
-        lib.bindSymbol_stdcall(gnutls_privkey_import_ext4, "gnutls_privkey_import_ext4");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+            lib.bindSymbol_stdcall(gnutls_privkey_import_ext4, "gnutls_privkey_import_ext4");
+
         lib.bindSymbol_stdcall(gnutls_privkey_import_dsa_raw, "gnutls_privkey_import_dsa_raw");
         lib.bindSymbol_stdcall(gnutls_privkey_import_rsa_raw, "gnutls_privkey_import_rsa_raw");
         lib.bindSymbol_stdcall(gnutls_privkey_import_ecc_raw, "gnutls_privkey_import_ecc_raw");
@@ -555,11 +645,16 @@ else
         lib.bindSymbol_stdcall(gnutls_privkey_decrypt_data, "gnutls_privkey_decrypt_data");
         lib.bindSymbol_stdcall(gnutls_privkey_decrypt_data2, "gnutls_privkey_decrypt_data2");
         lib.bindSymbol_stdcall(gnutls_privkey_export_rsa_raw, "gnutls_privkey_export_rsa_raw");
-        lib.bindSymbol_stdcall(gnutls_privkey_export_rsa_raw2, "gnutls_privkey_export_rsa_raw2");
         lib.bindSymbol_stdcall(gnutls_privkey_export_dsa_raw, "gnutls_privkey_export_dsa_raw");
-        lib.bindSymbol_stdcall(gnutls_privkey_export_dsa_raw2, "gnutls_privkey_export_dsa_raw2");
         lib.bindSymbol_stdcall(gnutls_privkey_export_ecc_raw, "gnutls_privkey_export_ecc_raw");
-        lib.bindSymbol_stdcall(gnutls_privkey_export_ecc_raw2, "gnutls_privkey_export_ecc_raw2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_privkey_export_rsa_raw2, "gnutls_privkey_export_rsa_raw2");
+            lib.bindSymbol_stdcall(gnutls_privkey_export_dsa_raw2, "gnutls_privkey_export_dsa_raw2");
+            lib.bindSymbol_stdcall(gnutls_privkey_export_ecc_raw2, "gnutls_privkey_export_ecc_raw2");
+        }
+
         lib.bindSymbol_stdcall(gnutls_privkey_export_gost_raw2, "gnutls_privkey_export_gost_raw2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_privkey_sign, "gnutls_x509_crt_privkey_sign");
         lib.bindSymbol_stdcall(gnutls_x509_crl_privkey_sign, "gnutls_x509_crl_privkey_sign");

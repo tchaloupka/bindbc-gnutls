@@ -1,5 +1,6 @@
 module bindbc.gnutls.x509_ext;
 
+import bindbc.gnutls.config;
 import bindbc.gnutls.gnutls;
 import bindbc.gnutls.x509;
 import core.sys.posix.sys.select;
@@ -72,8 +73,13 @@ version (BindGnuTLS_Static)
     int gnutls_x509_ext_export_key_purposes (gnutls_x509_key_purposes_t, gnutls_datum_t* ext);
     int gnutls_x509_ext_import_key_usage (const(gnutls_datum_t)* ext, uint* key_usage);
     int gnutls_x509_ext_export_key_usage (uint key_usage, gnutls_datum_t* ext);
-    int gnutls_x509_ext_import_inhibit_anypolicy (const(gnutls_datum_t)* ext, uint* skipcerts);
-    int gnutls_x509_ext_export_inhibit_anypolicy (uint skipcerts, gnutls_datum_t* ext);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+    {
+        int gnutls_x509_ext_import_inhibit_anypolicy (const(gnutls_datum_t)* ext, uint* skipcerts);
+        int gnutls_x509_ext_export_inhibit_anypolicy (uint skipcerts, gnutls_datum_t* ext);
+    }
+
     int gnutls_x509_ext_import_proxy (const(gnutls_datum_t)* ext, int* pathlen, char** policyLanguage, char** policy, size_t* sizeof_policy);
     int gnutls_x509_ext_export_proxy (int pathLenConstraint, const(char)* policyLanguage, const(char)* policy, size_t sizeof_policy, gnutls_datum_t* ext);
     int gnutls_x509_policies_init (gnutls_x509_policies_t*);
@@ -82,9 +88,13 @@ version (BindGnuTLS_Static)
     int gnutls_x509_policies_set (gnutls_x509_policies_t policies, const(gnutls_x509_policy_st)* policy);
     int gnutls_x509_ext_import_policies (const(gnutls_datum_t)* ext, gnutls_x509_policies_t policies, uint flags);
     int gnutls_x509_ext_export_policies (gnutls_x509_policies_t policies, gnutls_datum_t* ext);
-    int gnutls_x509_ext_import_tlsfeatures (const(gnutls_datum_t)* ext, gnutls_x509_tlsfeatures_t, uint flags);
-    int gnutls_x509_ext_export_tlsfeatures (gnutls_x509_tlsfeatures_t f, gnutls_datum_t* ext);
-    int gnutls_x509_tlsfeatures_add (gnutls_x509_tlsfeatures_t f, uint feature);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+    {
+        int gnutls_x509_ext_import_tlsfeatures (const(gnutls_datum_t)* ext, gnutls_x509_tlsfeatures_t, uint flags);
+        int gnutls_x509_ext_export_tlsfeatures (gnutls_x509_tlsfeatures_t f, gnutls_datum_t* ext);
+        int gnutls_x509_tlsfeatures_add (gnutls_x509_tlsfeatures_t f, uint feature);
+    }
 }
 else
 {
@@ -133,8 +143,13 @@ else
         alias pgnutls_x509_ext_export_key_purposes = int function (gnutls_x509_key_purposes_t, gnutls_datum_t* ext);
         alias pgnutls_x509_ext_import_key_usage = int function (const(gnutls_datum_t)* ext, uint* key_usage);
         alias pgnutls_x509_ext_export_key_usage = int function (uint key_usage, gnutls_datum_t* ext);
-        alias pgnutls_x509_ext_import_inhibit_anypolicy = int function (const(gnutls_datum_t)* ext, uint* skipcerts);
-        alias pgnutls_x509_ext_export_inhibit_anypolicy = int function (uint skipcerts, gnutls_datum_t* ext);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            alias pgnutls_x509_ext_import_inhibit_anypolicy = int function (const(gnutls_datum_t)* ext, uint* skipcerts);
+            alias pgnutls_x509_ext_export_inhibit_anypolicy = int function (uint skipcerts, gnutls_datum_t* ext);
+        }
+
         alias pgnutls_x509_ext_import_proxy = int function (const(gnutls_datum_t)* ext, int* pathlen, char** policyLanguage, char** policy, size_t* sizeof_policy);
         alias pgnutls_x509_ext_export_proxy = int function (int pathLenConstraint, const(char)* policyLanguage, const(char)* policy, size_t sizeof_policy, gnutls_datum_t* ext);
         alias pgnutls_x509_policies_init = int function (gnutls_x509_policies_t*);
@@ -143,9 +158,13 @@ else
         alias pgnutls_x509_policies_set = int function (gnutls_x509_policies_t policies, const(gnutls_x509_policy_st)* policy);
         alias pgnutls_x509_ext_import_policies = int function (const(gnutls_datum_t)* ext, gnutls_x509_policies_t policies, uint flags);
         alias pgnutls_x509_ext_export_policies = int function (gnutls_x509_policies_t policies, gnutls_datum_t* ext);
-        alias pgnutls_x509_ext_import_tlsfeatures = int function (const(gnutls_datum_t)* ext, gnutls_x509_tlsfeatures_t, uint flags);
-        alias pgnutls_x509_ext_export_tlsfeatures = int function (gnutls_x509_tlsfeatures_t f, gnutls_datum_t* ext);
-        alias pgnutls_x509_tlsfeatures_add = int function (gnutls_x509_tlsfeatures_t f, uint feature);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            alias pgnutls_x509_ext_import_tlsfeatures = int function (const(gnutls_datum_t)* ext, gnutls_x509_tlsfeatures_t, uint flags);
+            alias pgnutls_x509_ext_export_tlsfeatures = int function (gnutls_x509_tlsfeatures_t f, gnutls_datum_t* ext);
+            alias pgnutls_x509_tlsfeatures_add = int function (gnutls_x509_tlsfeatures_t f, uint feature);
+        }
     }
 
     __gshared
@@ -193,8 +212,13 @@ else
         pgnutls_x509_ext_export_key_purposes gnutls_x509_ext_export_key_purposes;
         pgnutls_x509_ext_import_key_usage gnutls_x509_ext_import_key_usage;
         pgnutls_x509_ext_export_key_usage gnutls_x509_ext_export_key_usage;
-        pgnutls_x509_ext_import_inhibit_anypolicy gnutls_x509_ext_import_inhibit_anypolicy;
-        pgnutls_x509_ext_export_inhibit_anypolicy gnutls_x509_ext_export_inhibit_anypolicy;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            pgnutls_x509_ext_import_inhibit_anypolicy gnutls_x509_ext_import_inhibit_anypolicy;
+            pgnutls_x509_ext_export_inhibit_anypolicy gnutls_x509_ext_export_inhibit_anypolicy;
+        }
+
         pgnutls_x509_ext_import_proxy gnutls_x509_ext_import_proxy;
         pgnutls_x509_ext_export_proxy gnutls_x509_ext_export_proxy;
         pgnutls_x509_policies_init gnutls_x509_policies_init;
@@ -203,9 +227,13 @@ else
         pgnutls_x509_policies_set gnutls_x509_policies_set;
         pgnutls_x509_ext_import_policies gnutls_x509_ext_import_policies;
         pgnutls_x509_ext_export_policies gnutls_x509_ext_export_policies;
-        pgnutls_x509_ext_import_tlsfeatures gnutls_x509_ext_import_tlsfeatures;
-        pgnutls_x509_ext_export_tlsfeatures gnutls_x509_ext_export_tlsfeatures;
-        pgnutls_x509_tlsfeatures_add gnutls_x509_tlsfeatures_add;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            pgnutls_x509_ext_import_tlsfeatures gnutls_x509_ext_import_tlsfeatures;
+            pgnutls_x509_ext_export_tlsfeatures gnutls_x509_ext_export_tlsfeatures;
+            pgnutls_x509_tlsfeatures_add gnutls_x509_tlsfeatures_add;
+        }
     }
 
     import bindbc.loader : SharedLib, bindSymbol_stdcall;
@@ -254,8 +282,13 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_ext_export_key_purposes, "gnutls_x509_ext_export_key_purposes");
         lib.bindSymbol_stdcall(gnutls_x509_ext_import_key_usage, "gnutls_x509_ext_import_key_usage");
         lib.bindSymbol_stdcall(gnutls_x509_ext_export_key_usage, "gnutls_x509_ext_export_key_usage");
-        lib.bindSymbol_stdcall(gnutls_x509_ext_import_inhibit_anypolicy, "gnutls_x509_ext_import_inhibit_anypolicy");
-        lib.bindSymbol_stdcall(gnutls_x509_ext_export_inhibit_anypolicy, "gnutls_x509_ext_export_inhibit_anypolicy");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_ext_import_inhibit_anypolicy, "gnutls_x509_ext_import_inhibit_anypolicy");
+            lib.bindSymbol_stdcall(gnutls_x509_ext_export_inhibit_anypolicy, "gnutls_x509_ext_export_inhibit_anypolicy");
+        }
+
         lib.bindSymbol_stdcall(gnutls_x509_ext_import_proxy, "gnutls_x509_ext_import_proxy");
         lib.bindSymbol_stdcall(gnutls_x509_ext_export_proxy, "gnutls_x509_ext_export_proxy");
         lib.bindSymbol_stdcall(gnutls_x509_policies_init, "gnutls_x509_policies_init");
@@ -264,8 +297,12 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_policies_set, "gnutls_x509_policies_set");
         lib.bindSymbol_stdcall(gnutls_x509_ext_import_policies, "gnutls_x509_ext_import_policies");
         lib.bindSymbol_stdcall(gnutls_x509_ext_export_policies, "gnutls_x509_ext_export_policies");
-        lib.bindSymbol_stdcall(gnutls_x509_ext_import_tlsfeatures, "gnutls_x509_ext_import_tlsfeatures");
-        lib.bindSymbol_stdcall(gnutls_x509_ext_export_tlsfeatures, "gnutls_x509_ext_export_tlsfeatures");
-        lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_add, "gnutls_x509_tlsfeatures_add");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
+        {
+            lib.bindSymbol_stdcall(gnutls_x509_ext_import_tlsfeatures, "gnutls_x509_ext_import_tlsfeatures");
+            lib.bindSymbol_stdcall(gnutls_x509_ext_export_tlsfeatures, "gnutls_x509_ext_export_tlsfeatures");
+            lib.bindSymbol_stdcall(gnutls_x509_tlsfeatures_add, "gnutls_x509_tlsfeatures_add");
+        }
     }
 }

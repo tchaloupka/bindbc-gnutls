@@ -1,5 +1,6 @@
 module bindbc.gnutls.ocsp;
 
+import bindbc.gnutls.config;
 import bindbc.gnutls.gnutls;
 import bindbc.gnutls.x509;
 import core.sys.posix.sys.select;
@@ -94,7 +95,10 @@ version (BindGnuTLS_Static)
     int gnutls_ocsp_resp_get_response (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* response_type_oid, gnutls_datum_t* response);
     int gnutls_ocsp_resp_get_version (gnutls_ocsp_resp_const_t resp);
     int gnutls_ocsp_resp_get_responder (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* dn);
-    int gnutls_ocsp_resp_get_responder2 (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* dn, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+        int gnutls_ocsp_resp_get_responder2 (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* dn, uint flags);
+
     int gnutls_ocsp_resp_get_responder_raw_id (gnutls_ocsp_resp_const_t resp, uint type, gnutls_datum_t* raw);
     time_t gnutls_ocsp_resp_get_produced (gnutls_ocsp_resp_const_t resp);
     int gnutls_ocsp_resp_get_single (gnutls_ocsp_resp_const_t resp, uint indx, gnutls_digest_algorithm_t* digest, gnutls_datum_t* issuer_name_hash, gnutls_datum_t* issuer_key_hash, gnutls_datum_t* serial_number, uint* cert_status, time_t* this_update, time_t* next_update, time_t* revocation_time, uint* revocation_reason);
@@ -137,7 +141,10 @@ else
         alias pgnutls_ocsp_resp_get_response = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* response_type_oid, gnutls_datum_t* response);
         alias pgnutls_ocsp_resp_get_version = int function (gnutls_ocsp_resp_const_t resp);
         alias pgnutls_ocsp_resp_get_responder = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* dn);
-        alias pgnutls_ocsp_resp_get_responder2 = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* dn, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            alias pgnutls_ocsp_resp_get_responder2 = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* dn, uint flags);
+
         alias pgnutls_ocsp_resp_get_responder_raw_id = int function (gnutls_ocsp_resp_const_t resp, uint type, gnutls_datum_t* raw);
         alias pgnutls_ocsp_resp_get_produced = time_t function (gnutls_ocsp_resp_const_t resp);
         alias pgnutls_ocsp_resp_get_single = int function (gnutls_ocsp_resp_const_t resp, uint indx, gnutls_digest_algorithm_t* digest, gnutls_datum_t* issuer_name_hash, gnutls_datum_t* issuer_key_hash, gnutls_datum_t* serial_number, uint* cert_status, time_t* this_update, time_t* next_update, time_t* revocation_time, uint* revocation_reason);
@@ -179,7 +186,10 @@ else
         pgnutls_ocsp_resp_get_response gnutls_ocsp_resp_get_response;
         pgnutls_ocsp_resp_get_version gnutls_ocsp_resp_get_version;
         pgnutls_ocsp_resp_get_responder gnutls_ocsp_resp_get_responder;
-        pgnutls_ocsp_resp_get_responder2 gnutls_ocsp_resp_get_responder2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            pgnutls_ocsp_resp_get_responder2 gnutls_ocsp_resp_get_responder2;
+
         pgnutls_ocsp_resp_get_responder_raw_id gnutls_ocsp_resp_get_responder_raw_id;
         pgnutls_ocsp_resp_get_produced gnutls_ocsp_resp_get_produced;
         pgnutls_ocsp_resp_get_single gnutls_ocsp_resp_get_single;
@@ -222,7 +232,10 @@ else
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_response, "gnutls_ocsp_resp_get_response");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_version, "gnutls_ocsp_resp_get_version");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_responder, "gnutls_ocsp_resp_get_responder");
-        lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_responder2, "gnutls_ocsp_resp_get_responder2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_7)
+            lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_responder2, "gnutls_ocsp_resp_get_responder2");
+
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_responder_raw_id, "gnutls_ocsp_resp_get_responder_raw_id");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_produced, "gnutls_ocsp_resp_get_produced");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_single, "gnutls_ocsp_resp_get_single");
