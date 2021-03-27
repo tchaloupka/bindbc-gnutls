@@ -17,5 +17,5 @@ void loadLib()
         printf("Error loading GnuTLS: %d\n", res);
         assert(0);
     }
-    else printf("GnuTLS sucesfully loaded\n");
+    // else printf("GnuTLS sucesfully loaded\n");
 }

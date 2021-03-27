@@ -1206,31 +1206,33 @@ extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_q;
 extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_generator;
 extern __gshared const uint gnutls_ffdhe_2048_key_bits;
 
-extern (D) uint GNUTLS_CURVE_TO_BITS(uint curve)
+extern (D) nothrow @nogc
 {
-    return cast(uint) (cast(uint) 1 << 31) | (cast(uint) curve);
-}
+    uint GNUTLS_CURVE_TO_BITS(uint curve) @safe pure
+    {
+        return cast(uint) (cast(uint) 1 << 31) | (cast(uint) curve);
+    }
 
-extern (D) uint GNUTLS_BITS_TO_CURVE(uint bits)
-{
-    return (cast(uint) bits) & 0x7FFFFFFF;
-}
+    uint GNUTLS_BITS_TO_CURVE(uint bits) @safe pure
+    {
+        return (cast(uint) bits) & 0x7FFFFFFF;
+    }
 
-extern (D) uint GNUTLS_BITS_ARE_CURVE(uint bits)
-{
-    return (cast(uint) bits) & 0x80000000;
-}
+    uint GNUTLS_BITS_ARE_CURVE(uint bits) @safe pure
+    {
+        return (cast(uint) bits) & 0x80000000;
+    }
 
-extern (D) auto gnutls_check_version_numeric(T0, T1, T2)(auto ref T0 a, auto ref T1 b, auto ref T2 c)
-{
-    import std.conv : to;
+    const(char)* gnutls_check_version_numeric(uint major, uint minor, uint patch)() @trusted
+    {
+        enum ver = major.stringof[0..$-1] ~ "." ~ minor.stringof[0..$-1] ~ "." ~ patch.stringof[0..$-1];
+        return gnutls_check_version(ver);
+    }
 
-    return (GNUTLS_VERSION_MAJOR >= a) && ((GNUTLS_VERSION_NUMBER >= ((a << 16) + (b << 8) + c)) || gnutls_check_version(to!string(a) ~ "." ~ to!string(b) ~ "." ~ to!string(c)));
-}
-
-extern (D) void gnutls_transport_set_int(gnutls_session_t s, int i)
-{
-    gnutls_transport_set_int2(s, i, i);
+    void gnutls_transport_set_int(gnutls_session_t s, int i) @trusted
+    {
+        gnutls_transport_set_int2(s, i, i);
+    }
 }
 
 version (BindGnuTLS_Static)

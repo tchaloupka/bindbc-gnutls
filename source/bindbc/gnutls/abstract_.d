@@ -81,44 +81,47 @@ extern(C) nothrow @nogc
     alias gnutls_certificate_retrieve_function3 = int function (gnutls_session_t, const(gnutls_cert_retr_st)* info, gnutls_pcert_st** certs, uint* pcert_length, gnutls_ocsp_data_st** ocsp, uint* ocsp_length, gnutls_privkey_t* privkey, uint* flags);
 }
 
-extern (D) uint GNUTLS_SIGN_ALGO_TO_FLAGS(uint sig)
+extern (D) nothrow @nogc
 {
-    return cast(uint) sig << 20;
-}
+    uint GNUTLS_SIGN_ALGO_TO_FLAGS(uint sig) @safe pure
+    {
+        return cast(uint) sig << 20;
+    }
 
-extern (D) uint GNUTLS_FLAGS_TO_SIGN_ALGO(uint flags)
-{
-    return cast(uint) flags >> 20;
-}
+    uint GNUTLS_FLAGS_TO_SIGN_ALGO(uint flags) @safe pure
+    {
+        return cast(uint) flags >> 20;
+    }
 
-extern (D) uint GNUTLS_SUBGROUP_TO_BITS(uint group, uint subgroup)
-{
-    return cast(uint) (subgroup << 16) | group;
-}
+    uint GNUTLS_SUBGROUP_TO_BITS(uint group, uint subgroup) @safe pure
+    {
+        return cast(uint) (subgroup << 16) | group;
+    }
 
-extern (D) uint GNUTLS_BITS_TO_SUBGROUP(uint bits)
-{
-    return (bits >> 16) & 0xFFFF;
-}
+    uint GNUTLS_BITS_TO_SUBGROUP(uint bits) @safe pure
+    {
+        return (bits >> 16) & 0xFFFF;
+    }
 
-extern (D) uint GNUTLS_BITS_TO_GROUP(uint bits)
-{
-    return bits & 0xFFFF;
-}
+    uint GNUTLS_BITS_TO_GROUP(uint bits) @safe pure
+    {
+        return bits & 0xFFFF;
+    }
 
-extern (D) uint GNUTLS_BITS_HAVE_SUBGROUP(T)(auto ref T bits)
-{
-    return bits & 0xFFFF0000;
-}
+    uint GNUTLS_BITS_HAVE_SUBGROUP(uint bits) @safe pure
+    {
+        return bits & 0xFFFF0000;
+    }
 
-extern (D) int gnutls_privkey_import_pkcs11_url(gnutls_privkey_t key, const(char)* url)
-{
-    return gnutls_privkey_import_url(key, url, 0);
-}
+    int gnutls_privkey_import_pkcs11_url(gnutls_privkey_t key, const(char)* url)
+    {
+        return gnutls_privkey_import_url(key, url, 0);
+    }
 
-extern (D) int gnutls_privkey_sign_raw_data(gnutls_privkey_t key, uint flags, const(gnutls_datum_t)* data, gnutls_datum_t* sig)
-{
-    return gnutls_privkey_sign_hash(key, gnutls_digest_algorithm_t.GNUTLS_DIG_UNKNOWN, gnutls_privkey_flags_t.GNUTLS_PRIVKEY_SIGN_FLAG_TLS1_RSA, data, sig);
+    int gnutls_privkey_sign_raw_data(gnutls_privkey_t key, uint flags, const(gnutls_datum_t)* data, gnutls_datum_t* sig)
+    {
+        return gnutls_privkey_sign_hash(key, gnutls_digest_algorithm_t.GNUTLS_DIG_UNKNOWN, gnutls_privkey_flags_t.GNUTLS_PRIVKEY_SIGN_FLAG_TLS1_RSA, data, sig);
+    }
 }
 
 alias gnutls_pubkey_get_pk_rsa_raw = gnutls_pubkey_export_rsa_raw;
