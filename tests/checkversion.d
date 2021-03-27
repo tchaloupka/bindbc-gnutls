@@ -1,15 +1,10 @@
-#!/usr/bin/env dub
-/+ dub.sdl:
-    name "checkversion"
-    dependency "bindbc-gnutls" path="../"
-    libs "gnutls"
-+/
-
 import core.stdc.stdio;
 import bindbc.gnutls;
+import tests._loader;
 
 extern (C) int main()
 {
+    loadLib();
     printf("GnuTLS version: %s\n", gnutls_check_version(null));
     return 0;
 }

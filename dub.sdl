@@ -13,3 +13,13 @@ configuration "staticBC" {
     versions "BindGnuTLS_Static"
     dflags "-betterC"
 }
+
+configuration "dynamic" {
+    dependency "bindbc-loader" version="~>0.3.0"
+}
+
+configuration "dynamicBC" {
+    dependency "bindbc-loader" version="~>0.3.0"
+    subConfiguration "bindbc-loader" "yesBC"
+    dflags "-betterC"
+}
