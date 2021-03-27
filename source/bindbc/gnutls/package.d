@@ -23,7 +23,7 @@ else {
     import bindbc.loader;
 
     private SharedLib lib, libDane;
-    enum LoadRes { noLib, badLib, loaded }
+    enum LoadRes { noLibrary, badLibrary, loaded }
 
     LoadRes loadGnuTLS()
     {
@@ -44,7 +44,7 @@ else {
         LoadRes ret;
         foreach (name; libNames) {
             ret = loadGnuTLS(name.ptr);
-            if (ret != LoadRes.noLib) break;
+            if (ret != LoadRes.noLibrary) break;
         }
         return ret;
     }
@@ -62,7 +62,7 @@ else {
         LoadRes ret;
         foreach (name; libNames) {
             ret = loadGnuTLS_Dane(name.ptr);
-            if (ret != LoadRes.noLib) break;
+            if (ret != LoadRes.noLibrary) break;
         }
         return ret;
     }
@@ -73,7 +73,7 @@ else {
         if (lib == invalidHandle)
         {
             lib = load(libName);
-            if (lib == invalidHandle) return LoadRes.noLib;
+            if (lib == invalidHandle) return LoadRes.noLibrary;
         }
 
         immutable errCount = errorCount();
@@ -96,7 +96,7 @@ else {
         lib.bindX509Ext();
         lib.bindX509();
 
-        if (errorCount() != errCount) return LoadRes.badLib;
+        if (errorCount() != errCount) return LoadRes.badLibrary;
         return LoadRes.loaded;
     }
 
@@ -106,14 +106,14 @@ else {
         if (libDane == invalidHandle)
         {
             libDane = load(libName);
-            if (libDane == invalidHandle) return LoadRes.noLib;
+            if (libDane == invalidHandle) return LoadRes.noLibrary;
         }
 
         immutable errCount = errorCount();
 
         libDane.bindDane();
 
-        if (errorCount() != errCount) return LoadRes.badLib;
+        if (errorCount() != errCount) return LoadRes.badLibrary;
         return LoadRes.loaded;
     }
 }
