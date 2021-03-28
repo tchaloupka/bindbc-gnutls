@@ -1185,59 +1185,6 @@ extern(C) nothrow @nogc
     alias gnutls_db_add_func = int function (void*, time_t exp_time, const(gnutls_datum_t)* key, const(gnutls_datum_t)* data);
 }
 
-extern __gshared gnutls_alloc_function gnutls_malloc;
-extern __gshared gnutls_realloc_function gnutls_realloc;
-extern __gshared gnutls_calloc_function gnutls_calloc;
-extern __gshared gnutls_free_function gnutls_free;
-extern __gshared char* function (const(char)*) gnutls_strdup;
-
-static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_2)
-{
-    extern __gshared const gnutls_datum_t gnutls_srp_8192_group_prime;
-    extern __gshared const gnutls_datum_t gnutls_srp_8192_group_generator;
-}
-
-extern __gshared const gnutls_datum_t gnutls_srp_4096_group_prime;
-extern __gshared const gnutls_datum_t gnutls_srp_4096_group_generator;
-extern __gshared const gnutls_datum_t gnutls_srp_3072_group_prime;
-extern __gshared const gnutls_datum_t gnutls_srp_3072_group_generator;
-extern __gshared const gnutls_datum_t gnutls_srp_2048_group_prime;
-extern __gshared const gnutls_datum_t gnutls_srp_2048_group_generator;
-extern __gshared const gnutls_datum_t gnutls_srp_1536_group_prime;
-extern __gshared const gnutls_datum_t gnutls_srp_1536_group_generator;
-extern __gshared const gnutls_datum_t gnutls_srp_1024_group_prime;
-extern __gshared const gnutls_datum_t gnutls_srp_1024_group_generator;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_8192_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_8192_group_generator;
-extern __gshared const uint gnutls_ffdhe_8192_key_bits;
-
-static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
-{
-    extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_prime;
-    extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_generator;
-    extern __gshared const uint gnutls_ffdhe_6144_key_bits;
-}
-
-extern __gshared const gnutls_datum_t gnutls_ffdhe_4096_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_4096_group_generator;
-extern __gshared const uint gnutls_ffdhe_4096_key_bits;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_3072_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_3072_group_generator;
-extern __gshared const uint gnutls_ffdhe_3072_key_bits;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_prime;
-
-static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
-{
-    extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_q;
-    extern __gshared const gnutls_datum_t gnutls_ffdhe_3072_group_q;
-    extern __gshared const gnutls_datum_t gnutls_ffdhe_4096_group_q;
-    extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_q;
-    extern __gshared const gnutls_datum_t gnutls_ffdhe_8192_group_q;
-}
-
-extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_generator;
-extern __gshared const uint gnutls_ffdhe_2048_key_bits;
-
 extern (D) nothrow @nogc
 {
     uint GNUTLS_CURVE_TO_BITS(uint curve) @safe pure
@@ -1269,6 +1216,62 @@ extern (D) nothrow @nogc
 
 version (BindGnuTLS_Static)
 {
+    extern (System) extern __gshared
+    {
+        gnutls_alloc_function gnutls_malloc;
+        gnutls_realloc_function gnutls_realloc;
+        gnutls_calloc_function gnutls_calloc;
+        gnutls_free_function gnutls_free;
+        char* function (const(char)*) gnutls_strdup;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_2)
+        {
+            const gnutls_datum_t gnutls_srp_8192_group_prime;
+            const gnutls_datum_t gnutls_srp_8192_group_generator;
+        }
+
+        const gnutls_datum_t gnutls_srp_4096_group_prime;
+        const gnutls_datum_t gnutls_srp_4096_group_generator;
+        const gnutls_datum_t gnutls_srp_3072_group_prime;
+        const gnutls_datum_t gnutls_srp_3072_group_generator;
+        const gnutls_datum_t gnutls_srp_2048_group_prime;
+        const gnutls_datum_t gnutls_srp_2048_group_generator;
+        const gnutls_datum_t gnutls_srp_1536_group_prime;
+        const gnutls_datum_t gnutls_srp_1536_group_generator;
+        const gnutls_datum_t gnutls_srp_1024_group_prime;
+        const gnutls_datum_t gnutls_srp_1024_group_generator;
+        const gnutls_datum_t gnutls_ffdhe_8192_group_prime;
+        const gnutls_datum_t gnutls_ffdhe_8192_group_generator;
+        const uint gnutls_ffdhe_8192_key_bits;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+        {
+            const gnutls_datum_t gnutls_ffdhe_6144_group_prime;
+            const gnutls_datum_t gnutls_ffdhe_6144_group_generator;
+            const uint gnutls_ffdhe_6144_key_bits;
+        }
+
+        const gnutls_datum_t gnutls_ffdhe_4096_group_prime;
+        const gnutls_datum_t gnutls_ffdhe_4096_group_generator;
+        const uint gnutls_ffdhe_4096_key_bits;
+        const gnutls_datum_t gnutls_ffdhe_3072_group_prime;
+        const gnutls_datum_t gnutls_ffdhe_3072_group_generator;
+        const uint gnutls_ffdhe_3072_key_bits;
+        const gnutls_datum_t gnutls_ffdhe_2048_group_prime;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+        {
+            const gnutls_datum_t gnutls_ffdhe_2048_group_q;
+            const gnutls_datum_t gnutls_ffdhe_3072_group_q;
+            const gnutls_datum_t gnutls_ffdhe_4096_group_q;
+            const gnutls_datum_t gnutls_ffdhe_6144_group_q;
+            const gnutls_datum_t gnutls_ffdhe_8192_group_q;
+        }
+
+        const gnutls_datum_t gnutls_ffdhe_2048_group_generator;
+        const uint gnutls_ffdhe_2048_key_bits;
+    }
+
     extern (System) @nogc nothrow @system:
 
     const(char)* gnutls_pk_algorithm_get_name (gnutls_pk_algorithm_t algorithm);
@@ -1808,6 +1811,61 @@ version (BindGnuTLS_Static)
 }
 else
 {
+    // external global symbols
+    mixin externField!(gnutls_alloc_function,  "gnutls_malloc");
+    mixin externField!(gnutls_realloc_function,  "gnutls_realloc");
+    mixin externField!(gnutls_calloc_function,  "gnutls_calloc");
+    mixin externField!(gnutls_free_function,  "gnutls_free");
+    mixin externField!(char* function (const(char)*), "gnutls_strdup");
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_2)
+    {
+        mixin externField!(const gnutls_datum_t, "gnutls_srp_8192_group_prime");
+        mixin externField!(const gnutls_datum_t, "gnutls_srp_8192_group_generator");
+    }
+
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_4096_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_4096_group_generator");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_3072_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_3072_group_generator");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_2048_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_2048_group_generator");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_1536_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_1536_group_generator");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_1024_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_srp_1024_group_generator");
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_8192_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_8192_group_generator");
+    mixin externField!(const uint, "gnutls_ffdhe_8192_key_bits");
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+    {
+        mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_6144_group_prime");
+        mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_6144_group_generator");
+        mixin externField!(const uint, "gnutls_ffdhe_6144_key_bits");
+    }
+
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_4096_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_4096_group_generator");
+    mixin externField!(const uint, "gnutls_ffdhe_4096_key_bits");
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_3072_group_prime");
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_3072_group_generator");
+    mixin externField!(const uint, "gnutls_ffdhe_3072_key_bits");
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_2048_group_prime");
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+    {
+        mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_2048_group_q");
+        mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_3072_group_q");
+        mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_4096_group_q");
+        mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_6144_group_q");
+        mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_8192_group_q");
+    }
+
+    mixin externField!(const gnutls_datum_t, "gnutls_ffdhe_2048_group_generator");
+    mixin externField!(const uint, "gnutls_ffdhe_2048_key_bits");
+
+    // functions
     extern (System) @nogc nothrow @system
     {
         alias pgnutls_pk_algorithm_get_name = const(char)* function (gnutls_pk_algorithm_t algorithm);
@@ -2884,9 +2942,64 @@ else
             pgnutls_fips140_set_mode gnutls_fips140_set_mode;
     }
 
-    import bindbc.loader : SharedLib, bindSymbol_stdcall;
+    import bindbc.loader : SharedLib, bindSymbol, bindSymbol_stdcall;
     void bindGnutls(SharedLib lib)
     {
+        // global symbols
+        lib.bindSymbol_stdcall(gnutls_malloc_, "gnutls_malloc");
+        lib.bindSymbol_stdcall(gnutls_realloc_, "gnutls_realloc");
+        lib.bindSymbol_stdcall(gnutls_calloc_, "gnutls_calloc");
+        lib.bindSymbol_stdcall(gnutls_free_, "gnutls_free");
+        lib.bindSymbol_stdcall(gnutls_strdup_, "gnutls_strdup");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_2)
+        {
+            lib.bindSymbol_stdcall(gnutls_srp_8192_group_prime_, "gnutls_srp_8192_group_prime");
+            lib.bindSymbol_stdcall(gnutls_srp_8192_group_generator_, "gnutls_srp_8192_group_generator");
+        }
+
+        lib.bindSymbol_stdcall(gnutls_srp_4096_group_prime_, "gnutls_srp_4096_group_prime");
+        lib.bindSymbol_stdcall(gnutls_srp_4096_group_generator_, "gnutls_srp_4096_group_generator");
+        lib.bindSymbol_stdcall(gnutls_srp_3072_group_prime_, "gnutls_srp_3072_group_prime");
+        lib.bindSymbol_stdcall(gnutls_srp_3072_group_generator_, "gnutls_srp_3072_group_generator");
+        lib.bindSymbol_stdcall(gnutls_srp_2048_group_prime_, "gnutls_srp_2048_group_prime");
+        lib.bindSymbol_stdcall(gnutls_srp_2048_group_generator_, "gnutls_srp_2048_group_generator");
+        lib.bindSymbol_stdcall(gnutls_srp_1536_group_prime_, "gnutls_srp_1536_group_prime");
+        lib.bindSymbol_stdcall(gnutls_srp_1536_group_generator_, "gnutls_srp_1536_group_generator");
+        lib.bindSymbol_stdcall(gnutls_srp_1024_group_prime_, "gnutls_srp_1024_group_prime");
+        lib.bindSymbol_stdcall(gnutls_srp_1024_group_generator_, "gnutls_srp_1024_group_generator");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_8192_group_prime_, "gnutls_ffdhe_8192_group_prime");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_8192_group_generator_, "gnutls_ffdhe_8192_group_generator");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_8192_key_bits_, "gnutls_ffdhe_8192_key_bits");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+        {
+            lib.bindSymbol_stdcall(gnutls_ffdhe_6144_group_prime_, "gnutls_ffdhe_6144_group_prime");
+            lib.bindSymbol_stdcall(gnutls_ffdhe_6144_group_generator_, "gnutls_ffdhe_6144_group_generator");
+            lib.bindSymbol_stdcall(gnutls_ffdhe_6144_key_bits_, "gnutls_ffdhe_6144_key_bits");
+        }
+
+        lib.bindSymbol_stdcall(gnutls_ffdhe_4096_group_prime_, "gnutls_ffdhe_4096_group_prime");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_4096_group_generator_, "gnutls_ffdhe_4096_group_generator");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_4096_key_bits_, "gnutls_ffdhe_4096_key_bits");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_3072_group_prime_, "gnutls_ffdhe_3072_group_prime");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_3072_group_generator_, "gnutls_ffdhe_3072_group_generator");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_3072_key_bits_, "gnutls_ffdhe_3072_key_bits");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_2048_group_prime_, "gnutls_ffdhe_2048_group_prime");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+        {
+            lib.bindSymbol_stdcall(gnutls_ffdhe_2048_group_q_, "gnutls_ffdhe_2048_group_q");
+            lib.bindSymbol_stdcall(gnutls_ffdhe_3072_group_q_, "gnutls_ffdhe_3072_group_q");
+            lib.bindSymbol_stdcall(gnutls_ffdhe_4096_group_q_, "gnutls_ffdhe_4096_group_q");
+            lib.bindSymbol_stdcall(gnutls_ffdhe_6144_group_q_, "gnutls_ffdhe_6144_group_q");
+            lib.bindSymbol_stdcall(gnutls_ffdhe_8192_group_q_, "gnutls_ffdhe_8192_group_q");
+        }
+
+        lib.bindSymbol_stdcall(gnutls_ffdhe_2048_group_generator_, "gnutls_ffdhe_2048_group_generator");
+        lib.bindSymbol_stdcall(gnutls_ffdhe_2048_key_bits_, "gnutls_ffdhe_2048_key_bits");
+
+        // functions
         lib.bindSymbol_stdcall(gnutls_pk_algorithm_get_name, "gnutls_pk_algorithm_get_name");
         lib.bindSymbol_stdcall(gnutls_init, "gnutls_init");
         lib.bindSymbol_stdcall(gnutls_deinit, "gnutls_deinit");
@@ -3421,5 +3534,17 @@ else
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
             lib.bindSymbol_stdcall(gnutls_fips140_set_mode, "gnutls_fips140_set_mode");
+
+    }
+
+    private mixin template externField(T, string symbol)
+    {
+        import std.traits : isFunctionPointer, Parameters, ReturnType;
+
+        mixin("private __gshared T* " ~ symbol ~ "_;");
+        static if (isFunctionPointer!T)
+            mixin("ReturnType!T " ~ symbol ~ "(Parameters!T params) { return (*" ~ symbol ~ "_)(params); }");
+        else
+            mixin("T " ~ symbol ~ "() { return *" ~ symbol ~ "_; }");
     }
 }
