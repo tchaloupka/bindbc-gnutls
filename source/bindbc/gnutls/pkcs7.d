@@ -72,7 +72,9 @@ version (BindGnuTLS_Static)
     int gnutls_pkcs7_get_crt_raw2 (gnutls_pkcs7_t pkcs7, uint indx, gnutls_datum_t* cert);
     int gnutls_pkcs7_get_crl_raw2 (gnutls_pkcs7_t pkcs7, uint indx, gnutls_datum_t* crl);
     int gnutls_pkcs7_print (gnutls_pkcs7_t pkcs7, gnutls_certificate_print_formats_t format, gnutls_datum_t* out_);
-    int gnutls_pkcs7_print_signature_info (gnutls_pkcs7_signature_info_st* info, gnutls_certificate_print_formats_t format, gnutls_datum_t* out_);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+        int gnutls_pkcs7_print_signature_info (gnutls_pkcs7_signature_info_st* info, gnutls_certificate_print_formats_t format, gnutls_datum_t* out_);
 }
 else
 {
@@ -110,7 +112,9 @@ else
         alias pgnutls_pkcs7_get_crt_raw2 = int function (gnutls_pkcs7_t pkcs7, uint indx, gnutls_datum_t* cert);
         alias pgnutls_pkcs7_get_crl_raw2 = int function (gnutls_pkcs7_t pkcs7, uint indx, gnutls_datum_t* crl);
         alias pgnutls_pkcs7_print = int function (gnutls_pkcs7_t pkcs7, gnutls_certificate_print_formats_t format, gnutls_datum_t* out_);
-        alias pgnutls_pkcs7_print_signature_info = int function (gnutls_pkcs7_signature_info_st* info, gnutls_certificate_print_formats_t format, gnutls_datum_t* out_);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+            alias pgnutls_pkcs7_print_signature_info = int function (gnutls_pkcs7_signature_info_st* info, gnutls_certificate_print_formats_t format, gnutls_datum_t* out_);
     }
 
     __gshared
@@ -147,7 +151,9 @@ else
         pgnutls_pkcs7_get_crt_raw2 gnutls_pkcs7_get_crt_raw2;
         pgnutls_pkcs7_get_crl_raw2 gnutls_pkcs7_get_crl_raw2;
         pgnutls_pkcs7_print gnutls_pkcs7_print;
-        pgnutls_pkcs7_print_signature_info gnutls_pkcs7_print_signature_info;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+            pgnutls_pkcs7_print_signature_info gnutls_pkcs7_print_signature_info;
     }
 
     import bindbc.loader : SharedLib, bindSymbol_stdcall;
@@ -185,6 +191,8 @@ else
         lib.bindSymbol_stdcall(gnutls_pkcs7_get_crt_raw2, "gnutls_pkcs7_get_crt_raw2");
         lib.bindSymbol_stdcall(gnutls_pkcs7_get_crl_raw2, "gnutls_pkcs7_get_crl_raw2");
         lib.bindSymbol_stdcall(gnutls_pkcs7_print, "gnutls_pkcs7_print");
-        lib.bindSymbol_stdcall(gnutls_pkcs7_print_signature_info, "gnutls_pkcs7_print_signature_info");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+            lib.bindSymbol_stdcall(gnutls_pkcs7_print_signature_info, "gnutls_pkcs7_print_signature_info");
     }
 }
