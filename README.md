@@ -74,6 +74,7 @@ Supported versions:
 |     v3.6.3     | GNUTLS_3_6_3  |
 |     v3.6.4     | GNUTLS_3_6_4  |
 |     v3.6.5     | GNUTLS_3_6_5  |
+|     v3.6.6     | GNUTLS_3_6_6  |
 |     v3.6.8     | GNUTLS_3_6_8  |
 |     v3.6.9     | GNUTLS_3_6_9  |
 |     v3.6.10    | GNUTLS_3_6_10 |

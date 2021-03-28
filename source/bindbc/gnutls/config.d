@@ -22,6 +22,7 @@ enum GnuTLSSupport
     gnutls_3_6_3,
     gnutls_3_6_4,
     gnutls_3_6_5,
+    gnutls_3_6_6,
     gnutls_3_6_8,
     gnutls_3_6_9,
     gnutls_3_6_10,

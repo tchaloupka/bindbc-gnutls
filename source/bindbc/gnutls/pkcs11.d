@@ -1,5 +1,6 @@
 module bindbc.gnutls.pkcs11;
 
+import bindbc.gnutls.config;
 import bindbc.gnutls.gnutls;
 import bindbc.gnutls.x509;
 import bindbc.gnutls.x509_ext;
@@ -41,7 +42,7 @@ enum gnutls_pkcs11_obj_flags
     GNUTLS_PKCS11_OBJ_FLAG_PUBKEY = 1 << 20,
     GNUTLS_PKCS11_OBJ_FLAG_NO_STORE_PUBKEY = GNUTLS_PKCS11_OBJ_FLAG_PUBKEY,
     GNUTLS_PKCS11_OBJ_FLAG_PRIVKEY = 1 << 21,
-    GNUTLS_PKCS11_OBJ_FLAG_MARK_NOT_SENSITIVE = 1 << 22
+    GNUTLS_PKCS11_OBJ_FLAG_MARK_NOT_SENSITIVE = 1 << 22 /// Available from GnuTLS 3.6.3
 }
 
 alias gnutls_pkcs11_obj_attr_t = gnutls_pkcs11_obj_flags;
@@ -170,11 +171,17 @@ version (BindGnuTLS_Static)
     int gnutls_pkcs11_copy_x509_privkey2 (const(char)* token_url, gnutls_x509_privkey_t key, const(char)* label, const(gnutls_datum_t)* cid, uint key_usage, uint flags);
     int gnutls_pkcs11_delete_url (const(char)* object_url, uint flags);
     int gnutls_pkcs11_copy_secret_key (const(char)* token_url, gnutls_datum_t* key, const(char)* label, uint key_usage, uint flags);
-    int gnutls_pkcs11_obj_get_ptr (gnutls_pkcs11_obj_t obj, void** ptr, void** session, void** ohandle, c_ulong* slot_id, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_pkcs11_obj_get_ptr (gnutls_pkcs11_obj_t obj, void** ptr, void** session, void** ohandle, c_ulong* slot_id, uint flags);
+
     int gnutls_pkcs11_obj_get_info (gnutls_pkcs11_obj_t obj, gnutls_pkcs11_obj_info_t itype, void* output, size_t* output_size);
     int gnutls_pkcs11_obj_set_info (gnutls_pkcs11_obj_t obj, gnutls_pkcs11_obj_info_t itype, const(void)* data, size_t data_size, uint flags);
     int gnutls_pkcs11_token_init (const(char)* token_url, const(char)* so_pin, const(char)* label);
-    int gnutls_pkcs11_token_get_ptr (const(char)* url, void** ptr, c_ulong* slot_id, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_pkcs11_token_get_ptr (const(char)* url, void** ptr, c_ulong* slot_id, uint flags);
+
     int gnutls_pkcs11_token_get_mechanism (const(char)* url, uint idx, c_ulong* mechanism);
     uint gnutls_pkcs11_token_check_mechanism (const(char)* url, c_ulong mechanism, void* ptr, uint psize, uint flags);
     int gnutls_pkcs11_token_set_pin (const(char)* token_url, const(char)* oldpin, const(char)* newpin, uint flags);
@@ -232,11 +239,17 @@ else
         alias pgnutls_pkcs11_copy_x509_privkey2 = int function (const(char)* token_url, gnutls_x509_privkey_t key, const(char)* label, const(gnutls_datum_t)* cid, uint key_usage, uint flags);
         alias pgnutls_pkcs11_delete_url = int function (const(char)* object_url, uint flags);
         alias pgnutls_pkcs11_copy_secret_key = int function (const(char)* token_url, gnutls_datum_t* key, const(char)* label, uint key_usage, uint flags);
-        alias pgnutls_pkcs11_obj_get_ptr = int function (gnutls_pkcs11_obj_t obj, void** ptr, void** session, void** ohandle, c_ulong* slot_id, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_pkcs11_obj_get_ptr = int function (gnutls_pkcs11_obj_t obj, void** ptr, void** session, void** ohandle, c_ulong* slot_id, uint flags);
+
         alias pgnutls_pkcs11_obj_get_info = int function (gnutls_pkcs11_obj_t obj, gnutls_pkcs11_obj_info_t itype, void* output, size_t* output_size);
         alias pgnutls_pkcs11_obj_set_info = int function (gnutls_pkcs11_obj_t obj, gnutls_pkcs11_obj_info_t itype, const(void)* data, size_t data_size, uint flags);
         alias pgnutls_pkcs11_token_init = int function (const(char)* token_url, const(char)* so_pin, const(char)* label);
-        alias pgnutls_pkcs11_token_get_ptr = int function (const(char)* url, void** ptr, c_ulong* slot_id, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_pkcs11_token_get_ptr = int function (const(char)* url, void** ptr, c_ulong* slot_id, uint flags);
+
         alias pgnutls_pkcs11_token_get_mechanism = int function (const(char)* url, uint idx, c_ulong* mechanism);
         alias pgnutls_pkcs11_token_check_mechanism = uint function (const(char)* url, c_ulong mechanism, void* ptr, uint psize, uint flags);
         alias pgnutls_pkcs11_token_set_pin = int function (const(char)* token_url, const(char)* oldpin, const(char)* newpin, uint flags);
@@ -293,11 +306,17 @@ else
         pgnutls_pkcs11_copy_x509_privkey2 gnutls_pkcs11_copy_x509_privkey2;
         pgnutls_pkcs11_delete_url gnutls_pkcs11_delete_url;
         pgnutls_pkcs11_copy_secret_key gnutls_pkcs11_copy_secret_key;
-        pgnutls_pkcs11_obj_get_ptr gnutls_pkcs11_obj_get_ptr;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_pkcs11_obj_get_ptr gnutls_pkcs11_obj_get_ptr;
+
         pgnutls_pkcs11_obj_get_info gnutls_pkcs11_obj_get_info;
         pgnutls_pkcs11_obj_set_info gnutls_pkcs11_obj_set_info;
         pgnutls_pkcs11_token_init gnutls_pkcs11_token_init;
-        pgnutls_pkcs11_token_get_ptr gnutls_pkcs11_token_get_ptr;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_pkcs11_token_get_ptr gnutls_pkcs11_token_get_ptr;
+
         pgnutls_pkcs11_token_get_mechanism gnutls_pkcs11_token_get_mechanism;
         pgnutls_pkcs11_token_check_mechanism gnutls_pkcs11_token_check_mechanism;
         pgnutls_pkcs11_token_set_pin gnutls_pkcs11_token_set_pin;
@@ -355,11 +374,17 @@ else
         lib.bindSymbol_stdcall(gnutls_pkcs11_copy_x509_privkey2, "gnutls_pkcs11_copy_x509_privkey2");
         lib.bindSymbol_stdcall(gnutls_pkcs11_delete_url, "gnutls_pkcs11_delete_url");
         lib.bindSymbol_stdcall(gnutls_pkcs11_copy_secret_key, "gnutls_pkcs11_copy_secret_key");
-        lib.bindSymbol_stdcall(gnutls_pkcs11_obj_get_ptr, "gnutls_pkcs11_obj_get_ptr");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_pkcs11_obj_get_ptr, "gnutls_pkcs11_obj_get_ptr");
+
         lib.bindSymbol_stdcall(gnutls_pkcs11_obj_get_info, "gnutls_pkcs11_obj_get_info");
         lib.bindSymbol_stdcall(gnutls_pkcs11_obj_set_info, "gnutls_pkcs11_obj_set_info");
         lib.bindSymbol_stdcall(gnutls_pkcs11_token_init, "gnutls_pkcs11_token_init");
-        lib.bindSymbol_stdcall(gnutls_pkcs11_token_get_ptr, "gnutls_pkcs11_token_get_ptr");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_pkcs11_token_get_ptr, "gnutls_pkcs11_token_get_ptr");
+
         lib.bindSymbol_stdcall(gnutls_pkcs11_token_get_mechanism, "gnutls_pkcs11_token_get_mechanism");
         lib.bindSymbol_stdcall(gnutls_pkcs11_token_check_mechanism, "gnutls_pkcs11_token_check_mechanism");
         lib.bindSymbol_stdcall(gnutls_pkcs11_token_set_pin, "gnutls_pkcs11_token_set_pin");

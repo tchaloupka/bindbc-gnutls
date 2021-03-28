@@ -129,7 +129,12 @@ enum gnutls_x509_crl_reason_flags_t
     GNUTLS_CRL_REASON_AA_COMPROMISE = 32768
 }
 
-enum GNUTLS_X509_NO_WELL_DEFINED_EXPIRATION = cast(time_t) 4294197631;
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_6)
+{
+    deprecated("This macro is deprecated and defunc from GnuTLS 3.6.6; do not use")
+    enum GNUTLS_X509_NO_WELL_DEFINED_EXPIRATION = cast(time_t)4294197631;
+}
+else enum GNUTLS_X509_NO_WELL_DEFINED_EXPIRATION = cast(time_t)4294197631;
 
 struct gnutls_x509_spki_st;
 alias gnutls_x509_spki_t = gnutls_x509_spki_st*;
@@ -277,24 +282,12 @@ alias gnutls_x509_trust_list_iter_t = gnutls_x509_trust_list_iter*;
 enum gnutls_trust_list_flags_t
 {
     GNUTLS_TL_VERIFY_CRL = 1,
-
     GNUTLS_TL_USE_IN_TLS = 1 << 1,
-
     GNUTLS_TL_NO_DUPLICATES = 1 << 2,
-
     GNUTLS_TL_NO_DUPLICATE_KEY = 1 << 3,
-
     GNUTLS_TL_GET_COPY = 1 << 4,
-
-    GNUTLS_TL_FAIL_ON_INVALID_CRL = 1 << 5
+    GNUTLS_TL_FAIL_ON_INVALID_CRL = 1 << 5 /// Available from GnuTLS 3.6.4
 }
-
-enum GNUTLS_TL_VERIFY_CRL = 1;
-enum GNUTLS_TL_USE_IN_TLS = 1 << 1;
-enum GNUTLS_TL_NO_DUPLICATES = 1 << 2;
-enum GNUTLS_TL_NO_DUPLICATE_KEY = 1 << 3;
-enum GNUTLS_TL_GET_COPY = 1 << 4;
-enum GNUTLS_TL_FAIL_ON_INVALID_CRL = 1 << 5;
 
 struct gnutls_x509_ext_st
 {
@@ -345,7 +338,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crt_list_import2 (gnutls_x509_crt_t** certs, uint* size, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t format, uint flags);
     int gnutls_x509_crt_list_import (gnutls_x509_crt_t* certs, uint* cert_max, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t format, uint flags);
     int gnutls_x509_crt_import_url (gnutls_x509_crt_t crt, const(char)* url, uint flags);
-    int gnutls_x509_crt_list_import_url (gnutls_x509_crt_t** certs, uint* size, const(char)* url, gnutls_pin_callback_t pin_fn, void* pin_fn_userdata, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_x509_crt_list_import_url (gnutls_x509_crt_t** certs, uint* size, const(char)* url, gnutls_pin_callback_t pin_fn, void* pin_fn_userdata, uint flags);
+
     int gnutls_x509_crt_export (gnutls_x509_crt_t cert, gnutls_x509_crt_fmt_t format, void* output_data, size_t* output_data_size);
     int gnutls_x509_crt_export2 (gnutls_x509_crt_t cert, gnutls_x509_crt_fmt_t format, gnutls_datum_t* out_);
     int gnutls_x509_crt_get_private_key_usage_period (gnutls_x509_crt_t cert, time_t* activation, time_t* expiration, uint* critical);
@@ -430,7 +426,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_crt_get_pk_rsa_raw (gnutls_x509_crt_t crt, gnutls_datum_t* m, gnutls_datum_t* e);
     int gnutls_x509_crt_get_pk_dsa_raw (gnutls_x509_crt_t crt, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y);
     int gnutls_x509_crt_get_pk_ecc_raw (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y);
-    int gnutls_x509_crt_get_pk_gost_raw (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_x509_crt_get_pk_gost_raw (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y);
+
     int gnutls_x509_crt_get_subject_alt_name (gnutls_x509_crt_t cert, uint seq, void* san, size_t* san_size, uint* critical);
     int gnutls_x509_crt_get_subject_alt_name2 (gnutls_x509_crt_t cert, uint seq, void* san, size_t* san_size, uint* san_type, uint* critical);
     int gnutls_x509_crt_get_subject_alt_othername_oid (gnutls_x509_crt_t cert, uint seq, void* oid, size_t* oid_size);
@@ -595,7 +594,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_privkey_import_rsa_raw (gnutls_x509_privkey_t key, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e, const(gnutls_datum_t)* d, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* u);
     int gnutls_x509_privkey_import_rsa_raw2 (gnutls_x509_privkey_t key, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e, const(gnutls_datum_t)* d, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* u, const(gnutls_datum_t)* e1, const(gnutls_datum_t)* e2);
     int gnutls_x509_privkey_import_ecc_raw (gnutls_x509_privkey_t key, gnutls_ecc_curve_t curve, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
-    int gnutls_x509_privkey_import_gost_raw (gnutls_x509_privkey_t key, gnutls_ecc_curve_t curve, gnutls_digest_algorithm_t digest, gnutls_gost_paramset_t paramset, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_x509_privkey_import_gost_raw (gnutls_x509_privkey_t key, gnutls_ecc_curve_t curve, gnutls_digest_algorithm_t digest, gnutls_gost_paramset_t paramset, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
+
     int gnutls_x509_privkey_fix (gnutls_x509_privkey_t key);
     int gnutls_x509_privkey_export_dsa_raw (gnutls_x509_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x);
     int gnutls_x509_privkey_import_dsa_raw (gnutls_x509_privkey_t key, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* g, const(gnutls_datum_t)* y, const(gnutls_datum_t)* x);
@@ -622,7 +624,10 @@ version (BindGnuTLS_Static)
     int gnutls_x509_privkey_export_rsa_raw2 (gnutls_x509_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2);
     int gnutls_x509_privkey_export_rsa_raw (gnutls_x509_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u);
     int gnutls_x509_privkey_export_ecc_raw (gnutls_x509_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
-    int gnutls_x509_privkey_export_gost_raw (gnutls_x509_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_x509_privkey_export_gost_raw (gnutls_x509_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
+
     int gnutls_x509_privkey_sign_data (gnutls_x509_privkey_t key, gnutls_digest_algorithm_t digest, uint flags, const(gnutls_datum_t)* data, void* signature, size_t* signature_size);
     int gnutls_x509_crq_sign (gnutls_x509_crq_t crq, gnutls_x509_privkey_t key);
     int gnutls_x509_crq_sign2 (gnutls_x509_crq_t crq, gnutls_x509_privkey_t key, gnutls_digest_algorithm_t dig, uint flags);
@@ -740,7 +745,10 @@ else
         alias pgnutls_x509_crt_list_import2 = int function (gnutls_x509_crt_t** certs, uint* size, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t format, uint flags);
         alias pgnutls_x509_crt_list_import = int function (gnutls_x509_crt_t* certs, uint* cert_max, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t format, uint flags);
         alias pgnutls_x509_crt_import_url = int function (gnutls_x509_crt_t crt, const(char)* url, uint flags);
-        alias pgnutls_x509_crt_list_import_url = int function (gnutls_x509_crt_t** certs, uint* size, const(char)* url, gnutls_pin_callback_t pin_fn, void* pin_fn_userdata, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_x509_crt_list_import_url = int function (gnutls_x509_crt_t** certs, uint* size, const(char)* url, gnutls_pin_callback_t pin_fn, void* pin_fn_userdata, uint flags);
+
         alias pgnutls_x509_crt_export = int function (gnutls_x509_crt_t cert, gnutls_x509_crt_fmt_t format, void* output_data, size_t* output_data_size);
         alias pgnutls_x509_crt_export2 = int function (gnutls_x509_crt_t cert, gnutls_x509_crt_fmt_t format, gnutls_datum_t* out_);
         alias pgnutls_x509_crt_get_private_key_usage_period = int function (gnutls_x509_crt_t cert, time_t* activation, time_t* expiration, uint* critical);
@@ -825,7 +833,10 @@ else
         alias pgnutls_x509_crt_get_pk_rsa_raw = int function (gnutls_x509_crt_t crt, gnutls_datum_t* m, gnutls_datum_t* e);
         alias pgnutls_x509_crt_get_pk_dsa_raw = int function (gnutls_x509_crt_t crt, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y);
         alias pgnutls_x509_crt_get_pk_ecc_raw = int function (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y);
-        alias pgnutls_x509_crt_get_pk_gost_raw = int function (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_x509_crt_get_pk_gost_raw = int function (gnutls_x509_crt_t crt, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y);
+
         alias pgnutls_x509_crt_get_subject_alt_name = int function (gnutls_x509_crt_t cert, uint seq, void* san, size_t* san_size, uint* critical);
         alias pgnutls_x509_crt_get_subject_alt_name2 = int function (gnutls_x509_crt_t cert, uint seq, void* san, size_t* san_size, uint* san_type, uint* critical);
         alias pgnutls_x509_crt_get_subject_alt_othername_oid = int function (gnutls_x509_crt_t cert, uint seq, void* oid, size_t* oid_size);
@@ -990,7 +1001,10 @@ else
         alias pgnutls_x509_privkey_import_rsa_raw = int function (gnutls_x509_privkey_t key, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e, const(gnutls_datum_t)* d, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* u);
         alias pgnutls_x509_privkey_import_rsa_raw2 = int function (gnutls_x509_privkey_t key, const(gnutls_datum_t)* m, const(gnutls_datum_t)* e, const(gnutls_datum_t)* d, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* u, const(gnutls_datum_t)* e1, const(gnutls_datum_t)* e2);
         alias pgnutls_x509_privkey_import_ecc_raw = int function (gnutls_x509_privkey_t key, gnutls_ecc_curve_t curve, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
-        alias pgnutls_x509_privkey_import_gost_raw = int function (gnutls_x509_privkey_t key, gnutls_ecc_curve_t curve, gnutls_digest_algorithm_t digest, gnutls_gost_paramset_t paramset, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_x509_privkey_import_gost_raw = int function (gnutls_x509_privkey_t key, gnutls_ecc_curve_t curve, gnutls_digest_algorithm_t digest, gnutls_gost_paramset_t paramset, const(gnutls_datum_t)* x, const(gnutls_datum_t)* y, const(gnutls_datum_t)* k);
+
         alias pgnutls_x509_privkey_fix = int function (gnutls_x509_privkey_t key);
         alias pgnutls_x509_privkey_export_dsa_raw = int function (gnutls_x509_privkey_t key, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* g, gnutls_datum_t* y, gnutls_datum_t* x);
         alias pgnutls_x509_privkey_import_dsa_raw = int function (gnutls_x509_privkey_t key, const(gnutls_datum_t)* p, const(gnutls_datum_t)* q, const(gnutls_datum_t)* g, const(gnutls_datum_t)* y, const(gnutls_datum_t)* x);
@@ -1017,7 +1031,10 @@ else
         alias pgnutls_x509_privkey_export_rsa_raw2 = int function (gnutls_x509_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u, gnutls_datum_t* e1, gnutls_datum_t* e2);
         alias pgnutls_x509_privkey_export_rsa_raw = int function (gnutls_x509_privkey_t key, gnutls_datum_t* m, gnutls_datum_t* e, gnutls_datum_t* d, gnutls_datum_t* p, gnutls_datum_t* q, gnutls_datum_t* u);
         alias pgnutls_x509_privkey_export_ecc_raw = int function (gnutls_x509_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
-        alias pgnutls_x509_privkey_export_gost_raw = int function (gnutls_x509_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_x509_privkey_export_gost_raw = int function (gnutls_x509_privkey_t key, gnutls_ecc_curve_t* curve, gnutls_digest_algorithm_t* digest, gnutls_gost_paramset_t* paramset, gnutls_datum_t* x, gnutls_datum_t* y, gnutls_datum_t* k);
+
         alias pgnutls_x509_privkey_sign_data = int function (gnutls_x509_privkey_t key, gnutls_digest_algorithm_t digest, uint flags, const(gnutls_datum_t)* data, void* signature, size_t* signature_size);
         alias pgnutls_x509_crq_sign = int function (gnutls_x509_crq_t crq, gnutls_x509_privkey_t key);
         alias pgnutls_x509_crq_sign2 = int function (gnutls_x509_crq_t crq, gnutls_x509_privkey_t key, gnutls_digest_algorithm_t dig, uint flags);
@@ -1134,7 +1151,10 @@ else
         pgnutls_x509_crt_list_import2 gnutls_x509_crt_list_import2;
         pgnutls_x509_crt_list_import gnutls_x509_crt_list_import;
         pgnutls_x509_crt_import_url gnutls_x509_crt_import_url;
-        pgnutls_x509_crt_list_import_url gnutls_x509_crt_list_import_url;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_x509_crt_list_import_url gnutls_x509_crt_list_import_url;
+
         pgnutls_x509_crt_export gnutls_x509_crt_export;
         pgnutls_x509_crt_export2 gnutls_x509_crt_export2;
         pgnutls_x509_crt_get_private_key_usage_period gnutls_x509_crt_get_private_key_usage_period;
@@ -1219,7 +1239,10 @@ else
         pgnutls_x509_crt_get_pk_rsa_raw gnutls_x509_crt_get_pk_rsa_raw;
         pgnutls_x509_crt_get_pk_dsa_raw gnutls_x509_crt_get_pk_dsa_raw;
         pgnutls_x509_crt_get_pk_ecc_raw gnutls_x509_crt_get_pk_ecc_raw;
-        pgnutls_x509_crt_get_pk_gost_raw gnutls_x509_crt_get_pk_gost_raw;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_x509_crt_get_pk_gost_raw gnutls_x509_crt_get_pk_gost_raw;
+
         pgnutls_x509_crt_get_subject_alt_name gnutls_x509_crt_get_subject_alt_name;
         pgnutls_x509_crt_get_subject_alt_name2 gnutls_x509_crt_get_subject_alt_name2;
         pgnutls_x509_crt_get_subject_alt_othername_oid gnutls_x509_crt_get_subject_alt_othername_oid;
@@ -1384,7 +1407,10 @@ else
         pgnutls_x509_privkey_import_rsa_raw gnutls_x509_privkey_import_rsa_raw;
         pgnutls_x509_privkey_import_rsa_raw2 gnutls_x509_privkey_import_rsa_raw2;
         pgnutls_x509_privkey_import_ecc_raw gnutls_x509_privkey_import_ecc_raw;
-        pgnutls_x509_privkey_import_gost_raw gnutls_x509_privkey_import_gost_raw;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_x509_privkey_import_gost_raw gnutls_x509_privkey_import_gost_raw;
+
         pgnutls_x509_privkey_fix gnutls_x509_privkey_fix;
         pgnutls_x509_privkey_export_dsa_raw gnutls_x509_privkey_export_dsa_raw;
         pgnutls_x509_privkey_import_dsa_raw gnutls_x509_privkey_import_dsa_raw;
@@ -1411,7 +1437,10 @@ else
         pgnutls_x509_privkey_export_rsa_raw2 gnutls_x509_privkey_export_rsa_raw2;
         pgnutls_x509_privkey_export_rsa_raw gnutls_x509_privkey_export_rsa_raw;
         pgnutls_x509_privkey_export_ecc_raw gnutls_x509_privkey_export_ecc_raw;
-        pgnutls_x509_privkey_export_gost_raw gnutls_x509_privkey_export_gost_raw;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_x509_privkey_export_gost_raw gnutls_x509_privkey_export_gost_raw;
+
         pgnutls_x509_privkey_sign_data gnutls_x509_privkey_sign_data;
         pgnutls_x509_crq_sign gnutls_x509_crq_sign;
         pgnutls_x509_crq_sign2 gnutls_x509_crq_sign2;
@@ -1529,7 +1558,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_list_import2, "gnutls_x509_crt_list_import2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_list_import, "gnutls_x509_crt_list_import");
         lib.bindSymbol_stdcall(gnutls_x509_crt_import_url, "gnutls_x509_crt_import_url");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_list_import_url, "gnutls_x509_crt_list_import_url");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_list_import_url, "gnutls_x509_crt_list_import_url");
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_export, "gnutls_x509_crt_export");
         lib.bindSymbol_stdcall(gnutls_x509_crt_export2, "gnutls_x509_crt_export2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_private_key_usage_period, "gnutls_x509_crt_get_private_key_usage_period");
@@ -1614,7 +1646,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_rsa_raw, "gnutls_x509_crt_get_pk_rsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_dsa_raw, "gnutls_x509_crt_get_pk_dsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_ecc_raw, "gnutls_x509_crt_get_pk_ecc_raw");
-        lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_gost_raw, "gnutls_x509_crt_get_pk_gost_raw");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_x509_crt_get_pk_gost_raw, "gnutls_x509_crt_get_pk_gost_raw");
+
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_subject_alt_name, "gnutls_x509_crt_get_subject_alt_name");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_subject_alt_name2, "gnutls_x509_crt_get_subject_alt_name2");
         lib.bindSymbol_stdcall(gnutls_x509_crt_get_subject_alt_othername_oid, "gnutls_x509_crt_get_subject_alt_othername_oid");
@@ -1779,7 +1814,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_privkey_import_rsa_raw, "gnutls_x509_privkey_import_rsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_import_rsa_raw2, "gnutls_x509_privkey_import_rsa_raw2");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_import_ecc_raw, "gnutls_x509_privkey_import_ecc_raw");
-        lib.bindSymbol_stdcall(gnutls_x509_privkey_import_gost_raw, "gnutls_x509_privkey_import_gost_raw");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_x509_privkey_import_gost_raw, "gnutls_x509_privkey_import_gost_raw");
+
         lib.bindSymbol_stdcall(gnutls_x509_privkey_fix, "gnutls_x509_privkey_fix");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_export_dsa_raw, "gnutls_x509_privkey_export_dsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_import_dsa_raw, "gnutls_x509_privkey_import_dsa_raw");
@@ -1806,7 +1844,10 @@ else
         lib.bindSymbol_stdcall(gnutls_x509_privkey_export_rsa_raw2, "gnutls_x509_privkey_export_rsa_raw2");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_export_rsa_raw, "gnutls_x509_privkey_export_rsa_raw");
         lib.bindSymbol_stdcall(gnutls_x509_privkey_export_ecc_raw, "gnutls_x509_privkey_export_ecc_raw");
-        lib.bindSymbol_stdcall(gnutls_x509_privkey_export_gost_raw, "gnutls_x509_privkey_export_gost_raw");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_x509_privkey_export_gost_raw, "gnutls_x509_privkey_export_gost_raw");
+
         lib.bindSymbol_stdcall(gnutls_x509_privkey_sign_data, "gnutls_x509_privkey_sign_data");
         lib.bindSymbol_stdcall(gnutls_x509_crq_sign, "gnutls_x509_crq_sign");
         lib.bindSymbol_stdcall(gnutls_x509_crq_sign2, "gnutls_x509_crq_sign2");

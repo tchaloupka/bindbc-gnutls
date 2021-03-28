@@ -57,7 +57,11 @@ enum gnutls_ocsp_verify_reason_t
 
 struct gnutls_ocsp_req_int;
 alias gnutls_ocsp_req_t = gnutls_ocsp_req_int*;
-alias gnutls_ocsp_req_const_t = const(gnutls_ocsp_req_int)*;
+
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_12)
+    alias gnutls_ocsp_req_const_t = const(gnutls_ocsp_req_int)*;
+else
+    alias gnutls_ocsp_req_const_t = gnutls_ocsp_req_t; // functions weren't using const before
 
 struct gnutls_ocsp_resp_int;
 alias gnutls_ocsp_resp_t = gnutls_ocsp_resp_int*;
@@ -87,9 +91,14 @@ version (BindGnuTLS_Static)
     int gnutls_ocsp_resp_init (gnutls_ocsp_resp_t* resp);
     void gnutls_ocsp_resp_deinit (gnutls_ocsp_resp_t resp);
     int gnutls_ocsp_resp_import (gnutls_ocsp_resp_t resp, const(gnutls_datum_t)* data);
-    int gnutls_ocsp_resp_import2 (gnutls_ocsp_resp_t resp, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t fmt);
     int gnutls_ocsp_resp_export (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* data);
-    int gnutls_ocsp_resp_export2 (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* data, gnutls_x509_crt_fmt_t fmt);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+    {
+        int gnutls_ocsp_resp_import2 (gnutls_ocsp_resp_t resp, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t fmt);
+        int gnutls_ocsp_resp_export2 (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* data, gnutls_x509_crt_fmt_t fmt);
+    }
+
     int gnutls_ocsp_resp_print (gnutls_ocsp_resp_const_t resp, gnutls_ocsp_print_formats_t format, gnutls_datum_t* out_);
     int gnutls_ocsp_resp_get_status (gnutls_ocsp_resp_const_t resp);
     int gnutls_ocsp_resp_get_response (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* response_type_oid, gnutls_datum_t* response);
@@ -110,7 +119,9 @@ version (BindGnuTLS_Static)
     int gnutls_ocsp_resp_verify_direct (gnutls_ocsp_resp_const_t resp, gnutls_x509_crt_t issuer, uint* verify, uint flags);
     int gnutls_ocsp_resp_verify (gnutls_ocsp_resp_const_t resp, gnutls_x509_trust_list_t trustlist, uint* verify, uint flags);
     int gnutls_ocsp_resp_check_crt (gnutls_ocsp_resp_const_t resp, uint indx, gnutls_x509_crt_t crt);
-    int gnutls_ocsp_resp_list_import2 (gnutls_ocsp_resp_t** ocsps, uint* size, const(gnutls_datum_t)* resp_data, gnutls_x509_crt_fmt_t format, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_ocsp_resp_list_import2 (gnutls_ocsp_resp_t** ocsps, uint* size, const(gnutls_datum_t)* resp_data, gnutls_x509_crt_fmt_t format, uint flags);
 }
 else
 {
@@ -133,9 +144,14 @@ else
         alias pgnutls_ocsp_resp_init = int function (gnutls_ocsp_resp_t* resp);
         alias pgnutls_ocsp_resp_deinit = void function (gnutls_ocsp_resp_t resp);
         alias pgnutls_ocsp_resp_import = int function (gnutls_ocsp_resp_t resp, const(gnutls_datum_t)* data);
-        alias pgnutls_ocsp_resp_import2 = int function (gnutls_ocsp_resp_t resp, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t fmt);
         alias pgnutls_ocsp_resp_export = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* data);
-        alias pgnutls_ocsp_resp_export2 = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* data, gnutls_x509_crt_fmt_t fmt);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            alias pgnutls_ocsp_resp_import2 = int function (gnutls_ocsp_resp_t resp, const(gnutls_datum_t)* data, gnutls_x509_crt_fmt_t fmt);
+            alias pgnutls_ocsp_resp_export2 = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* data, gnutls_x509_crt_fmt_t fmt);
+        }
+
         alias pgnutls_ocsp_resp_print = int function (gnutls_ocsp_resp_const_t resp, gnutls_ocsp_print_formats_t format, gnutls_datum_t* out_);
         alias pgnutls_ocsp_resp_get_status = int function (gnutls_ocsp_resp_const_t resp);
         alias pgnutls_ocsp_resp_get_response = int function (gnutls_ocsp_resp_const_t resp, gnutls_datum_t* response_type_oid, gnutls_datum_t* response);
@@ -156,7 +172,9 @@ else
         alias pgnutls_ocsp_resp_verify_direct = int function (gnutls_ocsp_resp_const_t resp, gnutls_x509_crt_t issuer, uint* verify, uint flags);
         alias pgnutls_ocsp_resp_verify = int function (gnutls_ocsp_resp_const_t resp, gnutls_x509_trust_list_t trustlist, uint* verify, uint flags);
         alias pgnutls_ocsp_resp_check_crt = int function (gnutls_ocsp_resp_const_t resp, uint indx, gnutls_x509_crt_t crt);
-        alias pgnutls_ocsp_resp_list_import2 = int function (gnutls_ocsp_resp_t** ocsps, uint* size, const(gnutls_datum_t)* resp_data, gnutls_x509_crt_fmt_t format, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_ocsp_resp_list_import2 = int function (gnutls_ocsp_resp_t** ocsps, uint* size, const(gnutls_datum_t)* resp_data, gnutls_x509_crt_fmt_t format, uint flags);
     }
 
     __gshared
@@ -178,9 +196,14 @@ else
         pgnutls_ocsp_resp_init gnutls_ocsp_resp_init;
         pgnutls_ocsp_resp_deinit gnutls_ocsp_resp_deinit;
         pgnutls_ocsp_resp_import gnutls_ocsp_resp_import;
-        pgnutls_ocsp_resp_import2 gnutls_ocsp_resp_import2;
         pgnutls_ocsp_resp_export gnutls_ocsp_resp_export;
-        pgnutls_ocsp_resp_export2 gnutls_ocsp_resp_export2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            pgnutls_ocsp_resp_import2 gnutls_ocsp_resp_import2;
+            pgnutls_ocsp_resp_export2 gnutls_ocsp_resp_export2;
+        }
+
         pgnutls_ocsp_resp_print gnutls_ocsp_resp_print;
         pgnutls_ocsp_resp_get_status gnutls_ocsp_resp_get_status;
         pgnutls_ocsp_resp_get_response gnutls_ocsp_resp_get_response;
@@ -201,7 +224,9 @@ else
         pgnutls_ocsp_resp_verify_direct gnutls_ocsp_resp_verify_direct;
         pgnutls_ocsp_resp_verify gnutls_ocsp_resp_verify;
         pgnutls_ocsp_resp_check_crt gnutls_ocsp_resp_check_crt;
-        pgnutls_ocsp_resp_list_import2 gnutls_ocsp_resp_list_import2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_ocsp_resp_list_import2 gnutls_ocsp_resp_list_import2;
     }
 
     import bindbc.loader : SharedLib, bindSymbol_stdcall;
@@ -224,9 +249,14 @@ else
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_init, "gnutls_ocsp_resp_init");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_deinit, "gnutls_ocsp_resp_deinit");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_import, "gnutls_ocsp_resp_import");
-        lib.bindSymbol_stdcall(gnutls_ocsp_resp_import2, "gnutls_ocsp_resp_import2");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_export, "gnutls_ocsp_resp_export");
-        lib.bindSymbol_stdcall(gnutls_ocsp_resp_export2, "gnutls_ocsp_resp_export2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            lib.bindSymbol_stdcall(gnutls_ocsp_resp_import2, "gnutls_ocsp_resp_import2");
+            lib.bindSymbol_stdcall(gnutls_ocsp_resp_export2, "gnutls_ocsp_resp_export2");
+        }
+
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_print, "gnutls_ocsp_resp_print");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_status, "gnutls_ocsp_resp_get_status");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_get_response, "gnutls_ocsp_resp_get_response");
@@ -247,6 +277,8 @@ else
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_verify_direct, "gnutls_ocsp_resp_verify_direct");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_verify, "gnutls_ocsp_resp_verify");
         lib.bindSymbol_stdcall(gnutls_ocsp_resp_check_crt, "gnutls_ocsp_resp_check_crt");
-        lib.bindSymbol_stdcall(gnutls_ocsp_resp_list_import2, "gnutls_ocsp_resp_list_import2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_ocsp_resp_list_import2, "gnutls_ocsp_resp_list_import2");
     }
 }

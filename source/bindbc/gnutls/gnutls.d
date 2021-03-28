@@ -37,17 +37,17 @@ enum gnutls_cipher_algorithm
     GNUTLS_CIPHER_GOST28147_CPB_CFB = 26,
     GNUTLS_CIPHER_GOST28147_CPC_CFB = 27,
     GNUTLS_CIPHER_GOST28147_CPD_CFB = 28,
-    GNUTLS_CIPHER_AES_128_CFB8 = 29,
-    GNUTLS_CIPHER_AES_192_CFB8 = 30,
-    GNUTLS_CIPHER_AES_256_CFB8 = 31,
+    GNUTLS_CIPHER_AES_128_CFB8 = 29, /// Available from GnuTLS 3.6.5
+    GNUTLS_CIPHER_AES_192_CFB8 = 30, /// Available from GnuTLS 3.6.5
+    GNUTLS_CIPHER_AES_256_CFB8 = 31, /// Available from GnuTLS 3.6.5
     GNUTLS_CIPHER_AES_128_XTS = 32,
     GNUTLS_CIPHER_AES_256_XTS = 33,
-    GNUTLS_CIPHER_GOST28147_TC26Z_CNT = 34,
+    GNUTLS_CIPHER_GOST28147_TC26Z_CNT = 34, /// Available from GnuTLS 3.6.10
     GNUTLS_CIPHER_CHACHA20_64 = 35,
     GNUTLS_CIPHER_CHACHA20_32 = 36,
-    GNUTLS_CIPHER_AES_128_SIV = 37,
-    GNUTLS_CIPHER_AES_256_SIV = 38,
-    GNUTLS_CIPHER_AES_192_GCM = 39,
+    GNUTLS_CIPHER_AES_128_SIV = 37, /// Available from GnuTLS 3.6.13
+    GNUTLS_CIPHER_AES_256_SIV = 38, /// Available from GnuTLS 3.6.13
+    GNUTLS_CIPHER_AES_192_GCM = 39, /// Available from GnuTLS 3.6.13
 
     GNUTLS_CIPHER_IDEA_PGP_CFB = 200,
     GNUTLS_CIPHER_3DES_PGP_CFB = 201,
@@ -123,12 +123,12 @@ enum gnutls_mac_algorithm_t
     GNUTLS_MAC_AEAD = 200,
     GNUTLS_MAC_UMAC_96 = 201,
     GNUTLS_MAC_UMAC_128 = 202,
-    GNUTLS_MAC_AES_CMAC_128 = 203,
-    GNUTLS_MAC_AES_CMAC_256 = 204,
-    GNUTLS_MAC_AES_GMAC_128 = 205,
-    GNUTLS_MAC_AES_GMAC_192 = 206,
-    GNUTLS_MAC_AES_GMAC_256 = 207,
-    GNUTLS_MAC_GOST28147_TC26Z_IMIT = 208,
+    GNUTLS_MAC_AES_CMAC_128 = 203, /// Available from GnuTLS 3.6.5
+    GNUTLS_MAC_AES_CMAC_256 = 204, /// Available from GnuTLS 3.6.5
+    GNUTLS_MAC_AES_GMAC_128 = 205, /// Available from GnuTLS 3.6.9
+    GNUTLS_MAC_AES_GMAC_192 = 206, /// Available from GnuTLS 3.6.9
+    GNUTLS_MAC_AES_GMAC_256 = 207, /// Available from GnuTLS 3.6.9
+    GNUTLS_MAC_GOST28147_TC26Z_IMIT = 208, /// Available from GnuTLS 3.6.10
     GNUTLS_MAC_SHAKE_128 = 209,
     GNUTLS_MAC_SHAKE_256 = 210
 }
@@ -184,11 +184,11 @@ enum gnutls_init_flags_t
     GNUTLS_POST_HANDSHAKE_AUTH = 1 << 14,
     GNUTLS_NO_AUTO_REKEY = 1 << 15,
     GNUTLS_SAFE_PADDING_CHECK = 1 << 16,
-    GNUTLS_ENABLE_EARLY_START = 1 << 17,
-    GNUTLS_ENABLE_RAWPK = 1 << 18,
-    GNUTLS_AUTO_REAUTH = 1 << 19,
+    GNUTLS_ENABLE_EARLY_START = 1 << 17, /// Available from GnuTLS 3.6.4
+    GNUTLS_ENABLE_RAWPK = 1 << 18, /// Available from GnuTLS 3.6.6
+    GNUTLS_AUTO_REAUTH = 1 << 19, /// Available from GnuTLS 3.6.5
     GNUTLS_ENABLE_EARLY_DATA = 1 << 20,
-    GNUTLS_NO_AUTO_SEND_TICKET = 1 << 21
+    GNUTLS_NO_AUTO_SEND_TICKET = 1 << 21 /// Available from GnuTLS 3.6.13
 }
 
 enum gnutls_alert_level_t
@@ -506,12 +506,15 @@ enum gnutls_gost_paramset_t
     GNUTLS_GOST_PARAMSET_CP_D = 5
 }
 
-enum gnutls_ctype_target_t
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
 {
-    GNUTLS_CTYPE_CLIENT = 0,
-    GNUTLS_CTYPE_SERVER = 1,
-    GNUTLS_CTYPE_OURS = 2,
-    GNUTLS_CTYPE_PEERS = 3
+    enum gnutls_ctype_target_t
+    {
+        GNUTLS_CTYPE_CLIENT = 0,
+        GNUTLS_CTYPE_SERVER = 1,
+        GNUTLS_CTYPE_OURS = 2,
+        GNUTLS_CTYPE_PEERS = 3
+    }
 }
 
 alias gnutls_transport_ptr_t = void*;
@@ -575,8 +578,8 @@ enum gnutls_session_flags_t
     GNUTLS_SFLAGS_POST_HANDSHAKE_AUTH = 1 << 8,
     GNUTLS_SFLAGS_EARLY_START = 1 << 9,
     GNUTLS_SFLAGS_EARLY_DATA = 1 << 10,
-    GNUTLS_SFLAGS_CLI_REQUESTED_OCSP = 1 << 11,
-    GNUTLS_SFLAGS_SERV_REQUESTED_OCSP = 1 << 12
+    GNUTLS_SFLAGS_CLI_REQUESTED_OCSP = 1 << 11, /// Available from GnuTLS 3.6.12
+    GNUTLS_SFLAGS_SERV_REQUESTED_OCSP = 1 << 12 /// Available from GnuTLS 3.6.12
 }
 
 enum gnutls_supplemental_data_format_type_t
@@ -649,7 +652,7 @@ enum gnutls_certificate_flags
     GNUTLS_CERTIFICATE_SKIP_KEY_CERT_MATCH = 1,
     GNUTLS_CERTIFICATE_API_V2 = 1 << 1, /// Available from GnuTLS 3.5.6
     GNUTLS_CERTIFICATE_SKIP_OCSP_RESPONSE_CHECK = 1 << 2,
-    GNUTLS_CERTIFICATE_VERIFY_CRLS = 1 << 3
+    GNUTLS_CERTIFICATE_VERIFY_CRLS = 1 << 3 /// Available from GnuTLS 3.6.4
 }
 
 struct gnutls_ocsp_data_st
@@ -693,7 +696,7 @@ enum gnutls_x509_subject_alt_name_t
     GNUTLS_SAN_IPADDRESS = 4,
     GNUTLS_SAN_OTHERNAME = 5,
     GNUTLS_SAN_DN = 6,
-    GNUTLS_SAN_REGISTERED_ID = 7,
+    GNUTLS_SAN_REGISTERED_ID = 7, /// Available from GnuTLS 3.6.9
     GNUTLS_SAN_MAX = GNUTLS_SAN_REGISTERED_ID,
 
     GNUTLS_SAN_OTHERNAME_XMPP = 1000,
@@ -820,7 +823,9 @@ enum GNUTLS_FORCE_CLIENT_CERT = 1 << 9;
 static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_6)
     enum GNUTLS_NO_TICKETS = 1 << 10;
 
-enum GNUTLS_ENABLE_CERT_TYPE_NEG = 0;
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4 && gnuTLSSupport < GnuTLSSupport.gnutls_3_6_6)
+    enum GNUTLS_ENABLE_CERT_TYPE_NEG = 0;
+
 enum GNUTLS_HANDSHAKE_ANY = cast(uint) -1;
 enum GNUTLS_CRT_RAW = gnutls_certificate_type_t.GNUTLS_CRT_RAWPK;
 enum GNUTLS_PK_ECC = gnutls_pk_algorithm_t.GNUTLS_PK_ECDSA;
@@ -1203,23 +1208,33 @@ extern __gshared const gnutls_datum_t gnutls_srp_1536_group_generator;
 extern __gshared const gnutls_datum_t gnutls_srp_1024_group_prime;
 extern __gshared const gnutls_datum_t gnutls_srp_1024_group_generator;
 extern __gshared const gnutls_datum_t gnutls_ffdhe_8192_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_8192_group_q;
 extern __gshared const gnutls_datum_t gnutls_ffdhe_8192_group_generator;
 extern __gshared const uint gnutls_ffdhe_8192_key_bits;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_q;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_generator;
-extern __gshared const uint gnutls_ffdhe_6144_key_bits;
+
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+{
+    extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_prime;
+    extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_generator;
+    extern __gshared const uint gnutls_ffdhe_6144_key_bits;
+}
+
 extern __gshared const gnutls_datum_t gnutls_ffdhe_4096_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_4096_group_q;
 extern __gshared const gnutls_datum_t gnutls_ffdhe_4096_group_generator;
 extern __gshared const uint gnutls_ffdhe_4096_key_bits;
 extern __gshared const gnutls_datum_t gnutls_ffdhe_3072_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_3072_group_q;
 extern __gshared const gnutls_datum_t gnutls_ffdhe_3072_group_generator;
 extern __gshared const uint gnutls_ffdhe_3072_key_bits;
 extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_prime;
-extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_q;
+
+static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+{
+    extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_q;
+    extern __gshared const gnutls_datum_t gnutls_ffdhe_3072_group_q;
+    extern __gshared const gnutls_datum_t gnutls_ffdhe_4096_group_q;
+    extern __gshared const gnutls_datum_t gnutls_ffdhe_6144_group_q;
+    extern __gshared const gnutls_datum_t gnutls_ffdhe_8192_group_q;
+}
+
 extern __gshared const gnutls_datum_t gnutls_ffdhe_2048_group_generator;
 extern __gshared const uint gnutls_ffdhe_2048_key_bits;
 
@@ -1261,10 +1276,16 @@ version (BindGnuTLS_Static)
     void gnutls_deinit (gnutls_session_t session);
     int gnutls_bye (gnutls_session_t session, gnutls_close_request_t how);
     int gnutls_handshake (gnutls_session_t session);
-    int gnutls_reauth (gnutls_session_t session, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_reauth (gnutls_session_t session, uint flags);
+
     void gnutls_handshake_set_timeout (gnutls_session_t session, uint ms);
     int gnutls_rehandshake (gnutls_session_t session);
-    int gnutls_session_key_update (gnutls_session_t session, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_session_key_update (gnutls_session_t session, uint flags);
+
     gnutls_alert_description_t gnutls_alert_get (gnutls_session_t session);
     int gnutls_alert_send (gnutls_session_t session, gnutls_alert_level_t level, gnutls_alert_description_t desc);
     int gnutls_alert_send_appropriate (gnutls_session_t session, int err);
@@ -1283,9 +1304,15 @@ version (BindGnuTLS_Static)
     gnutls_cipher_algorithm_t gnutls_cipher_get (gnutls_session_t session);
     gnutls_kx_algorithm_t gnutls_kx_get (gnutls_session_t session);
     gnutls_mac_algorithm_t gnutls_mac_get (gnutls_session_t session);
-    gnutls_digest_algorithm_t gnutls_prf_hash_get (const gnutls_session_t session);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+        gnutls_digest_algorithm_t gnutls_prf_hash_get (const gnutls_session_t session);
+
     gnutls_certificate_type_t gnutls_certificate_type_get (gnutls_session_t session);
-    gnutls_certificate_type_t gnutls_certificate_type_get2 (gnutls_session_t session, gnutls_ctype_target_t target);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+        gnutls_certificate_type_t gnutls_certificate_type_get2 (gnutls_session_t session, gnutls_ctype_target_t target);
+
     int gnutls_sign_algorithm_get (gnutls_session_t session);
     int gnutls_sign_algorithm_get_client (gnutls_session_t session);
     int gnutls_sign_algorithm_get_requested (gnutls_session_t session, size_t indx, gnutls_sign_algorithm_t* algo);
@@ -1299,8 +1326,13 @@ version (BindGnuTLS_Static)
     const(char)* gnutls_pk_get_oid (gnutls_pk_algorithm_t algorithm);
     const(char)* gnutls_sign_get_name (gnutls_sign_algorithm_t algorithm);
     const(char)* gnutls_sign_get_oid (gnutls_sign_algorithm_t sign);
-    const(char)* gnutls_gost_paramset_get_name (gnutls_gost_paramset_t param);
-    const(char)* gnutls_gost_paramset_get_oid (gnutls_gost_paramset_t param);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+    {
+        const(char)* gnutls_gost_paramset_get_name (gnutls_gost_paramset_t param);
+        const(char)* gnutls_gost_paramset_get_oid (gnutls_gost_paramset_t param);
+    }
+
     size_t gnutls_cipher_get_key_size (gnutls_cipher_algorithm_t algorithm);
     size_t gnutls_mac_get_key_size (gnutls_mac_algorithm_t algorithm);
     uint gnutls_sign_is_secure (gnutls_sign_algorithm_t algorithm);
@@ -1328,7 +1360,10 @@ version (BindGnuTLS_Static)
     gnutls_pk_algorithm_t gnutls_oid_to_pk (const(char)* oid);
     gnutls_sign_algorithm_t gnutls_oid_to_sign (const(char)* oid);
     gnutls_ecc_curve_t gnutls_oid_to_ecc_curve (const(char)* oid);
-    gnutls_gost_paramset_t gnutls_oid_to_gost_paramset (const(char)* oid);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        gnutls_gost_paramset_t gnutls_oid_to_gost_paramset (const(char)* oid);
+
     const(gnutls_ecc_curve_t)* gnutls_ecc_curve_list ();
     const(gnutls_group_t)* gnutls_group_list ();
     const(gnutls_cipher_algorithm_t)* gnutls_cipher_list ();
@@ -1360,7 +1395,10 @@ version (BindGnuTLS_Static)
     int gnutls_record_set_state (gnutls_session_t session, uint read, ref const(ubyte)[8] seq_number);
     int gnutls_range_split (gnutls_session_t session, const(gnutls_range_st)* orig, gnutls_range_st* small_range, gnutls_range_st* rem_range);
     ssize_t gnutls_record_send (gnutls_session_t session, const(void)* data, size_t data_size);
-    ssize_t gnutls_record_send2 (gnutls_session_t session, const(void)* data, size_t data_size, size_t pad, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        ssize_t gnutls_record_send2 (gnutls_session_t session, const(void)* data, size_t data_size, size_t pad, uint flags);
+
     ssize_t gnutls_record_send_range (gnutls_session_t session, const(void)* data, size_t data_size, const(gnutls_range_st)* range);
     ssize_t gnutls_record_recv (gnutls_session_t session, void* data, size_t data_size);
     ssize_t gnutls_record_recv_packet (gnutls_session_t session, gnutls_packet_t* packet);
@@ -1374,17 +1412,31 @@ version (BindGnuTLS_Static)
     int gnutls_record_get_direction (gnutls_session_t session);
     size_t gnutls_record_get_max_size (gnutls_session_t session);
     ssize_t gnutls_record_set_max_size (gnutls_session_t session, size_t size);
-    ssize_t gnutls_record_set_max_recv_size (gnutls_session_t session, size_t size);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+        ssize_t gnutls_record_set_max_recv_size (gnutls_session_t session, size_t size);
+
     size_t gnutls_record_check_pending (gnutls_session_t session);
     size_t gnutls_record_check_corked (gnutls_session_t session);
-    size_t gnutls_record_get_max_early_data_size (gnutls_session_t session);
-    int gnutls_record_set_max_early_data_size (gnutls_session_t session, size_t size);
-    ssize_t gnutls_record_send_early_data (gnutls_session_t session, const(void)* data, size_t length);
-    ssize_t gnutls_record_recv_early_data (gnutls_session_t session, void* data, size_t data_size);
+
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+        int gnutls_record_set_max_early_data_size (gnutls_session_t session, size_t size);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+    {
+        size_t gnutls_record_get_max_early_data_size (gnutls_session_t session);
+        ssize_t gnutls_record_send_early_data (gnutls_session_t session, const(void)* data, size_t length);
+        ssize_t gnutls_record_recv_early_data (gnutls_session_t session, void* data, size_t data_size);
+    }
+
     void gnutls_session_force_valid (gnutls_session_t session);
     int gnutls_prf (gnutls_session_t session, size_t label_size, const(char)* label, int server_random_first, size_t extra_size, const(char)* extra, size_t outsize, char* out_);
     int gnutls_prf_rfc5705 (gnutls_session_t session, size_t label_size, const(char)* label, size_t context_size, const(char)* context, size_t outsize, char* out_);
-    int gnutls_prf_early (gnutls_session_t session, size_t label_size, const(char)* label, size_t context_size, const(char)* context, size_t outsize, char* out_);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+        int gnutls_prf_early (gnutls_session_t session, size_t label_size, const(char)* label, size_t context_size, const(char)* context, size_t outsize, char* out_);
+
     int gnutls_prf_raw (gnutls_session_t session, size_t label_size, const(char)* label, size_t seed_size, const(char)* seed, size_t outsize, char* out_);
     int gnutls_server_name_set (gnutls_session_t session, gnutls_server_name_type_t type, const(void)* name, size_t name_length);
     int gnutls_server_name_get (gnutls_session_t session, void* data, size_t* data_length, uint* type, uint indx);
@@ -1400,7 +1452,10 @@ version (BindGnuTLS_Static)
     int gnutls_session_ticket_key_generate (gnutls_datum_t* key);
     int gnutls_session_ticket_enable_client (gnutls_session_t session);
     int gnutls_session_ticket_enable_server (gnutls_session_t session, const(gnutls_datum_t)* key);
-    int gnutls_session_ticket_send (gnutls_session_t session, uint nr, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_session_ticket_send (gnutls_session_t session, uint nr, uint flags);
+
     int gnutls_srtp_set_profile (gnutls_session_t session, gnutls_srtp_profile_t profile);
     int gnutls_srtp_set_profile_direct (gnutls_session_t session, const(char)* profiles, const(char*)* err_pos);
     int gnutls_srtp_get_selected_profile (gnutls_session_t session, gnutls_srtp_profile_t* profile);
@@ -1413,14 +1468,20 @@ version (BindGnuTLS_Static)
     int gnutls_alpn_set_protocols (gnutls_session_t session, const(gnutls_datum_t)* protocols, uint protocols_size, uint flags);
     int gnutls_key_generate (gnutls_datum_t* key, uint key_size);
     int gnutls_priority_init (gnutls_priority_t* priority_cache, const(char)* priorities, const(char*)* err_pos);
-    int gnutls_priority_init2 (gnutls_priority_t* priority_cache, const(char)* priorities, const(char*)* err_pos, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_priority_init2 (gnutls_priority_t* priority_cache, const(char)* priorities, const(char*)* err_pos, uint flags);
+
     void gnutls_priority_deinit (gnutls_priority_t priority_cache);
     int gnutls_priority_get_cipher_suite_index (gnutls_priority_t pcache, uint idx, uint* sidx);
     const(char)* gnutls_priority_string_list (uint iter, uint flags);
     int gnutls_priority_set (gnutls_session_t session, gnutls_priority_t priority);
     int gnutls_priority_set_direct (gnutls_session_t session, const(char)* priorities, const(char*)* err_pos);
     int gnutls_priority_certificate_type_list (gnutls_priority_t pcache, const(uint*)* list);
-    int gnutls_priority_certificate_type_list2 (gnutls_priority_t pcache, const(uint*)* list, gnutls_ctype_target_t target);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+        int gnutls_priority_certificate_type_list2 (gnutls_priority_t pcache, const(uint*)* list, gnutls_ctype_target_t target);
+
     int gnutls_priority_sign_list (gnutls_priority_t pcache, const(uint*)* list);
     int gnutls_priority_protocol_list (gnutls_priority_t pcache, const(uint*)* list);
     int gnutls_priority_ecc_curve_list (gnutls_priority_t pcache, const(uint*)* list);
@@ -1428,9 +1489,15 @@ version (BindGnuTLS_Static)
     int gnutls_priority_kx_list (gnutls_priority_t pcache, const(uint*)* list);
     int gnutls_priority_cipher_list (gnutls_priority_t pcache, const(uint*)* list);
     int gnutls_priority_mac_list (gnutls_priority_t pcache, const(uint*)* list);
-    const(char)* gnutls_get_system_config_file ();
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_9)
+        const(char)* gnutls_get_system_config_file ();
+
     int gnutls_set_default_priority (gnutls_session_t session);
-    int gnutls_set_default_priority_append (gnutls_session_t session, const(char)* add_prio, const(char*)* err_pos, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_set_default_priority_append (gnutls_session_t session, const(char)* add_prio, const(char*)* err_pos, uint flags);
+
     const(char)* gnutls_cipher_suite_get_name (gnutls_kx_algorithm_t kx_algorithm, gnutls_cipher_algorithm_t cipher_algorithm, gnutls_mac_algorithm_t mac_algorithm);
     gnutls_protocol_t gnutls_protocol_get_version (gnutls_session_t session);
     const(char)* gnutls_protocol_get_name (gnutls_protocol_t version_);
@@ -1461,7 +1528,10 @@ version (BindGnuTLS_Static)
     void* gnutls_db_get_ptr (gnutls_session_t session);
     int gnutls_db_check_entry (gnutls_session_t session, gnutls_datum_t session_entry);
     time_t gnutls_db_check_entry_time (gnutls_datum_t* entry);
-    time_t gnutls_db_check_entry_expire_time (gnutls_datum_t* entry);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+        time_t gnutls_db_check_entry_expire_time (gnutls_datum_t* entry);
+
     void gnutls_handshake_set_hook_function (gnutls_session_t session, uint htype, int when, gnutls_handshake_hook_func func);
     void gnutls_handshake_set_post_client_hello_function (gnutls_session_t session, gnutls_handshake_simple_hook_func func);
     void gnutls_handshake_set_max_packet_length (gnutls_session_t session, size_t max);
@@ -1520,13 +1590,21 @@ version (BindGnuTLS_Static)
         int gnutls_certificate_set_ocsp_status_request_function2 (gnutls_certificate_credentials_t res, uint idx, gnutls_status_request_ocsp_func ocsp_func, void* ptr);
 
     int gnutls_certificate_set_ocsp_status_request_file (gnutls_certificate_credentials_t res, const(char)* response_file, uint idx);
-    int gnutls_certificate_set_ocsp_status_request_file2 (gnutls_certificate_credentials_t res, const(char)* response_file, uint idx, gnutls_x509_crt_fmt_t fmt);
-    int gnutls_certificate_set_ocsp_status_request_mem (gnutls_certificate_credentials_t res, const(gnutls_datum_t)* resp, uint idx, gnutls_x509_crt_fmt_t fmt);
-    time_t gnutls_certificate_get_ocsp_expiration (gnutls_certificate_credentials_t sc, uint idx, int oidx, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+    {
+        int gnutls_certificate_set_ocsp_status_request_file2 (gnutls_certificate_credentials_t res, const(char)* response_file, uint idx, gnutls_x509_crt_fmt_t fmt);
+        int gnutls_certificate_set_ocsp_status_request_mem (gnutls_certificate_credentials_t res, const(gnutls_datum_t)* resp, uint idx, gnutls_x509_crt_fmt_t fmt);
+        time_t gnutls_certificate_get_ocsp_expiration (gnutls_certificate_credentials_t sc, uint idx, int oidx, uint flags);
+    }
+
     int gnutls_ocsp_status_request_enable_client (gnutls_session_t session, gnutls_datum_t* responder_id, size_t responder_id_size, gnutls_datum_t* request_extensions);
     int gnutls_ocsp_status_request_get (gnutls_session_t session, gnutls_datum_t* response);
     uint gnutls_ocsp_status_request_is_checked (gnutls_session_t session, uint flags);
-    int gnutls_ocsp_status_request_get2 (gnutls_session_t session, uint idx, gnutls_datum_t* response);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        int gnutls_ocsp_status_request_get2 (gnutls_session_t session, uint idx, gnutls_datum_t* response);
+
     int gnutls_certificate_set_rawpk_key_mem (gnutls_certificate_credentials_t cred, const(gnutls_datum_t)* spki, const(gnutls_datum_t)* pkey, gnutls_x509_crt_fmt_t format, const(char)* pass, uint key_usage, const(char*)* names, uint names_length, uint flags);
     int gnutls_certificate_set_rawpk_key_file (gnutls_certificate_credentials_t cred, const(char)* rawpkfile, const(char)* privkeyfile, gnutls_x509_crt_fmt_t format, const(char)* pass, uint key_usage, const(char*)* names, uint names_length, uint privkey_flags, uint pkcs11_flags);
     int gnutls_global_init ();
@@ -1538,14 +1616,22 @@ version (BindGnuTLS_Static)
     void gnutls_global_set_log_function (gnutls_log_func log_func);
     void gnutls_global_set_audit_log_function (gnutls_audit_log_func log_func);
     void gnutls_global_set_log_level (int level);
-    gnutls_keylog_func gnutls_session_get_keylog_function (const gnutls_session_t session);
-    void gnutls_session_set_keylog_function (gnutls_session_t session, gnutls_keylog_func func);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+    {
+        gnutls_keylog_func gnutls_session_get_keylog_function (const gnutls_session_t session);
+        void gnutls_session_set_keylog_function (gnutls_session_t session, gnutls_keylog_func func);
+    }
+
     int gnutls_dh_params_init (gnutls_dh_params_t* dh_params);
     void gnutls_dh_params_deinit (gnutls_dh_params_t dh_params);
     int gnutls_dh_params_import_raw (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* generator);
     int gnutls_dh_params_import_dsa (gnutls_dh_params_t dh_params, gnutls_x509_privkey_t key);
     int gnutls_dh_params_import_raw2 (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* generator, uint key_bits);
-    int gnutls_dh_params_import_raw3 (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* q, const(gnutls_datum_t)* generator);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+        int gnutls_dh_params_import_raw3 (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* q, const(gnutls_datum_t)* generator);
+
     int gnutls_dh_params_import_pkcs3 (gnutls_dh_params_t params, const(gnutls_datum_t)* pkcs3_params, gnutls_x509_crt_fmt_t format);
     int gnutls_dh_params_generate2 (gnutls_dh_params_t params, uint bits);
     int gnutls_dh_params_export_pkcs3 (gnutls_dh_params_t params, gnutls_x509_crt_fmt_t format, ubyte* params_data, size_t* params_data_size);
@@ -1597,18 +1683,23 @@ version (BindGnuTLS_Static)
     void gnutls_psk_free_client_credentials (gnutls_psk_client_credentials_t sc);
     int gnutls_psk_allocate_client_credentials (gnutls_psk_client_credentials_t* sc);
     int gnutls_psk_set_client_credentials (gnutls_psk_client_credentials_t res, const(char)* username, const(gnutls_datum_t)* key, gnutls_psk_key_flags flags);
-    int gnutls_psk_set_client_credentials2 (gnutls_psk_client_credentials_t res, const(gnutls_datum_t)* username, const(gnutls_datum_t)* key, gnutls_psk_key_flags flags);
     void gnutls_psk_free_server_credentials (gnutls_psk_server_credentials_t sc);
     int gnutls_psk_allocate_server_credentials (gnutls_psk_server_credentials_t* sc);
     int gnutls_psk_set_server_credentials_file (gnutls_psk_server_credentials_t res, const(char)* password_file);
     int gnutls_psk_set_server_credentials_hint (gnutls_psk_server_credentials_t res, const(char)* hint);
     const(char)* gnutls_psk_server_get_username (gnutls_session_t session);
-    int gnutls_psk_server_get_username2 (gnutls_session_t session, gnutls_datum_t* out_);
     const(char)* gnutls_psk_client_get_hint (gnutls_session_t session);
     void gnutls_psk_set_server_credentials_function (gnutls_psk_server_credentials_t cred, int function () func);
-    void gnutls_psk_set_server_credentials_function2 (gnutls_psk_server_credentials_t cred, int function () func);
     void gnutls_psk_set_client_credentials_function (gnutls_psk_client_credentials_t cred, int function () func);
-    void gnutls_psk_set_client_credentials_function2 (gnutls_psk_client_credentials_t cred, int function () func);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+    {
+        int gnutls_psk_set_client_credentials2 (gnutls_psk_client_credentials_t res, const(gnutls_datum_t)* username, const(gnutls_datum_t)* key, gnutls_psk_key_flags flags);
+        int gnutls_psk_server_get_username2 (gnutls_session_t session, gnutls_datum_t* out_);
+        void gnutls_psk_set_server_credentials_function2 (gnutls_psk_server_credentials_t cred, int function () func);
+        void gnutls_psk_set_client_credentials_function2 (gnutls_psk_client_credentials_t cred, int function () func);
+    }
+
     int gnutls_hex_encode (const(gnutls_datum_t)* data, char* result, size_t* result_size);
     int gnutls_hex_decode (const(gnutls_datum_t)* hex_data, void* result, size_t* result_size);
     int gnutls_hex_encode2 (const(gnutls_datum_t)* data, gnutls_datum_t* result);
@@ -1674,8 +1765,13 @@ version (BindGnuTLS_Static)
 
     void gnutls_ext_set_data (gnutls_session_t session, uint type, gnutls_ext_priv_data_t);
     int gnutls_ext_get_data (gnutls_session_t session, uint type, gnutls_ext_priv_data_t*);
-    uint gnutls_ext_get_current_msg (gnutls_session_t session);
-    int gnutls_ext_raw_parse (void* ctx, gnutls_ext_raw_process_func cb, const(gnutls_datum_t)* data, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+    {
+        uint gnutls_ext_get_current_msg (gnutls_session_t session);
+        int gnutls_ext_raw_parse (void* ctx, gnutls_ext_raw_process_func cb, const(gnutls_datum_t)* data, uint flags);
+    }
+
     int gnutls_ext_register (const(char)* name, int type, gnutls_ext_parse_type_t parse_point, gnutls_ext_recv_func recv_func, gnutls_ext_send_func send_func, gnutls_ext_deinit_data_func deinit_func, gnutls_ext_pack_func pack_func, gnutls_ext_unpack_func unpack_func);
 
     static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -1684,7 +1780,9 @@ version (BindGnuTLS_Static)
     static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
         const(char)* gnutls_ext_get_name (uint ext);
 
-    const(char)* gnutls_ext_get_name2 (gnutls_session_t session, uint tls_id, gnutls_ext_parse_type_t parse_point);
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+        const(char)* gnutls_ext_get_name2 (gnutls_session_t session, uint tls_id, gnutls_ext_parse_type_t parse_point);
+
     int gnutls_supplemental_register (const(char)* name, gnutls_supplemental_data_format_type_t type, gnutls_supp_recv_func supp_recv_func, gnutls_supp_send_func supp_send_func);
 
     static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -1692,14 +1790,21 @@ version (BindGnuTLS_Static)
 
     void gnutls_supplemental_recv (gnutls_session_t session, uint do_recv_supplemental);
     void gnutls_supplemental_send (gnutls_session_t session, uint do_send_supplemental);
-    int gnutls_anti_replay_init (gnutls_anti_replay_t* anti_replay);
-    void gnutls_anti_replay_deinit (gnutls_anti_replay_t anti_replay);
-    void gnutls_anti_replay_set_window (gnutls_anti_replay_t anti_replay, uint window);
-    void gnutls_anti_replay_enable (gnutls_session_t session, gnutls_anti_replay_t anti_replay);
-    void gnutls_anti_replay_set_add_function (gnutls_anti_replay_t, gnutls_db_add_func add_func);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+    {
+        int gnutls_anti_replay_init (gnutls_anti_replay_t* anti_replay);
+        void gnutls_anti_replay_deinit (gnutls_anti_replay_t anti_replay);
+        void gnutls_anti_replay_set_window (gnutls_anti_replay_t anti_replay, uint window);
+        void gnutls_anti_replay_enable (gnutls_session_t session, gnutls_anti_replay_t anti_replay);
+        void gnutls_anti_replay_set_add_function (gnutls_anti_replay_t, gnutls_db_add_func add_func);
+    }
+
     void gnutls_anti_replay_set_ptr (gnutls_anti_replay_t, void* ptr);
     uint gnutls_fips140_mode_enabled ();
-    void gnutls_fips140_set_mode (gnutls_fips_mode_t mode, uint flags);
+
+    static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        void gnutls_fips140_set_mode (gnutls_fips_mode_t mode, uint flags);
 }
 else
 {
@@ -1710,10 +1815,16 @@ else
         alias pgnutls_deinit = void function (gnutls_session_t session);
         alias pgnutls_bye = int function (gnutls_session_t session, gnutls_close_request_t how);
         alias pgnutls_handshake = int function (gnutls_session_t session);
-        alias pgnutls_reauth = int function (gnutls_session_t session, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_reauth = int function (gnutls_session_t session, uint flags);
+
         alias pgnutls_handshake_set_timeout = void function (gnutls_session_t session, uint ms);
         alias pgnutls_rehandshake = int function (gnutls_session_t session);
-        alias pgnutls_session_key_update = int function (gnutls_session_t session, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_session_key_update = int function (gnutls_session_t session, uint flags);
+
         alias pgnutls_alert_get = gnutls_alert_description_t function (gnutls_session_t session);
         alias pgnutls_alert_send = int function (gnutls_session_t session, gnutls_alert_level_t level, gnutls_alert_description_t desc);
         alias pgnutls_alert_send_appropriate = int function (gnutls_session_t session, int err);
@@ -1732,9 +1843,15 @@ else
         alias pgnutls_cipher_get = gnutls_cipher_algorithm_t function (gnutls_session_t session);
         alias pgnutls_kx_get = gnutls_kx_algorithm_t function (gnutls_session_t session);
         alias pgnutls_mac_get = gnutls_mac_algorithm_t function (gnutls_session_t session);
-        alias pgnutls_prf_hash_get = gnutls_digest_algorithm_t function (const gnutls_session_t session);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+            alias pgnutls_prf_hash_get = gnutls_digest_algorithm_t function (const gnutls_session_t session);
+
         alias pgnutls_certificate_type_get = gnutls_certificate_type_t function (gnutls_session_t session);
-        alias pgnutls_certificate_type_get2 = gnutls_certificate_type_t function (gnutls_session_t session, gnutls_ctype_target_t target);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            alias pgnutls_certificate_type_get2 = gnutls_certificate_type_t function (gnutls_session_t session, gnutls_ctype_target_t target);
+
         alias pgnutls_sign_algorithm_get = int function (gnutls_session_t session);
         alias pgnutls_sign_algorithm_get_client = int function (gnutls_session_t session);
         alias pgnutls_sign_algorithm_get_requested = int function (gnutls_session_t session, size_t indx, gnutls_sign_algorithm_t* algo);
@@ -1748,8 +1865,13 @@ else
         alias pgnutls_pk_get_oid = const(char)* function (gnutls_pk_algorithm_t algorithm);
         alias pgnutls_sign_get_name = const(char)* function (gnutls_sign_algorithm_t algorithm);
         alias pgnutls_sign_get_oid = const(char)* function (gnutls_sign_algorithm_t sign);
-        alias pgnutls_gost_paramset_get_name = const(char)* function (gnutls_gost_paramset_t param);
-        alias pgnutls_gost_paramset_get_oid = const(char)* function (gnutls_gost_paramset_t param);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            alias pgnutls_gost_paramset_get_name = const(char)* function (gnutls_gost_paramset_t param);
+            alias pgnutls_gost_paramset_get_oid = const(char)* function (gnutls_gost_paramset_t param);
+        }
+
         alias pgnutls_cipher_get_key_size = size_t function (gnutls_cipher_algorithm_t algorithm);
         alias pgnutls_mac_get_key_size = size_t function (gnutls_mac_algorithm_t algorithm);
         alias pgnutls_sign_is_secure = uint function (gnutls_sign_algorithm_t algorithm);
@@ -1777,7 +1899,10 @@ else
         alias pgnutls_oid_to_pk = gnutls_pk_algorithm_t function (const(char)* oid);
         alias pgnutls_oid_to_sign = gnutls_sign_algorithm_t function (const(char)* oid);
         alias pgnutls_oid_to_ecc_curve = gnutls_ecc_curve_t function (const(char)* oid);
-        alias pgnutls_oid_to_gost_paramset = gnutls_gost_paramset_t function (const(char)* oid);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_oid_to_gost_paramset = gnutls_gost_paramset_t function (const(char)* oid);
+
         alias pgnutls_ecc_curve_list = const(gnutls_ecc_curve_t)* function ();
         alias pgnutls_group_list = const(gnutls_group_t)* function ();
         alias pgnutls_cipher_list = const(gnutls_cipher_algorithm_t)* function ();
@@ -1809,7 +1934,10 @@ else
         alias pgnutls_record_set_state = int function (gnutls_session_t session, uint read, ref const(ubyte)[8] seq_number);
         alias pgnutls_range_split = int function (gnutls_session_t session, const(gnutls_range_st)* orig, gnutls_range_st* small_range, gnutls_range_st* rem_range);
         alias pgnutls_record_send = ssize_t function (gnutls_session_t session, const(void)* data, size_t data_size);
-        alias pgnutls_record_send2 = ssize_t function (gnutls_session_t session, const(void)* data, size_t data_size, size_t pad, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_record_send2 = ssize_t function (gnutls_session_t session, const(void)* data, size_t data_size, size_t pad, uint flags);
+
         alias pgnutls_record_send_range = ssize_t function (gnutls_session_t session, const(void)* data, size_t data_size, const(gnutls_range_st)* range);
         alias pgnutls_record_recv = ssize_t function (gnutls_session_t session, void* data, size_t data_size);
         alias pgnutls_record_recv_packet = ssize_t function (gnutls_session_t session, gnutls_packet_t* packet);
@@ -1823,17 +1951,31 @@ else
         alias pgnutls_record_get_direction = int function (gnutls_session_t session);
         alias pgnutls_record_get_max_size = size_t function (gnutls_session_t session);
         alias pgnutls_record_set_max_size = ssize_t function (gnutls_session_t session, size_t size);
-        alias pgnutls_record_set_max_recv_size = ssize_t function (gnutls_session_t session, size_t size);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            alias pgnutls_record_set_max_recv_size = ssize_t function (gnutls_session_t session, size_t size);
+
         alias pgnutls_record_check_pending = size_t function (gnutls_session_t session);
         alias pgnutls_record_check_corked = size_t function (gnutls_session_t session);
-        alias pgnutls_record_get_max_early_data_size = size_t function (gnutls_session_t session);
-        alias pgnutls_record_set_max_early_data_size = int function (gnutls_session_t session, size_t size);
-        alias pgnutls_record_send_early_data = ssize_t function (gnutls_session_t session, const(void)* data, size_t length);
-        alias pgnutls_record_recv_early_data = ssize_t function (gnutls_session_t session, void* data, size_t data_size);
+
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            alias pgnutls_record_set_max_early_data_size = int function (gnutls_session_t session, size_t size);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+        {
+            alias pgnutls_record_get_max_early_data_size = size_t function (gnutls_session_t session);
+            alias pgnutls_record_send_early_data = ssize_t function (gnutls_session_t session, const(void)* data, size_t length);
+            alias pgnutls_record_recv_early_data = ssize_t function (gnutls_session_t session, void* data, size_t data_size);
+        }
+
         alias pgnutls_session_force_valid = void function (gnutls_session_t session);
         alias pgnutls_prf = int function (gnutls_session_t session, size_t label_size, const(char)* label, int server_random_first, size_t extra_size, const(char)* extra, size_t outsize, char* out_);
         alias pgnutls_prf_rfc5705 = int function (gnutls_session_t session, size_t label_size, const(char)* label, size_t context_size, const(char)* context, size_t outsize, char* out_);
-        alias pgnutls_prf_early = int function (gnutls_session_t session, size_t label_size, const(char)* label, size_t context_size, const(char)* context, size_t outsize, char* out_);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            alias pgnutls_prf_early = int function (gnutls_session_t session, size_t label_size, const(char)* label, size_t context_size, const(char)* context, size_t outsize, char* out_);
+
         alias pgnutls_prf_raw = int function (gnutls_session_t session, size_t label_size, const(char)* label, size_t seed_size, const(char)* seed, size_t outsize, char* out_);
         alias pgnutls_server_name_set = int function (gnutls_session_t session, gnutls_server_name_type_t type, const(void)* name, size_t name_length);
         alias pgnutls_server_name_get = int function (gnutls_session_t session, void* data, size_t* data_length, uint* type, uint indx);
@@ -1849,7 +1991,10 @@ else
         alias pgnutls_session_ticket_key_generate = int function (gnutls_datum_t* key);
         alias pgnutls_session_ticket_enable_client = int function (gnutls_session_t session);
         alias pgnutls_session_ticket_enable_server = int function (gnutls_session_t session, const(gnutls_datum_t)* key);
-        alias pgnutls_session_ticket_send = int function (gnutls_session_t session, uint nr, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_session_ticket_send = int function (gnutls_session_t session, uint nr, uint flags);
+
         alias pgnutls_srtp_set_profile = int function (gnutls_session_t session, gnutls_srtp_profile_t profile);
         alias pgnutls_srtp_set_profile_direct = int function (gnutls_session_t session, const(char)* profiles, const(char*)* err_pos);
         alias pgnutls_srtp_get_selected_profile = int function (gnutls_session_t session, gnutls_srtp_profile_t* profile);
@@ -1862,14 +2007,20 @@ else
         alias pgnutls_alpn_set_protocols = int function (gnutls_session_t session, const(gnutls_datum_t)* protocols, uint protocols_size, uint flags);
         alias pgnutls_key_generate = int function (gnutls_datum_t* key, uint key_size);
         alias pgnutls_priority_init = int function (gnutls_priority_t* priority_cache, const(char)* priorities, const(char*)* err_pos);
-        alias pgnutls_priority_init2 = int function (gnutls_priority_t* priority_cache, const(char)* priorities, const(char*)* err_pos, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_priority_init2 = int function (gnutls_priority_t* priority_cache, const(char)* priorities, const(char*)* err_pos, uint flags);
+
         alias pgnutls_priority_deinit = void function (gnutls_priority_t priority_cache);
         alias pgnutls_priority_get_cipher_suite_index = int function (gnutls_priority_t pcache, uint idx, uint* sidx);
         alias pgnutls_priority_string_list = const(char)* function (uint iter, uint flags);
         alias pgnutls_priority_set = int function (gnutls_session_t session, gnutls_priority_t priority);
         alias pgnutls_priority_set_direct = int function (gnutls_session_t session, const(char)* priorities, const(char*)* err_pos);
         alias pgnutls_priority_certificate_type_list = int function (gnutls_priority_t pcache, const(uint*)* list);
-        alias pgnutls_priority_certificate_type_list2 = int function (gnutls_priority_t pcache, const(uint*)* list, gnutls_ctype_target_t target);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            alias pgnutls_priority_certificate_type_list2 = int function (gnutls_priority_t pcache, const(uint*)* list, gnutls_ctype_target_t target);
+
         alias pgnutls_priority_sign_list = int function (gnutls_priority_t pcache, const(uint*)* list);
         alias pgnutls_priority_protocol_list = int function (gnutls_priority_t pcache, const(uint*)* list);
         alias pgnutls_priority_ecc_curve_list = int function (gnutls_priority_t pcache, const(uint*)* list);
@@ -1877,9 +2028,15 @@ else
         alias pgnutls_priority_kx_list = int function (gnutls_priority_t pcache, const(uint*)* list);
         alias pgnutls_priority_cipher_list = int function (gnutls_priority_t pcache, const(uint*)* list);
         alias pgnutls_priority_mac_list = int function (gnutls_priority_t pcache, const(uint*)* list);
-        alias pgnutls_get_system_config_file = const(char)* function ();
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_9)
+            alias pgnutls_get_system_config_file = const(char)* function ();
+
         alias pgnutls_set_default_priority = int function (gnutls_session_t session);
-        alias pgnutls_set_default_priority_append = int function (gnutls_session_t session, const(char)* add_prio, const(char*)* err_pos, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_set_default_priority_append = int function (gnutls_session_t session, const(char)* add_prio, const(char*)* err_pos, uint flags);
+
         alias pgnutls_cipher_suite_get_name = const(char)* function (gnutls_kx_algorithm_t kx_algorithm, gnutls_cipher_algorithm_t cipher_algorithm, gnutls_mac_algorithm_t mac_algorithm);
         alias pgnutls_protocol_get_version = gnutls_protocol_t function (gnutls_session_t session);
         alias pgnutls_protocol_get_name = const(char)* function (gnutls_protocol_t version_);
@@ -1910,7 +2067,10 @@ else
         alias pgnutls_db_get_ptr = void* function (gnutls_session_t session);
         alias pgnutls_db_check_entry = int function (gnutls_session_t session, gnutls_datum_t session_entry);
         alias pgnutls_db_check_entry_time = time_t function (gnutls_datum_t* entry);
-        alias pgnutls_db_check_entry_expire_time = time_t function (gnutls_datum_t* entry);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+            alias pgnutls_db_check_entry_expire_time = time_t function (gnutls_datum_t* entry);
+
         alias pgnutls_handshake_set_hook_function = void function (gnutls_session_t session, uint htype, int when, gnutls_handshake_hook_func func);
         alias pgnutls_handshake_set_post_client_hello_function = void function (gnutls_session_t session, gnutls_handshake_simple_hook_func func);
         alias pgnutls_handshake_set_max_packet_length = void function (gnutls_session_t session, size_t max);
@@ -1969,13 +2129,21 @@ else
             alias pgnutls_certificate_set_ocsp_status_request_function2 = int function (gnutls_certificate_credentials_t res, uint idx, gnutls_status_request_ocsp_func ocsp_func, void* ptr);
 
         alias pgnutls_certificate_set_ocsp_status_request_file = int function (gnutls_certificate_credentials_t res, const(char)* response_file, uint idx);
-        alias pgnutls_certificate_set_ocsp_status_request_file2 = int function (gnutls_certificate_credentials_t res, const(char)* response_file, uint idx, gnutls_x509_crt_fmt_t fmt);
-        alias pgnutls_certificate_set_ocsp_status_request_mem = int function (gnutls_certificate_credentials_t res, const(gnutls_datum_t)* resp, uint idx, gnutls_x509_crt_fmt_t fmt);
-        alias pgnutls_certificate_get_ocsp_expiration = time_t function (gnutls_certificate_credentials_t sc, uint idx, int oidx, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            alias pgnutls_certificate_set_ocsp_status_request_file2 = int function (gnutls_certificate_credentials_t res, const(char)* response_file, uint idx, gnutls_x509_crt_fmt_t fmt);
+            alias pgnutls_certificate_set_ocsp_status_request_mem = int function (gnutls_certificate_credentials_t res, const(gnutls_datum_t)* resp, uint idx, gnutls_x509_crt_fmt_t fmt);
+            alias pgnutls_certificate_get_ocsp_expiration = time_t function (gnutls_certificate_credentials_t sc, uint idx, int oidx, uint flags);
+        }
+
         alias pgnutls_ocsp_status_request_enable_client = int function (gnutls_session_t session, gnutls_datum_t* responder_id, size_t responder_id_size, gnutls_datum_t* request_extensions);
         alias pgnutls_ocsp_status_request_get = int function (gnutls_session_t session, gnutls_datum_t* response);
         alias pgnutls_ocsp_status_request_is_checked = uint function (gnutls_session_t session, uint flags);
-        alias pgnutls_ocsp_status_request_get2 = int function (gnutls_session_t session, uint idx, gnutls_datum_t* response);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_ocsp_status_request_get2 = int function (gnutls_session_t session, uint idx, gnutls_datum_t* response);
+
         alias pgnutls_certificate_set_rawpk_key_mem = int function (gnutls_certificate_credentials_t cred, const(gnutls_datum_t)* spki, const(gnutls_datum_t)* pkey, gnutls_x509_crt_fmt_t format, const(char)* pass, uint key_usage, const(char*)* names, uint names_length, uint flags);
         alias pgnutls_certificate_set_rawpk_key_file = int function (gnutls_certificate_credentials_t cred, const(char)* rawpkfile, const(char)* privkeyfile, gnutls_x509_crt_fmt_t format, const(char)* pass, uint key_usage, const(char*)* names, uint names_length, uint privkey_flags, uint pkcs11_flags);
         alias pgnutls_global_init = int function ();
@@ -1987,14 +2155,22 @@ else
         alias pgnutls_global_set_log_function = void function (gnutls_log_func log_func);
         alias pgnutls_global_set_audit_log_function = void function (gnutls_audit_log_func log_func);
         alias pgnutls_global_set_log_level = void function (int level);
-        alias pgnutls_session_get_keylog_function = gnutls_keylog_func function (const gnutls_session_t session);
-        alias pgnutls_session_set_keylog_function = void function (gnutls_session_t session, gnutls_keylog_func func);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+        {
+            alias pgnutls_session_get_keylog_function = gnutls_keylog_func function (const gnutls_session_t session);
+            alias pgnutls_session_set_keylog_function = void function (gnutls_session_t session, gnutls_keylog_func func);
+        }
+
         alias pgnutls_dh_params_init = int function (gnutls_dh_params_t* dh_params);
         alias pgnutls_dh_params_deinit = void function (gnutls_dh_params_t dh_params);
         alias pgnutls_dh_params_import_raw = int function (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* generator);
         alias pgnutls_dh_params_import_dsa = int function (gnutls_dh_params_t dh_params, gnutls_x509_privkey_t key);
         alias pgnutls_dh_params_import_raw2 = int function (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* generator, uint key_bits);
-        alias pgnutls_dh_params_import_raw3 = int function (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* q, const(gnutls_datum_t)* generator);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            alias pgnutls_dh_params_import_raw3 = int function (gnutls_dh_params_t dh_params, const(gnutls_datum_t)* prime, const(gnutls_datum_t)* q, const(gnutls_datum_t)* generator);
+
         alias pgnutls_dh_params_import_pkcs3 = int function (gnutls_dh_params_t params, const(gnutls_datum_t)* pkcs3_params, gnutls_x509_crt_fmt_t format);
         alias pgnutls_dh_params_generate2 = int function (gnutls_dh_params_t params, uint bits);
         alias pgnutls_dh_params_export_pkcs3 = int function (gnutls_dh_params_t params, gnutls_x509_crt_fmt_t format, ubyte* params_data, size_t* params_data_size);
@@ -2046,18 +2222,23 @@ else
         alias pgnutls_psk_free_client_credentials = void function (gnutls_psk_client_credentials_t sc);
         alias pgnutls_psk_allocate_client_credentials = int function (gnutls_psk_client_credentials_t* sc);
         alias pgnutls_psk_set_client_credentials = int function (gnutls_psk_client_credentials_t res, const(char)* username, const(gnutls_datum_t)* key, gnutls_psk_key_flags flags);
-        alias pgnutls_psk_set_client_credentials2 = int function (gnutls_psk_client_credentials_t res, const(gnutls_datum_t)* username, const(gnutls_datum_t)* key, gnutls_psk_key_flags flags);
         alias pgnutls_psk_free_server_credentials = void function (gnutls_psk_server_credentials_t sc);
         alias pgnutls_psk_allocate_server_credentials = int function (gnutls_psk_server_credentials_t* sc);
         alias pgnutls_psk_set_server_credentials_file = int function (gnutls_psk_server_credentials_t res, const(char)* password_file);
         alias pgnutls_psk_set_server_credentials_hint = int function (gnutls_psk_server_credentials_t res, const(char)* hint);
         alias pgnutls_psk_server_get_username = const(char)* function (gnutls_session_t session);
-        alias pgnutls_psk_server_get_username2 = int function (gnutls_session_t session, gnutls_datum_t* out_);
         alias pgnutls_psk_client_get_hint = const(char)* function (gnutls_session_t session);
         alias pgnutls_psk_set_server_credentials_function = void function (gnutls_psk_server_credentials_t cred, int function () func);
-        alias pgnutls_psk_set_server_credentials_function2 = void function (gnutls_psk_server_credentials_t cred, int function () func);
         alias pgnutls_psk_set_client_credentials_function = void function (gnutls_psk_client_credentials_t cred, int function () func);
-        alias pgnutls_psk_set_client_credentials_function2 = void function (gnutls_psk_client_credentials_t cred, int function () func);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+        {
+            alias pgnutls_psk_set_client_credentials2 = int function (gnutls_psk_client_credentials_t res, const(gnutls_datum_t)* username, const(gnutls_datum_t)* key, gnutls_psk_key_flags flags);
+            alias pgnutls_psk_server_get_username2 = int function (gnutls_session_t session, gnutls_datum_t* out_);
+            alias pgnutls_psk_set_server_credentials_function2 = void function (gnutls_psk_server_credentials_t cred, int function () func);
+            alias pgnutls_psk_set_client_credentials_function2 = void function (gnutls_psk_client_credentials_t cred, int function () func);
+        }
+
         alias pgnutls_hex_encode = int function (const(gnutls_datum_t)* data, char* result, size_t* result_size);
         alias pgnutls_hex_decode = int function (const(gnutls_datum_t)* hex_data, void* result, size_t* result_size);
         alias pgnutls_hex_encode2 = int function (const(gnutls_datum_t)* data, gnutls_datum_t* result);
@@ -2123,8 +2304,13 @@ else
 
         alias pgnutls_ext_set_data = void function (gnutls_session_t session, uint type, gnutls_ext_priv_data_t);
         alias pgnutls_ext_get_data = int function (gnutls_session_t session, uint type, gnutls_ext_priv_data_t*);
-        alias pgnutls_ext_get_current_msg = uint function (gnutls_session_t session);
-        alias pgnutls_ext_raw_parse = int function (void* ctx, gnutls_ext_raw_process_func cb, const(gnutls_datum_t)* data, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            alias pgnutls_ext_get_current_msg = uint function (gnutls_session_t session);
+            alias pgnutls_ext_raw_parse = int function (void* ctx, gnutls_ext_raw_process_func cb, const(gnutls_datum_t)* data, uint flags);
+        }
+
         alias pgnutls_ext_register = int function (const(char)* name, int type, gnutls_ext_parse_type_t parse_point, gnutls_ext_recv_func recv_func, gnutls_ext_send_func send_func, gnutls_ext_deinit_data_func deinit_func, gnutls_ext_pack_func pack_func, gnutls_ext_unpack_func unpack_func);
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -2133,7 +2319,9 @@ else
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
             alias pgnutls_ext_get_name = const(char)* function (uint ext);
 
-        alias pgnutls_ext_get_name2 = const(char)* function (gnutls_session_t session, uint tls_id, gnutls_ext_parse_type_t parse_point);
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+            alias pgnutls_ext_get_name2 = const(char)* function (gnutls_session_t session, uint tls_id, gnutls_ext_parse_type_t parse_point);
+
         alias pgnutls_supplemental_register = int function (const(char)* name, gnutls_supplemental_data_format_type_t type, gnutls_supp_recv_func supp_recv_func, gnutls_supp_send_func supp_send_func);
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -2141,14 +2329,21 @@ else
 
         alias pgnutls_supplemental_recv = void function (gnutls_session_t session, uint do_recv_supplemental);
         alias pgnutls_supplemental_send = void function (gnutls_session_t session, uint do_send_supplemental);
-        alias pgnutls_anti_replay_init = int function (gnutls_anti_replay_t* anti_replay);
-        alias pgnutls_anti_replay_deinit = void function (gnutls_anti_replay_t anti_replay);
-        alias pgnutls_anti_replay_set_window = void function (gnutls_anti_replay_t anti_replay, uint window);
-        alias pgnutls_anti_replay_enable = void function (gnutls_session_t session, gnutls_anti_replay_t anti_replay);
-        alias pgnutls_anti_replay_set_add_function = void function (gnutls_anti_replay_t, gnutls_db_add_func add_func);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+        {
+            alias pgnutls_anti_replay_init = int function (gnutls_anti_replay_t* anti_replay);
+            alias pgnutls_anti_replay_deinit = void function (gnutls_anti_replay_t anti_replay);
+            alias pgnutls_anti_replay_set_window = void function (gnutls_anti_replay_t anti_replay, uint window);
+            alias pgnutls_anti_replay_enable = void function (gnutls_session_t session, gnutls_anti_replay_t anti_replay);
+            alias pgnutls_anti_replay_set_add_function = void function (gnutls_anti_replay_t, gnutls_db_add_func add_func);
+        }
+
         alias pgnutls_anti_replay_set_ptr = void function (gnutls_anti_replay_t, void* ptr);
         alias pgnutls_fips140_mode_enabled = uint function ();
-        alias pgnutls_fips140_set_mode = void function (gnutls_fips_mode_t mode, uint flags);
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            alias pgnutls_fips140_set_mode = void function (gnutls_fips_mode_t mode, uint flags);
     }
 
     __gshared
@@ -2158,10 +2353,16 @@ else
         pgnutls_deinit gnutls_deinit;
         pgnutls_bye gnutls_bye;
         pgnutls_handshake gnutls_handshake;
-        pgnutls_reauth gnutls_reauth;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_reauth gnutls_reauth;
+
         pgnutls_handshake_set_timeout gnutls_handshake_set_timeout;
         pgnutls_rehandshake gnutls_rehandshake;
-        pgnutls_session_key_update gnutls_session_key_update;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_session_key_update gnutls_session_key_update;
+
         pgnutls_alert_get gnutls_alert_get;
         pgnutls_alert_send gnutls_alert_send;
         pgnutls_alert_send_appropriate gnutls_alert_send_appropriate;
@@ -2180,9 +2381,15 @@ else
         pgnutls_cipher_get gnutls_cipher_get;
         pgnutls_kx_get gnutls_kx_get;
         pgnutls_mac_get gnutls_mac_get;
-        pgnutls_prf_hash_get gnutls_prf_hash_get;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+            pgnutls_prf_hash_get gnutls_prf_hash_get;
+
         pgnutls_certificate_type_get gnutls_certificate_type_get;
-        pgnutls_certificate_type_get2 gnutls_certificate_type_get2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            pgnutls_certificate_type_get2 gnutls_certificate_type_get2;
+
         pgnutls_sign_algorithm_get gnutls_sign_algorithm_get;
         pgnutls_sign_algorithm_get_client gnutls_sign_algorithm_get_client;
         pgnutls_sign_algorithm_get_requested gnutls_sign_algorithm_get_requested;
@@ -2196,8 +2403,13 @@ else
         pgnutls_pk_get_oid gnutls_pk_get_oid;
         pgnutls_sign_get_name gnutls_sign_get_name;
         pgnutls_sign_get_oid gnutls_sign_get_oid;
-        pgnutls_gost_paramset_get_name gnutls_gost_paramset_get_name;
-        pgnutls_gost_paramset_get_oid gnutls_gost_paramset_get_oid;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            pgnutls_gost_paramset_get_name gnutls_gost_paramset_get_name;
+            pgnutls_gost_paramset_get_oid gnutls_gost_paramset_get_oid;
+        }
+
         pgnutls_cipher_get_key_size gnutls_cipher_get_key_size;
         pgnutls_mac_get_key_size gnutls_mac_get_key_size;
         pgnutls_sign_is_secure gnutls_sign_is_secure;
@@ -2225,7 +2437,10 @@ else
         pgnutls_oid_to_pk gnutls_oid_to_pk;
         pgnutls_oid_to_sign gnutls_oid_to_sign;
         pgnutls_oid_to_ecc_curve gnutls_oid_to_ecc_curve;
-        pgnutls_oid_to_gost_paramset gnutls_oid_to_gost_paramset;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_oid_to_gost_paramset gnutls_oid_to_gost_paramset;
+
         pgnutls_ecc_curve_list gnutls_ecc_curve_list;
         pgnutls_group_list gnutls_group_list;
         pgnutls_cipher_list gnutls_cipher_list;
@@ -2257,7 +2472,10 @@ else
         pgnutls_record_set_state gnutls_record_set_state;
         pgnutls_range_split gnutls_range_split;
         pgnutls_record_send gnutls_record_send;
-        pgnutls_record_send2 gnutls_record_send2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_record_send2 gnutls_record_send2;
+
         pgnutls_record_send_range gnutls_record_send_range;
         pgnutls_record_recv gnutls_record_recv;
         pgnutls_record_recv_packet gnutls_record_recv_packet;
@@ -2271,17 +2489,31 @@ else
         pgnutls_record_get_direction gnutls_record_get_direction;
         pgnutls_record_get_max_size gnutls_record_get_max_size;
         pgnutls_record_set_max_size gnutls_record_set_max_size;
-        pgnutls_record_set_max_recv_size gnutls_record_set_max_recv_size;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            pgnutls_record_set_max_recv_size gnutls_record_set_max_recv_size;
+
         pgnutls_record_check_pending gnutls_record_check_pending;
         pgnutls_record_check_corked gnutls_record_check_corked;
-        pgnutls_record_get_max_early_data_size gnutls_record_get_max_early_data_size;
-        pgnutls_record_set_max_early_data_size gnutls_record_set_max_early_data_size;
-        pgnutls_record_send_early_data gnutls_record_send_early_data;
-        pgnutls_record_recv_early_data gnutls_record_recv_early_data;
+
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            pgnutls_record_set_max_early_data_size gnutls_record_set_max_early_data_size;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+        {
+            pgnutls_record_get_max_early_data_size gnutls_record_get_max_early_data_size;
+            pgnutls_record_send_early_data gnutls_record_send_early_data;
+            pgnutls_record_recv_early_data gnutls_record_recv_early_data;
+        }
+
         pgnutls_session_force_valid gnutls_session_force_valid;
         pgnutls_prf gnutls_prf;
         pgnutls_prf_rfc5705 gnutls_prf_rfc5705;
-        pgnutls_prf_early gnutls_prf_early;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            pgnutls_prf_early gnutls_prf_early;
+
         pgnutls_prf_raw gnutls_prf_raw;
         pgnutls_server_name_set gnutls_server_name_set;
         pgnutls_server_name_get gnutls_server_name_get;
@@ -2297,7 +2529,10 @@ else
         pgnutls_session_ticket_key_generate gnutls_session_ticket_key_generate;
         pgnutls_session_ticket_enable_client gnutls_session_ticket_enable_client;
         pgnutls_session_ticket_enable_server gnutls_session_ticket_enable_server;
-        pgnutls_session_ticket_send gnutls_session_ticket_send;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_session_ticket_send gnutls_session_ticket_send;
+
         pgnutls_srtp_set_profile gnutls_srtp_set_profile;
         pgnutls_srtp_set_profile_direct gnutls_srtp_set_profile_direct;
         pgnutls_srtp_get_selected_profile gnutls_srtp_get_selected_profile;
@@ -2310,14 +2545,20 @@ else
         pgnutls_alpn_set_protocols gnutls_alpn_set_protocols;
         pgnutls_key_generate gnutls_key_generate;
         pgnutls_priority_init gnutls_priority_init;
-        pgnutls_priority_init2 gnutls_priority_init2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_priority_init2 gnutls_priority_init2;
+
         pgnutls_priority_deinit gnutls_priority_deinit;
         pgnutls_priority_get_cipher_suite_index gnutls_priority_get_cipher_suite_index;
         pgnutls_priority_string_list gnutls_priority_string_list;
         pgnutls_priority_set gnutls_priority_set;
         pgnutls_priority_set_direct gnutls_priority_set_direct;
         pgnutls_priority_certificate_type_list gnutls_priority_certificate_type_list;
-        pgnutls_priority_certificate_type_list2 gnutls_priority_certificate_type_list2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            pgnutls_priority_certificate_type_list2 gnutls_priority_certificate_type_list2;
+
         pgnutls_priority_sign_list gnutls_priority_sign_list;
         pgnutls_priority_protocol_list gnutls_priority_protocol_list;
         pgnutls_priority_ecc_curve_list gnutls_priority_ecc_curve_list;
@@ -2325,9 +2566,15 @@ else
         pgnutls_priority_kx_list gnutls_priority_kx_list;
         pgnutls_priority_cipher_list gnutls_priority_cipher_list;
         pgnutls_priority_mac_list gnutls_priority_mac_list;
-        pgnutls_get_system_config_file gnutls_get_system_config_file;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_9)
+            pgnutls_get_system_config_file gnutls_get_system_config_file;
+
         pgnutls_set_default_priority gnutls_set_default_priority;
-        pgnutls_set_default_priority_append gnutls_set_default_priority_append;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_set_default_priority_append gnutls_set_default_priority_append;
+
         pgnutls_cipher_suite_get_name gnutls_cipher_suite_get_name;
         pgnutls_protocol_get_version gnutls_protocol_get_version;
         pgnutls_protocol_get_name gnutls_protocol_get_name;
@@ -2358,7 +2605,10 @@ else
         pgnutls_db_get_ptr gnutls_db_get_ptr;
         pgnutls_db_check_entry gnutls_db_check_entry;
         pgnutls_db_check_entry_time gnutls_db_check_entry_time;
-        pgnutls_db_check_entry_expire_time gnutls_db_check_entry_expire_time;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+            pgnutls_db_check_entry_expire_time gnutls_db_check_entry_expire_time;
+
         pgnutls_handshake_set_hook_function gnutls_handshake_set_hook_function;
         pgnutls_handshake_set_post_client_hello_function gnutls_handshake_set_post_client_hello_function;
         pgnutls_handshake_set_max_packet_length gnutls_handshake_set_max_packet_length;
@@ -2417,13 +2667,21 @@ else
             pgnutls_certificate_set_ocsp_status_request_function2 gnutls_certificate_set_ocsp_status_request_function2;
 
         pgnutls_certificate_set_ocsp_status_request_file gnutls_certificate_set_ocsp_status_request_file;
-        pgnutls_certificate_set_ocsp_status_request_file2 gnutls_certificate_set_ocsp_status_request_file2;
-        pgnutls_certificate_set_ocsp_status_request_mem gnutls_certificate_set_ocsp_status_request_mem;
-        pgnutls_certificate_get_ocsp_expiration gnutls_certificate_get_ocsp_expiration;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            pgnutls_certificate_set_ocsp_status_request_file2 gnutls_certificate_set_ocsp_status_request_file2;
+            pgnutls_certificate_set_ocsp_status_request_mem gnutls_certificate_set_ocsp_status_request_mem;
+            pgnutls_certificate_get_ocsp_expiration gnutls_certificate_get_ocsp_expiration;
+        }
+
         pgnutls_ocsp_status_request_enable_client gnutls_ocsp_status_request_enable_client;
         pgnutls_ocsp_status_request_get gnutls_ocsp_status_request_get;
         pgnutls_ocsp_status_request_is_checked gnutls_ocsp_status_request_is_checked;
-        pgnutls_ocsp_status_request_get2 gnutls_ocsp_status_request_get2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_ocsp_status_request_get2 gnutls_ocsp_status_request_get2;
+
         pgnutls_certificate_set_rawpk_key_mem gnutls_certificate_set_rawpk_key_mem;
         pgnutls_certificate_set_rawpk_key_file gnutls_certificate_set_rawpk_key_file;
         pgnutls_global_init gnutls_global_init;
@@ -2435,14 +2693,22 @@ else
         pgnutls_global_set_log_function gnutls_global_set_log_function;
         pgnutls_global_set_audit_log_function gnutls_global_set_audit_log_function;
         pgnutls_global_set_log_level gnutls_global_set_log_level;
-        pgnutls_session_get_keylog_function gnutls_session_get_keylog_function;
-        pgnutls_session_set_keylog_function gnutls_session_set_keylog_function;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+        {
+            pgnutls_session_get_keylog_function gnutls_session_get_keylog_function;
+            pgnutls_session_set_keylog_function gnutls_session_set_keylog_function;
+        }
+
         pgnutls_dh_params_init gnutls_dh_params_init;
         pgnutls_dh_params_deinit gnutls_dh_params_deinit;
         pgnutls_dh_params_import_raw gnutls_dh_params_import_raw;
         pgnutls_dh_params_import_dsa gnutls_dh_params_import_dsa;
         pgnutls_dh_params_import_raw2 gnutls_dh_params_import_raw2;
-        pgnutls_dh_params_import_raw3 gnutls_dh_params_import_raw3;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            pgnutls_dh_params_import_raw3 gnutls_dh_params_import_raw3;
+
         pgnutls_dh_params_import_pkcs3 gnutls_dh_params_import_pkcs3;
         pgnutls_dh_params_generate2 gnutls_dh_params_generate2;
         pgnutls_dh_params_export_pkcs3 gnutls_dh_params_export_pkcs3;
@@ -2494,18 +2760,23 @@ else
         pgnutls_psk_free_client_credentials gnutls_psk_free_client_credentials;
         pgnutls_psk_allocate_client_credentials gnutls_psk_allocate_client_credentials;
         pgnutls_psk_set_client_credentials gnutls_psk_set_client_credentials;
-        pgnutls_psk_set_client_credentials2 gnutls_psk_set_client_credentials2;
         pgnutls_psk_free_server_credentials gnutls_psk_free_server_credentials;
         pgnutls_psk_allocate_server_credentials gnutls_psk_allocate_server_credentials;
         pgnutls_psk_set_server_credentials_file gnutls_psk_set_server_credentials_file;
         pgnutls_psk_set_server_credentials_hint gnutls_psk_set_server_credentials_hint;
         pgnutls_psk_server_get_username gnutls_psk_server_get_username;
-        pgnutls_psk_server_get_username2 gnutls_psk_server_get_username2;
         pgnutls_psk_client_get_hint gnutls_psk_client_get_hint;
         pgnutls_psk_set_server_credentials_function gnutls_psk_set_server_credentials_function;
-        pgnutls_psk_set_server_credentials_function2 gnutls_psk_set_server_credentials_function2;
         pgnutls_psk_set_client_credentials_function gnutls_psk_set_client_credentials_function;
-        pgnutls_psk_set_client_credentials_function2 gnutls_psk_set_client_credentials_function2;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+        {
+            pgnutls_psk_set_client_credentials2 gnutls_psk_set_client_credentials2;
+            pgnutls_psk_server_get_username2 gnutls_psk_server_get_username2;
+            pgnutls_psk_set_server_credentials_function2 gnutls_psk_set_server_credentials_function2;
+            pgnutls_psk_set_client_credentials_function2 gnutls_psk_set_client_credentials_function2;
+        }
+
         pgnutls_hex_encode gnutls_hex_encode;
         pgnutls_hex_decode gnutls_hex_decode;
         pgnutls_hex_encode2 gnutls_hex_encode2;
@@ -2571,8 +2842,13 @@ else
 
         pgnutls_ext_set_data gnutls_ext_set_data;
         pgnutls_ext_get_data gnutls_ext_get_data;
-        pgnutls_ext_get_current_msg gnutls_ext_get_current_msg;
-        pgnutls_ext_raw_parse gnutls_ext_raw_parse;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            pgnutls_ext_get_current_msg gnutls_ext_get_current_msg;
+            pgnutls_ext_raw_parse gnutls_ext_raw_parse;
+        }
+
         pgnutls_ext_register gnutls_ext_register;
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -2581,7 +2857,9 @@ else
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
             pgnutls_ext_get_name gnutls_ext_get_name;
 
-        pgnutls_ext_get_name2 gnutls_ext_get_name2;
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+            pgnutls_ext_get_name2 gnutls_ext_get_name2;
+
         pgnutls_supplemental_register gnutls_supplemental_register;
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -2589,14 +2867,21 @@ else
 
         pgnutls_supplemental_recv gnutls_supplemental_recv;
         pgnutls_supplemental_send gnutls_supplemental_send;
-        pgnutls_anti_replay_init gnutls_anti_replay_init;
-        pgnutls_anti_replay_deinit gnutls_anti_replay_deinit;
-        pgnutls_anti_replay_set_window gnutls_anti_replay_set_window;
-        pgnutls_anti_replay_enable gnutls_anti_replay_enable;
-        pgnutls_anti_replay_set_add_function gnutls_anti_replay_set_add_function;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+        {
+            pgnutls_anti_replay_init gnutls_anti_replay_init;
+            pgnutls_anti_replay_deinit gnutls_anti_replay_deinit;
+            pgnutls_anti_replay_set_window gnutls_anti_replay_set_window;
+            pgnutls_anti_replay_enable gnutls_anti_replay_enable;
+            pgnutls_anti_replay_set_add_function gnutls_anti_replay_set_add_function;
+        }
+
         pgnutls_anti_replay_set_ptr gnutls_anti_replay_set_ptr;
         pgnutls_fips140_mode_enabled gnutls_fips140_mode_enabled;
-        pgnutls_fips140_set_mode gnutls_fips140_set_mode;
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            pgnutls_fips140_set_mode gnutls_fips140_set_mode;
     }
 
     import bindbc.loader : SharedLib, bindSymbol_stdcall;
@@ -2607,10 +2892,16 @@ else
         lib.bindSymbol_stdcall(gnutls_deinit, "gnutls_deinit");
         lib.bindSymbol_stdcall(gnutls_bye, "gnutls_bye");
         lib.bindSymbol_stdcall(gnutls_handshake, "gnutls_handshake");
-        lib.bindSymbol_stdcall(gnutls_reauth, "gnutls_reauth");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_reauth, "gnutls_reauth");
+
         lib.bindSymbol_stdcall(gnutls_handshake_set_timeout, "gnutls_handshake_set_timeout");
         lib.bindSymbol_stdcall(gnutls_rehandshake, "gnutls_rehandshake");
-        lib.bindSymbol_stdcall(gnutls_session_key_update, "gnutls_session_key_update");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_session_key_update, "gnutls_session_key_update");
+
         lib.bindSymbol_stdcall(gnutls_alert_get, "gnutls_alert_get");
         lib.bindSymbol_stdcall(gnutls_alert_send, "gnutls_alert_send");
         lib.bindSymbol_stdcall(gnutls_alert_send_appropriate, "gnutls_alert_send_appropriate");
@@ -2629,9 +2920,15 @@ else
         lib.bindSymbol_stdcall(gnutls_cipher_get, "gnutls_cipher_get");
         lib.bindSymbol_stdcall(gnutls_kx_get, "gnutls_kx_get");
         lib.bindSymbol_stdcall(gnutls_mac_get, "gnutls_mac_get");
-        lib.bindSymbol_stdcall(gnutls_prf_hash_get, "gnutls_prf_hash_get");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+            lib.bindSymbol_stdcall(gnutls_prf_hash_get, "gnutls_prf_hash_get");
+
         lib.bindSymbol_stdcall(gnutls_certificate_type_get, "gnutls_certificate_type_get");
-        lib.bindSymbol_stdcall(gnutls_certificate_type_get2, "gnutls_certificate_type_get2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            lib.bindSymbol_stdcall(gnutls_certificate_type_get2, "gnutls_certificate_type_get2");
+
         lib.bindSymbol_stdcall(gnutls_sign_algorithm_get, "gnutls_sign_algorithm_get");
         lib.bindSymbol_stdcall(gnutls_sign_algorithm_get_client, "gnutls_sign_algorithm_get_client");
         lib.bindSymbol_stdcall(gnutls_sign_algorithm_get_requested, "gnutls_sign_algorithm_get_requested");
@@ -2645,8 +2942,13 @@ else
         lib.bindSymbol_stdcall(gnutls_pk_get_oid, "gnutls_pk_get_oid");
         lib.bindSymbol_stdcall(gnutls_sign_get_name, "gnutls_sign_get_name");
         lib.bindSymbol_stdcall(gnutls_sign_get_oid, "gnutls_sign_get_oid");
-        lib.bindSymbol_stdcall(gnutls_gost_paramset_get_name, "gnutls_gost_paramset_get_name");
-        lib.bindSymbol_stdcall(gnutls_gost_paramset_get_oid, "gnutls_gost_paramset_get_oid");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            lib.bindSymbol_stdcall(gnutls_gost_paramset_get_name, "gnutls_gost_paramset_get_name");
+            lib.bindSymbol_stdcall(gnutls_gost_paramset_get_oid, "gnutls_gost_paramset_get_oid");
+        }
+
         lib.bindSymbol_stdcall(gnutls_cipher_get_key_size, "gnutls_cipher_get_key_size");
         lib.bindSymbol_stdcall(gnutls_mac_get_key_size, "gnutls_mac_get_key_size");
         lib.bindSymbol_stdcall(gnutls_sign_is_secure, "gnutls_sign_is_secure");
@@ -2674,7 +2976,10 @@ else
         lib.bindSymbol_stdcall(gnutls_oid_to_pk, "gnutls_oid_to_pk");
         lib.bindSymbol_stdcall(gnutls_oid_to_sign, "gnutls_oid_to_sign");
         lib.bindSymbol_stdcall(gnutls_oid_to_ecc_curve, "gnutls_oid_to_ecc_curve");
-        lib.bindSymbol_stdcall(gnutls_oid_to_gost_paramset, "gnutls_oid_to_gost_paramset");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_oid_to_gost_paramset, "gnutls_oid_to_gost_paramset");
+
         lib.bindSymbol_stdcall(gnutls_ecc_curve_list, "gnutls_ecc_curve_list");
         lib.bindSymbol_stdcall(gnutls_group_list, "gnutls_group_list");
         lib.bindSymbol_stdcall(gnutls_cipher_list, "gnutls_cipher_list");
@@ -2706,7 +3011,10 @@ else
         lib.bindSymbol_stdcall(gnutls_record_set_state, "gnutls_record_set_state");
         lib.bindSymbol_stdcall(gnutls_range_split, "gnutls_range_split");
         lib.bindSymbol_stdcall(gnutls_record_send, "gnutls_record_send");
-        lib.bindSymbol_stdcall(gnutls_record_send2, "gnutls_record_send2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_record_send2, "gnutls_record_send2");
+
         lib.bindSymbol_stdcall(gnutls_record_send_range, "gnutls_record_send_range");
         lib.bindSymbol_stdcall(gnutls_record_recv, "gnutls_record_recv");
         lib.bindSymbol_stdcall(gnutls_record_recv_packet, "gnutls_record_recv_packet");
@@ -2720,17 +3028,31 @@ else
         lib.bindSymbol_stdcall(gnutls_record_get_direction, "gnutls_record_get_direction");
         lib.bindSymbol_stdcall(gnutls_record_get_max_size, "gnutls_record_get_max_size");
         lib.bindSymbol_stdcall(gnutls_record_set_max_size, "gnutls_record_set_max_size");
-        lib.bindSymbol_stdcall(gnutls_record_set_max_recv_size, "gnutls_record_set_max_recv_size");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            lib.bindSymbol_stdcall(gnutls_record_set_max_recv_size, "gnutls_record_set_max_recv_size");
+
         lib.bindSymbol_stdcall(gnutls_record_check_pending, "gnutls_record_check_pending");
         lib.bindSymbol_stdcall(gnutls_record_check_corked, "gnutls_record_check_corked");
-        lib.bindSymbol_stdcall(gnutls_record_get_max_early_data_size, "gnutls_record_get_max_early_data_size");
-        lib.bindSymbol_stdcall(gnutls_record_set_max_early_data_size, "gnutls_record_set_max_early_data_size");
-        lib.bindSymbol_stdcall(gnutls_record_send_early_data, "gnutls_record_send_early_data");
-        lib.bindSymbol_stdcall(gnutls_record_recv_early_data, "gnutls_record_recv_early_data");
+
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            lib.bindSymbol_stdcall(gnutls_record_set_max_early_data_size, "gnutls_record_set_max_early_data_size");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+        {
+            lib.bindSymbol_stdcall(gnutls_record_get_max_early_data_size, "gnutls_record_get_max_early_data_size");
+            lib.bindSymbol_stdcall(gnutls_record_send_early_data, "gnutls_record_send_early_data");
+            lib.bindSymbol_stdcall(gnutls_record_recv_early_data, "gnutls_record_recv_early_data");
+        }
+
         lib.bindSymbol_stdcall(gnutls_session_force_valid, "gnutls_session_force_valid");
         lib.bindSymbol_stdcall(gnutls_prf, "gnutls_prf");
         lib.bindSymbol_stdcall(gnutls_prf_rfc5705, "gnutls_prf_rfc5705");
-        lib.bindSymbol_stdcall(gnutls_prf_early, "gnutls_prf_early");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            lib.bindSymbol_stdcall(gnutls_prf_early, "gnutls_prf_early");
+
         lib.bindSymbol_stdcall(gnutls_prf_raw, "gnutls_prf_raw");
         lib.bindSymbol_stdcall(gnutls_server_name_set, "gnutls_server_name_set");
         lib.bindSymbol_stdcall(gnutls_server_name_get, "gnutls_server_name_get");
@@ -2746,7 +3068,10 @@ else
         lib.bindSymbol_stdcall(gnutls_session_ticket_key_generate, "gnutls_session_ticket_key_generate");
         lib.bindSymbol_stdcall(gnutls_session_ticket_enable_client, "gnutls_session_ticket_enable_client");
         lib.bindSymbol_stdcall(gnutls_session_ticket_enable_server, "gnutls_session_ticket_enable_server");
-        lib.bindSymbol_stdcall(gnutls_session_ticket_send, "gnutls_session_ticket_send");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_session_ticket_send, "gnutls_session_ticket_send");
+
         lib.bindSymbol_stdcall(gnutls_srtp_set_profile, "gnutls_srtp_set_profile");
         lib.bindSymbol_stdcall(gnutls_srtp_set_profile_direct, "gnutls_srtp_set_profile_direct");
         lib.bindSymbol_stdcall(gnutls_srtp_get_selected_profile, "gnutls_srtp_get_selected_profile");
@@ -2759,14 +3084,20 @@ else
         lib.bindSymbol_stdcall(gnutls_alpn_set_protocols, "gnutls_alpn_set_protocols");
         lib.bindSymbol_stdcall(gnutls_key_generate, "gnutls_key_generate");
         lib.bindSymbol_stdcall(gnutls_priority_init, "gnutls_priority_init");
-        lib.bindSymbol_stdcall(gnutls_priority_init2, "gnutls_priority_init2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_priority_init2, "gnutls_priority_init2");
+
         lib.bindSymbol_stdcall(gnutls_priority_deinit, "gnutls_priority_deinit");
         lib.bindSymbol_stdcall(gnutls_priority_get_cipher_suite_index, "gnutls_priority_get_cipher_suite_index");
         lib.bindSymbol_stdcall(gnutls_priority_string_list, "gnutls_priority_string_list");
         lib.bindSymbol_stdcall(gnutls_priority_set, "gnutls_priority_set");
         lib.bindSymbol_stdcall(gnutls_priority_set_direct, "gnutls_priority_set_direct");
         lib.bindSymbol_stdcall(gnutls_priority_certificate_type_list, "gnutls_priority_certificate_type_list");
-        lib.bindSymbol_stdcall(gnutls_priority_certificate_type_list2, "gnutls_priority_certificate_type_list2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_4)
+            lib.bindSymbol_stdcall(gnutls_priority_certificate_type_list2, "gnutls_priority_certificate_type_list2");
+
         lib.bindSymbol_stdcall(gnutls_priority_sign_list, "gnutls_priority_sign_list");
         lib.bindSymbol_stdcall(gnutls_priority_protocol_list, "gnutls_priority_protocol_list");
         lib.bindSymbol_stdcall(gnutls_priority_ecc_curve_list, "gnutls_priority_ecc_curve_list");
@@ -2774,9 +3105,15 @@ else
         lib.bindSymbol_stdcall(gnutls_priority_kx_list, "gnutls_priority_kx_list");
         lib.bindSymbol_stdcall(gnutls_priority_cipher_list, "gnutls_priority_cipher_list");
         lib.bindSymbol_stdcall(gnutls_priority_mac_list, "gnutls_priority_mac_list");
-        lib.bindSymbol_stdcall(gnutls_get_system_config_file, "gnutls_get_system_config_file");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_9)
+            lib.bindSymbol_stdcall(gnutls_get_system_config_file, "gnutls_get_system_config_file");
+
         lib.bindSymbol_stdcall(gnutls_set_default_priority, "gnutls_set_default_priority");
-        lib.bindSymbol_stdcall(gnutls_set_default_priority_append, "gnutls_set_default_priority_append");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_set_default_priority_append, "gnutls_set_default_priority_append");
+
         lib.bindSymbol_stdcall(gnutls_cipher_suite_get_name, "gnutls_cipher_suite_get_name");
         lib.bindSymbol_stdcall(gnutls_protocol_get_version, "gnutls_protocol_get_version");
         lib.bindSymbol_stdcall(gnutls_protocol_get_name, "gnutls_protocol_get_name");
@@ -2807,7 +3144,10 @@ else
         lib.bindSymbol_stdcall(gnutls_db_get_ptr, "gnutls_db_get_ptr");
         lib.bindSymbol_stdcall(gnutls_db_check_entry, "gnutls_db_check_entry");
         lib.bindSymbol_stdcall(gnutls_db_check_entry_time, "gnutls_db_check_entry_time");
-        lib.bindSymbol_stdcall(gnutls_db_check_entry_expire_time, "gnutls_db_check_entry_expire_time");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+            lib.bindSymbol_stdcall(gnutls_db_check_entry_expire_time, "gnutls_db_check_entry_expire_time");
+
         lib.bindSymbol_stdcall(gnutls_handshake_set_hook_function, "gnutls_handshake_set_hook_function");
         lib.bindSymbol_stdcall(gnutls_handshake_set_post_client_hello_function, "gnutls_handshake_set_post_client_hello_function");
         lib.bindSymbol_stdcall(gnutls_handshake_set_max_packet_length, "gnutls_handshake_set_max_packet_length");
@@ -2866,13 +3206,21 @@ else
             lib.bindSymbol_stdcall(gnutls_certificate_set_ocsp_status_request_function2, "gnutls_certificate_set_ocsp_status_request_function2");
 
         lib.bindSymbol_stdcall(gnutls_certificate_set_ocsp_status_request_file, "gnutls_certificate_set_ocsp_status_request_file");
-        lib.bindSymbol_stdcall(gnutls_certificate_set_ocsp_status_request_file2, "gnutls_certificate_set_ocsp_status_request_file2");
-        lib.bindSymbol_stdcall(gnutls_certificate_set_ocsp_status_request_mem, "gnutls_certificate_set_ocsp_status_request_mem");
-        lib.bindSymbol_stdcall(gnutls_certificate_get_ocsp_expiration, "gnutls_certificate_get_ocsp_expiration");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            lib.bindSymbol_stdcall(gnutls_certificate_set_ocsp_status_request_file2, "gnutls_certificate_set_ocsp_status_request_file2");
+            lib.bindSymbol_stdcall(gnutls_certificate_set_ocsp_status_request_mem, "gnutls_certificate_set_ocsp_status_request_mem");
+            lib.bindSymbol_stdcall(gnutls_certificate_get_ocsp_expiration, "gnutls_certificate_get_ocsp_expiration");
+        }
+
         lib.bindSymbol_stdcall(gnutls_ocsp_status_request_enable_client, "gnutls_ocsp_status_request_enable_client");
         lib.bindSymbol_stdcall(gnutls_ocsp_status_request_get, "gnutls_ocsp_status_request_get");
         lib.bindSymbol_stdcall(gnutls_ocsp_status_request_is_checked, "gnutls_ocsp_status_request_is_checked");
-        lib.bindSymbol_stdcall(gnutls_ocsp_status_request_get2, "gnutls_ocsp_status_request_get2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_ocsp_status_request_get2, "gnutls_ocsp_status_request_get2");
+
         lib.bindSymbol_stdcall(gnutls_certificate_set_rawpk_key_mem, "gnutls_certificate_set_rawpk_key_mem");
         lib.bindSymbol_stdcall(gnutls_certificate_set_rawpk_key_file, "gnutls_certificate_set_rawpk_key_file");
         lib.bindSymbol_stdcall(gnutls_global_init, "gnutls_global_init");
@@ -2884,14 +3232,22 @@ else
         lib.bindSymbol_stdcall(gnutls_global_set_log_function, "gnutls_global_set_log_function");
         lib.bindSymbol_stdcall(gnutls_global_set_audit_log_function, "gnutls_global_set_audit_log_function");
         lib.bindSymbol_stdcall(gnutls_global_set_log_level, "gnutls_global_set_log_level");
-        lib.bindSymbol_stdcall(gnutls_session_get_keylog_function, "gnutls_session_get_keylog_function");
-        lib.bindSymbol_stdcall(gnutls_session_set_keylog_function, "gnutls_session_set_keylog_function");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+        {
+            lib.bindSymbol_stdcall(gnutls_session_get_keylog_function, "gnutls_session_get_keylog_function");
+            lib.bindSymbol_stdcall(gnutls_session_set_keylog_function, "gnutls_session_set_keylog_function");
+        }
+
         lib.bindSymbol_stdcall(gnutls_dh_params_init, "gnutls_dh_params_init");
         lib.bindSymbol_stdcall(gnutls_dh_params_deinit, "gnutls_dh_params_deinit");
         lib.bindSymbol_stdcall(gnutls_dh_params_import_raw, "gnutls_dh_params_import_raw");
         lib.bindSymbol_stdcall(gnutls_dh_params_import_dsa, "gnutls_dh_params_import_dsa");
         lib.bindSymbol_stdcall(gnutls_dh_params_import_raw2, "gnutls_dh_params_import_raw2");
-        lib.bindSymbol_stdcall(gnutls_dh_params_import_raw3, "gnutls_dh_params_import_raw3");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_8)
+            lib.bindSymbol_stdcall(gnutls_dh_params_import_raw3, "gnutls_dh_params_import_raw3");
+
         lib.bindSymbol_stdcall(gnutls_dh_params_import_pkcs3, "gnutls_dh_params_import_pkcs3");
         lib.bindSymbol_stdcall(gnutls_dh_params_generate2, "gnutls_dh_params_generate2");
         lib.bindSymbol_stdcall(gnutls_dh_params_export_pkcs3, "gnutls_dh_params_export_pkcs3");
@@ -2943,18 +3299,23 @@ else
         lib.bindSymbol_stdcall(gnutls_psk_free_client_credentials, "gnutls_psk_free_client_credentials");
         lib.bindSymbol_stdcall(gnutls_psk_allocate_client_credentials, "gnutls_psk_allocate_client_credentials");
         lib.bindSymbol_stdcall(gnutls_psk_set_client_credentials, "gnutls_psk_set_client_credentials");
-        lib.bindSymbol_stdcall(gnutls_psk_set_client_credentials2, "gnutls_psk_set_client_credentials2");
         lib.bindSymbol_stdcall(gnutls_psk_free_server_credentials, "gnutls_psk_free_server_credentials");
         lib.bindSymbol_stdcall(gnutls_psk_allocate_server_credentials, "gnutls_psk_allocate_server_credentials");
         lib.bindSymbol_stdcall(gnutls_psk_set_server_credentials_file, "gnutls_psk_set_server_credentials_file");
         lib.bindSymbol_stdcall(gnutls_psk_set_server_credentials_hint, "gnutls_psk_set_server_credentials_hint");
         lib.bindSymbol_stdcall(gnutls_psk_server_get_username, "gnutls_psk_server_get_username");
-        lib.bindSymbol_stdcall(gnutls_psk_server_get_username2, "gnutls_psk_server_get_username2");
         lib.bindSymbol_stdcall(gnutls_psk_client_get_hint, "gnutls_psk_client_get_hint");
         lib.bindSymbol_stdcall(gnutls_psk_set_server_credentials_function, "gnutls_psk_set_server_credentials_function");
-        lib.bindSymbol_stdcall(gnutls_psk_set_server_credentials_function2, "gnutls_psk_set_server_credentials_function2");
         lib.bindSymbol_stdcall(gnutls_psk_set_client_credentials_function, "gnutls_psk_set_client_credentials_function");
-        lib.bindSymbol_stdcall(gnutls_psk_set_client_credentials_function2, "gnutls_psk_set_client_credentials_function2");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_13)
+        {
+            lib.bindSymbol_stdcall(gnutls_psk_set_client_credentials2, "gnutls_psk_set_client_credentials2");
+            lib.bindSymbol_stdcall(gnutls_psk_server_get_username2, "gnutls_psk_server_get_username2");
+            lib.bindSymbol_stdcall(gnutls_psk_set_server_credentials_function2, "gnutls_psk_set_server_credentials_function2");
+            lib.bindSymbol_stdcall(gnutls_psk_set_client_credentials_function2, "gnutls_psk_set_client_credentials_function2");
+        }
+
         lib.bindSymbol_stdcall(gnutls_hex_encode, "gnutls_hex_encode");
         lib.bindSymbol_stdcall(gnutls_hex_decode, "gnutls_hex_decode");
         lib.bindSymbol_stdcall(gnutls_hex_encode2, "gnutls_hex_encode2");
@@ -3020,8 +3381,13 @@ else
 
         lib.bindSymbol_stdcall(gnutls_ext_set_data, "gnutls_ext_set_data");
         lib.bindSymbol_stdcall(gnutls_ext_get_data, "gnutls_ext_get_data");
-        lib.bindSymbol_stdcall(gnutls_ext_get_current_msg, "gnutls_ext_get_current_msg");
-        lib.bindSymbol_stdcall(gnutls_ext_raw_parse, "gnutls_ext_raw_parse");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+        {
+            lib.bindSymbol_stdcall(gnutls_ext_get_current_msg, "gnutls_ext_get_current_msg");
+            lib.bindSymbol_stdcall(gnutls_ext_raw_parse, "gnutls_ext_raw_parse");
+        }
+
         lib.bindSymbol_stdcall(gnutls_ext_register, "gnutls_ext_register");
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -3030,7 +3396,9 @@ else
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_1)
             lib.bindSymbol_stdcall(gnutls_ext_get_name, "gnutls_ext_get_name");
 
-        lib.bindSymbol_stdcall(gnutls_ext_get_name2, "gnutls_ext_get_name2");
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_14)
+            lib.bindSymbol_stdcall(gnutls_ext_get_name2, "gnutls_ext_get_name2");
+
         lib.bindSymbol_stdcall(gnutls_supplemental_register, "gnutls_supplemental_register");
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_5_5)
@@ -3038,13 +3406,20 @@ else
 
         lib.bindSymbol_stdcall(gnutls_supplemental_recv, "gnutls_supplemental_recv");
         lib.bindSymbol_stdcall(gnutls_supplemental_send, "gnutls_supplemental_send");
-        lib.bindSymbol_stdcall(gnutls_anti_replay_init, "gnutls_anti_replay_init");
-        lib.bindSymbol_stdcall(gnutls_anti_replay_deinit, "gnutls_anti_replay_deinit");
-        lib.bindSymbol_stdcall(gnutls_anti_replay_set_window, "gnutls_anti_replay_set_window");
-        lib.bindSymbol_stdcall(gnutls_anti_replay_enable, "gnutls_anti_replay_enable");
-        lib.bindSymbol_stdcall(gnutls_anti_replay_set_add_function, "gnutls_anti_replay_set_add_function");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_5)
+        {
+            lib.bindSymbol_stdcall(gnutls_anti_replay_init, "gnutls_anti_replay_init");
+            lib.bindSymbol_stdcall(gnutls_anti_replay_deinit, "gnutls_anti_replay_deinit");
+            lib.bindSymbol_stdcall(gnutls_anti_replay_set_window, "gnutls_anti_replay_set_window");
+            lib.bindSymbol_stdcall(gnutls_anti_replay_enable, "gnutls_anti_replay_enable");
+            lib.bindSymbol_stdcall(gnutls_anti_replay_set_add_function, "gnutls_anti_replay_set_add_function");
+        }
+
         lib.bindSymbol_stdcall(gnutls_anti_replay_set_ptr, "gnutls_anti_replay_set_ptr");
         lib.bindSymbol_stdcall(gnutls_fips140_mode_enabled, "gnutls_fips140_mode_enabled");
-        lib.bindSymbol_stdcall(gnutls_fips140_set_mode, "gnutls_fips140_set_mode");
+
+        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
+            lib.bindSymbol_stdcall(gnutls_fips140_set_mode, "gnutls_fips140_set_mode");
     }
 }
