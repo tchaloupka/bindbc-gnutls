@@ -142,6 +142,14 @@ version (BindGnuTLS_Static)
         int gnutls_decode_rs_value (const(gnutls_datum_t)* sig_value, gnutls_datum_t* r, gnutls_datum_t* s);
         int gnutls_encode_rs_value (gnutls_datum_t* sig_value, const(gnutls_datum_t)* r, const(gnutls_datum_t)* s);
     }
+    else
+    {
+        // workaround to enable these in older versions too (private but exported)
+        int _gnutls_decode_ber_rs_raw (const(gnutls_datum_t)* sig_value, gnutls_datum_t* r, gnutls_datum_t* s);
+        int _gnutls_encode_ber_rs_raw (gnutls_datum_t* sig_value, const(gnutls_datum_t)* r, const(gnutls_datum_t)* s);
+        alias gnutls_decode_rs_value = _gnutls_decode_ber_rs_raw;
+        alias gnutls_encode_rs_value = _gnutls_encode_ber_rs_raw;
+    }
 
     static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
     {
@@ -218,11 +226,9 @@ else
         alias pgnutls_encode_ber_digest_info = int function (gnutls_digest_algorithm_t hash, const(gnutls_datum_t)* digest, gnutls_datum_t* output);
         alias pgnutls_decode_ber_digest_info = int function (const(gnutls_datum_t)* info, gnutls_digest_algorithm_t* hash, ubyte* digest, uint* digest_size);
 
-        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
-        {
-            alias pgnutls_decode_rs_value = int function (const(gnutls_datum_t)* sig_value, gnutls_datum_t* r, gnutls_datum_t* s);
-            alias pgnutls_encode_rs_value = int function (gnutls_datum_t* sig_value, const(gnutls_datum_t)* r, const(gnutls_datum_t)* s);
-        }
+        // Note that these were added in 3.6.0, but are bound using exported private symbols
+        alias pgnutls_decode_rs_value = int function (const(gnutls_datum_t)* sig_value, gnutls_datum_t* r, gnutls_datum_t* s);
+        alias pgnutls_encode_rs_value = int function (gnutls_datum_t* sig_value, const(gnutls_datum_t)* r, const(gnutls_datum_t)* s);
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
         {
@@ -313,11 +319,9 @@ else
         pgnutls_encode_ber_digest_info gnutls_encode_ber_digest_info;
         pgnutls_decode_ber_digest_info gnutls_decode_ber_digest_info;
 
-        static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_0)
-        {
-            pgnutls_decode_rs_value gnutls_decode_rs_value;
-            pgnutls_encode_rs_value gnutls_encode_rs_value;
-        }
+        // Note that these were added in 3.6.0, but are bound using exported private symbols
+        pgnutls_decode_rs_value gnutls_decode_rs_value;
+        pgnutls_encode_rs_value gnutls_encode_rs_value;
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
         {
@@ -398,6 +402,12 @@ else
         {
             lib.bindSymbol_stdcall(gnutls_decode_rs_value, "gnutls_decode_rs_value");
             lib.bindSymbol_stdcall(gnutls_encode_rs_value, "gnutls_encode_rs_value");
+        }
+        else
+        {
+            // workaround to enable these even with the older GnuTLS libs
+            lib.bindSymbol_stdcall(gnutls_decode_rs_value, "_gnutls_decode_ber_rs_raw");
+            lib.bindSymbol_stdcall(gnutls_encode_rs_value, "_gnutls_encode_ber_rs_raw");
         }
 
         static if (gnuTLSSupport >= GnuTLSSupport.gnutls_3_6_3)
